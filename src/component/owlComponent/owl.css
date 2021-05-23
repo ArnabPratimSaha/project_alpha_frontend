@@ -1,0 +1,61 @@
+.st0{fill:#FFFFFF;}
+.st1{fill:#191919;}
+.st2{fill:#825732;}
+.st3{fill:#52301B;}
+.st4{fill:#69401C;}
+.st5{fill:#DD642B;}
+.st6{fill:#DC9729;}
+.st7{fill:#BD9463;}
+.st8{fill:#E6A432;}
+.st9{fill:#6E4520;}
+.st10{fill:#F1763A;}
+.st11{fill:#CD272A;}
+.st12{fill:#7F9B3E;}
+.st13{fill:#8F663B;}
+.st14{fill:#E8DAC3;}
+.st15{fill:#8F8F8F;}
+.st16{fill:#7A7A7A;}
+.st17{fill:#B0B0B0;}
+.st18{fill:#C0E0F6;}
+.st19{fill:#D3ECFA;}
+.st20{fill:#CDCDCD;}
+.st21{fill:#555655;}
+.st22{fill:#B3E2F9;}
+.st23{fill:#9ADAEF;}
+.st24{fill:#BDE7FB;}
+.st25{fill:#BCE6F8;}
+.st26{fill:#FDD00D;}
+
+.owl-div
+{
+    position: relative;
+}
+#eye-lid_2_
+{
+    display: none ;
+    transition: all 400ms linear;
+    position: relative;
+    transform: scaleY(0);
+    transform-origin: top;
+    transform-box: fill-box;
+}
+#overlay
+{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: 2;
+    cursor: pointer;
+}
+#Sun_1_
+{
+    opacity: 0;
+    transition: all 800ms linear;
+}
+#moon_1_ 
+{
+    opacity: 0;
+    transition: all 800ms linear;
+}

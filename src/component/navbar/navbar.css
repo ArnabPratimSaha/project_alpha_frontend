@@ -1,0 +1,322 @@
+.main-body{
+    background-color: aqua;
+    width: 100%;
+    position: fixed;
+    transition: height 300ms ease-in-out;
+    z-index: 1000;
+    top: 0;
+}
+.navbar-svg
+{
+    position: absolute;
+    width: 5rem;
+    left: 5%;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 3;
+}
+.navbar-loading-div
+{
+    width: 100%;
+    height: 1.5px;
+    position: relative;
+    background-color: transparent;
+}
+.navbar-loading-bar
+{
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    background-color: turquoise;
+    transform-origin: left;
+    transition: transform 200ms ease-in-out;
+}
+.navbar-links
+{
+    position: absolute;
+    top: 50%;
+    left: 20%;
+    transform: translateY(-50%);
+    z-index: 3;
+}
+.navbar-links span
+{
+    margin: 0 20px;
+    letter-spacing: 1px;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+}
+.navbar-links span:hover,.navbar-links span:focus
+{
+    text-shadow: 2px 2px 3px rgb(88, 88, 88);
+}
+.navbar-theme-togle
+{
+    position: absolute ;
+    right: 0px;
+    width: 5rem;
+    height: 100%;
+    top: 50%;
+    z-index: 2;
+    transform: translateY(-50%);
+}
+.navbar-credentials
+{
+    position: relative;
+    right: 0%;
+    height: 100%;
+    z-index: 2;
+}
+.circle-image
+{
+    position: absolute;
+    right: 10%;
+    width: 20%;
+    overflow: hidden;
+    height: 100%;
+}
+.circle-image img
+{
+    border:1px solid transparent;
+    border-radius: 100%;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 2.9rem;
+    width: 2.9rem;
+    left: 0;
+}
+.circle-image span
+{
+    position: absolute;
+    width: 40%;
+    text-align: left;
+    overflow: hidden;
+    top: 50%;
+    left: 20%;
+    transform: translateY(-50%);
+    font-size: .8rem;
+    font-weight: 700;
+}
+
+.navbar-logout
+{
+    position: absolute;
+    margin: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    right: 2%;
+    height: 2.5rem;
+    width: 30%;
+    border: 1px solid rgb(0, 97, 97);
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 400ms linear;
+    background-color: rgb(0, 202, 202);
+}
+.navbar-logout:hover,.navbar-logout:focus
+{
+    background-color: darkcyan;
+}
+.navbar-logout span
+{
+    position: absolute;
+    padding: 0;
+    width: fit-content;
+    letter-spacing: 1px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%) !important;
+    text-transform: uppercase;
+    font-weight: 400;
+    margin: 0;
+}
+.navbar-info-div
+{
+    height: 5rem;
+    position: absolute;
+    right: 0;
+    top: 100%;
+    background-color: darkcyan;
+    border: 1px solid none;
+    border-radius: 3px;
+    width: 30%;
+    transform: translateX(10%);
+    display: none ;
+}
+.navbar-info-div span
+{
+    position: absolute;
+    padding: 0;
+    width: fit-content;
+    letter-spacing: .2px;
+    top: 20%;
+    left: 50%;
+    transform: translate(-50%,-50%) !important;
+    text-transform: uppercase;
+    font-weight: 600;
+    margin: 0;
+    font-size: .6rem;
+}
+.navbar-logout-2:hover,.navbar-logout-2:focus
+{
+    background-color: darkcyan;
+}
+.navbar-logout-2
+{
+    position: absolute;
+    margin: 0;
+    top: 60%;
+    left: 50%;
+    background-color: rgb(0, 202, 202);
+    transform: translate(-50%,-50%);
+    height: 30%;
+    width: 60%;
+    border: 1px solid rgb(0, 97, 97);
+    border-radius: 3px;
+    cursor: pointer;
+    transition: all 400ms linear;
+    box-shadow: 2px 2px 2px #444;
+}
+.navbar-logout-2 span
+{
+    position: absolute;
+    padding: 0;
+    width: fit-content;
+    letter-spacing: 1px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%) !important;
+    text-transform: uppercase;
+    font-weight: 400;
+    margin: 0;
+}
+.navbar-login
+{
+    position: absolute;
+    right: 10%;
+    height: 2.5rem;
+    width: 6rem;
+    background-color: rgb(0, 202, 202);
+    top: 50%;
+    transform: translateY(-50%);
+    border: 1px solid none;
+    border-radius: 20px;
+    cursor: pointer;
+}
+.navbar-login:hover,.navbar-login:focus
+{
+    background-color: rgb(0, 163, 163);
+}
+.navbar-login span
+{
+    position: absolute;
+    padding: 0;
+    width: fit-content;
+    letter-spacing: 1px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    text-transform: uppercase;
+    font-weight: 400;
+    margin: 0;
+}
+@media only screen and (max-width: 1200px) {
+    .navbar-logout
+    {
+        display: none;
+    }
+    .circle-image span
+    {
+        display: none;
+    }
+    .circle-image
+    {
+        width: 20%;
+    }
+    .circle-image img
+    {
+        right: 20%;
+        left: auto;
+        cursor: pointer;
+    }
+    .navbar-info-div
+    {
+        display: none;
+    }
+}
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@300;400;500;600&display=swap');
+.navbar-brandname
+{
+    position: absolute;
+    margin: 0;
+    padding: 0;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    font-family: 'Barlow Condensed', sans-serif;
+    letter-spacing: 2px;
+    z-index: 2;
+    text-transform: uppercase;
+    display: none;
+}
+.navlinks-mobile
+{
+    width: 100%;
+    position: absolute;
+    background-color: aqua;
+    z-index: -1;
+    display: none;
+    height: 40%;
+    transition: all 400ms ease-in-out;
+}
+.navlinks-mobile span
+{
+    margin: 0 20px;
+    letter-spacing: 1px;
+    font-weight: 600;
+    font-size: .6rem;
+    margin: auto 10px;
+    cursor: pointer;
+}
+.navbarlinks-mobile span:hover,.navbarlinks-mobile span:focus
+{
+    text-shadow: 2px 2px 3px rgb(99, 99, 99);
+}
+@media only screen and (max-width: 900px) {
+    .navbar-svg
+    {
+        width: 4rem;
+    }
+    .navbar-links{
+        left: 20%;
+    }
+    .navbar-links span
+    {
+        margin: 0 5px;
+        font-size: .65rem;
+    }
+    .navbar-theme-togle
+    {
+        width: 3rem;
+        height: 2rem;
+    }
+    .navbar-login
+    {
+        width: 4.5rem;
+        font-size: .8rem;
+    }
+    .navbar-links
+    {
+        display: none;
+    }
+    .navlinks-mobile
+    {
+        display: block;
+    }
+    .navbar-brandname
+    {
+        display: block;
+    }
+}
