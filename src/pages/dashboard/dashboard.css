@@ -10,6 +10,7 @@
     height: 35rem;
     width: 100%;
     position: relative;
+    overflow: hidden;
 }
 .dashboard-left-div
 {
@@ -17,6 +18,7 @@
     width: 60%;
     height: 100%;
     transition: width 400ms ease-in-out;
+    z-index: 2;
 }
 .dashboard-button-div
 {
@@ -71,6 +73,7 @@
     right: 5%;
     top: 5%;
     z-index: 3;
+    display: none;
 }
 .dashboard-toggle-button__icon
 {
@@ -82,9 +85,9 @@
     transform-box: fill-box;
     transform: translateY(-50%) rotateZ(-90deg);
     z-index: 1;
-    color: #00bfff;
+    color: #000;
     cursor: pointer;
-    transition: transform 1000ms ease-in-out;
+    transition: transform 400ms ease-in-out;
     z-index: 1;
     
 }
@@ -310,12 +313,23 @@
     position: absolute;
     width: 40%;
     height: 100%;
-    right: 0;
+    background: #00bfff !important;
+    z-index: 2;
+    transition: left 300ms ease-in-out;
 }
 @media only screen and (max-width: 900px) {
     .dashboard-left-div
     {
         width: 100%;
+    }
+    .dashboard-button-div
+    {
+        left: 5%;
+        transform: translateX(0);
+    }
+    .dashboard-toggle-button
+    {
+        display: block;
     }
     .dashboard-toggle-button__icon
     {
@@ -333,5 +347,9 @@
     .dashboard-button-div button
     {
         font-size: .6rem;
+    }
+    .dashboard-right-div
+    {
+        width: 60%;
     }
 }
