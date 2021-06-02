@@ -3,6 +3,7 @@ import useMode from '../../customhooks/useMode'
 import Owl from '../owlComponent/owl';
 import ViviFace from '../viviFace/viviFace';
 import './navbar.css'
+import {LightONE,DarkONE,colorPalettes} from '../../stylesandthemes/themes';
 
 export default function Navbar(props) {
     const [mode,changeMode,MODETYPE,updateMode]=useMode();

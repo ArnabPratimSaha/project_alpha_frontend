@@ -13,7 +13,7 @@ export default function Home() {
     const current=useRef(null);
     useEffect(()=>{
         lottie.loadAnimation({
-            container: current.current, // the dom element that will contain the animation
+            container: current.current, 
             renderer: 'svg',
             loop: true,
             autoplay: true,
