@@ -1,0 +1,56 @@
+.usercard-fulldiv
+{
+    display: flex;
+    justify-content: space-between;
+    background-color: #333;
+    height: fit-content;
+    padding: 2px 10px;
+    flex-wrap: wrap;
+    align-items: center;
+    border-radius: 20px;
+    margin: 2px 5px;
+}
+.usercard-imagediv
+{
+    overflow: hidden;
+    border: 1px solid transparent;
+    height: 1.5rem;
+    width: 1.5rem;
+    border-radius: 100%;
+}
+.usercard-imagediv img
+{
+    height: 1.5rem;
+    width: 1.5rem;
+}
+.usercard-namediv
+{
+    font-size: .7rem;
+    margin: 0 5px;
+    color: #fff;
+}
+.usercard-closeDiv
+{
+    cursor: pointer;
+    color: #545454;
+    font-size: .8rem;
+}
+.usercard-closeDiv:hover
+{
+    color: rgb(255, 82, 82);
+}
+@media only screen and (max-width: 1200px) {
+    .usercard-imagediv
+    {
+        height: 1.2rem;
+        width: 1.2rem;
+    }
+    .usercard-namediv
+    {
+        font-size: .5rem;
+    }
+    .usercard-closeDiv
+    {
+        font-size: .6rem;
+    }
+}
