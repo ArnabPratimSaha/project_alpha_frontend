@@ -260,23 +260,39 @@
 {
     position: absolute;
     width: 90%;
-    height: 10%;
-    left: 50%;
-    transform: translateX(-50%);
-    border: 1px solid #000;
-    border-radius: 3px;
+    left: 5%;
     top: 18%;
 }
 .dashboard-memberselect-div__result-div
 {
     position: absolute;
     width: 90%;
-    height: 60%;
+    left: 5%;
     top: 33%;
-    left: 50%;
-    border: 1px solid #000;
-    border-radius: 3px;
-    transform: translateX(-50%);
+    height: 50%;
+}
+.dashboard-memberselect-div__result-div textarea
+{
+
+}
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@400,500,600,1,600&display=swap');
+.MultilineInputComponent_input
+{
+    flex: 1;
+    margin:15px 10px;
+    border: none;
+    background: transparent;
+    font-size: 1rem;
+    font-family: 'Open Sans', sans-serif;
+
+}
+.MultilineInputComponent_input::placeholder
+{
+    color: #cacaca;
+}
+.MultilineInputComponent_input:focus
+{
+    outline: none;
 }
 .dashboard-roleselect-div
 {
@@ -290,23 +306,25 @@
 {
     position: absolute;
     width: 90%;
-    height: 10%;
-    left: 50%;
-    transform: translateX(-50%);
-    border: 1px solid #000;
-    border-radius: 3px;
+    left: 5%;
     top: 18%;
 }
 .dashboard-roleselect-div__result-div
 {
     position: absolute;
     width: 90%;
-    height: 60%;
+    left: 5%;
     top: 33%;
-    left: 50%;
-    border: 1px solid #000;
-    border-radius: 3px;
-    transform: translateX(-50%);
+    height: 50%;
+}
+.searchresult-div
+{
+    flex:1;
+    background:teal;
+    display:flex;
+    flex-wrap:wrap;
+    padding: 20px;
+    overflow: hidden;
 }
 .dashboard-right-div
 {
@@ -316,6 +334,8 @@
     background: #00bfff !important;
     z-index: 2;
     transition: left 300ms ease-in-out;
+    display: flex;
+    flex-direction: column;
 }
 @media only screen and (max-width: 900px) {
     .dashboard-left-div
@@ -350,6 +370,6 @@
     }
     .dashboard-right-div
     {
-        width: 60%;
+        width: 80%;
     }
 }

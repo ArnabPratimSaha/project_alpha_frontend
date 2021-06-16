@@ -1,0 +1,38 @@
+.InputComponent_fulldiv
+{
+    border: 1px solid;
+    border-radius: 2px;
+    position: relative;
+    display: flex;
+    height: 100%;
+    width: 100%;
+}
+:root
+{
+    
+}
+.InputComponentLabelDiv
+{
+    position: absolute;
+    top: 0;
+    left: 5%;
+    transform: translateY(-50%);
+    border: 1px solid;
+    border-radius: 1px;
+    border-radius: 5px;
+    transform-origin: left;
+    transition: all 400ms ease-in-out;
+    overflow: hidden;
+    height: 1.2rem;
+    padding: 3px 2px 0 2px;
+}
+.InputComponentLabelDiv p
+{
+    margin: 0;
+    padding: 0;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: opacity 400ms ease-in-out;
+    font-size: .8rem;
+    cursor: pointer;
+}
