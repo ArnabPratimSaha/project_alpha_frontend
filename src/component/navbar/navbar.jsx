@@ -4,11 +4,11 @@ import Owl from '../owlComponent/owl';
 import ViviFace from '../viviFace/viviFace';
 import './navbar.css'
 import {LightONE,DarkONE,colorPalettes} from '../../stylesandthemes/themes';
+import Cookies from 'js-cookie';
 
 export default function Navbar(props) {
     const [mode,changeMode,MODETYPE,updateMode]=useMode();
     const [shrink,setShrink]=useState(false);
-    const [status,setStatus]=useState(false);
     const [loadingPercentage,setLoadingPercentage]=useState(0);
     window.addEventListener('scroll',(e)=>{
         if(window.scrollY>400)
@@ -21,8 +21,8 @@ export default function Navbar(props) {
         }
     })
     useEffect(()=>{
-        setLoadingPercentage(props.percentage)
-    },[props.percentage])
+        setLoadingPercentage(props.loadingPercentage)
+    },[props.loadingPercentage])
     const handleChange=()=>{
         updateMode();
         props.onUpdateMode();
@@ -48,12 +48,13 @@ export default function Navbar(props) {
         setTimeout(() => {
             setLoadingPercentage(1);
             setTimeout(() => {
+                props.handleLogout();
                 setLoadingPercentage(0);
             }, 300);
         }, 1000);
     }
     const handleLogin=()=>{
-        
+        window.location='http://localhost:5000/auth/discord'
     }
     return (
         <div>
@@ -66,40 +67,40 @@ export default function Navbar(props) {
                     </div>
                 </div>
                 <div className='navbar-links' style={{color:mode===MODETYPE.DARK?'#fff':'#222',backgroundColor:mode===MODETYPE.DARK?'#333':'#cacaca'}}>
-                    <span>
+                    <a className='navbar-links__link' href='/home' style={{color:mode===MODETYPE.DARK?'#fff':'#222'}}>
                         Home
-                    </span>
-                    <span>
+                    </a>
+                    <a className='navbar-links__link' href={`/dashboard/${Cookies.get('id')}/null/${Cookies.get('discordId')}`} style={{color:mode===MODETYPE.DARK?'#fff':'#222'}}> 
                         Dashboard
-                    </span>
-                    <span>
-                        Messages
-                    </span>
-                    <span>
+                    </a>
+                    <a className='navbar-links__link' style={{color:mode===MODETYPE.DARK?'#fff':'#222'}}>
+                        Log
+                    </a>
+                    <a className='navbar-links__link' style={{color:mode===MODETYPE.DARK?'#fff':'#222'}}>
                         Learn About
-                    </span>
+                    </a>
                 </div>
                 <div className='navbar-credentials' style={{color:mode===MODETYPE.DARK?'#fff':'#222',backgroundColor:mode===MODETYPE.DARK?'#333':'#cacaca'}}>
-                    {!status &&<div className='navbar-login' onClick={handleLogin}>
+                    {!props.status &&<div className='navbar-login' onClick={handleLogin}>
                         <span>Log in</span>
                     </div>}
-                    {status &&<div>
+                    {props.status &&<div>
                         <div className='circle-image' >
-                            <img src='https://static-cdn.jtvnw.net/ttv-boxart/Just%20Chatting-285x380.jpg' onClick={handleFocus}/> 
-                            <span>Test Script #0000</span>
-                            <div className='navbar-logout' onClick={onLogout}>
+                            <img src={props.imageSource} onClick={handleFocus}/> 
+                            <span>{`${props.userName} #${props.userTag}`}</span>
+                            {!props.isTemp &&<div className='navbar-logout' onClick={onLogout}>
                                 <span>
                                     Log Out
                                 </span>
-                            </div>
+                            </div>}
                         </div>
                         <div className='navbar-info-div' style={{backgroundColor:mode===MODETYPE.DARK?`#555`:`#cacacaca`}}>
-                            <span>Test Script #0000</span>
-                            <div className='navbar-logout-2' onClick={onLogout}>
+                            <span>{`${props.userName} #${props.userTag}`}</span>
+                            {!props.isTemp && <div className='navbar-logout-2' onClick={onLogout}>
                                 <span>
                                     Log Out
                                 </span>
-                            </div>
+                            </div>}
                         </div>
                     </div>}
                 </div>

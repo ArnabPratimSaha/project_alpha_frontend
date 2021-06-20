@@ -7,6 +7,8 @@ import {
 } from "react-router-dom";
 import Home from './pages/home/home';
 import Dashboard from './pages/dashboard/dashboard';
+import Authentication from './pages/authentication/authentication';
+import Error from './pages/error/error';
 
 function App() {
   return (
@@ -16,8 +18,14 @@ function App() {
           <Route path='/home' exact>
               <Home/>
           </Route>
-          <Route path='/dashboard/:uid/:sid'>
+          <Route path='/dashboard/:uid/:sid/:did'>
               <Dashboard/>
+          </Route>
+          <Route path='/auth/:uid'>
+              <Authentication/>
+          </Route>
+          <Route path='/error/:code'>
+              <Error/>
           </Route>
           <Redirect to='/home' />
         </Switch>

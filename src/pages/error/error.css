@@ -1,0 +1,61 @@
+.fa-frown
+{
+    font-size: 13rem;
+    color: #8f8f8f !important;
+}
+.error-div
+{
+    position: absolute;
+    left: 50%;
+    top:50%;
+    transform: translate(-50%,-50%);
+}
+.error-div h1
+{
+    color: #505050 ;
+    font-size: 4rem;
+    margin: 0;
+    padding: 0;
+    letter-spacing: 8px;
+    font-weight: 400;
+
+}
+.error-div h2
+{
+    color: #8f8f8f ;
+    font-size: 2rem;
+    margin: 0;
+    padding: 0;
+    font-weight: 400;
+}
+.error-div p
+{
+    color: #505050 ;
+    font-size: 1rem;
+    margin: 0;
+    padding: 0;
+    letter-spacing: 1px;
+}
+.error-div h6
+{
+    display: inline-flex;
+    color: #505050 ;
+    font-size: 1rem;
+    margin: 0;
+    padding: 0;
+    letter-spacing: 1px;
+}
+.error-div a
+{
+    color: #2b7fc4 ;
+    letter-spacing: 1px;
+    font-size: 1rem;
+    margin: 0;
+    padding: 0;
+    text-decoration: none;
+    font-weight: 500;
+}
+.error-div a:hover
+{
+    color: #06355c ;
+}

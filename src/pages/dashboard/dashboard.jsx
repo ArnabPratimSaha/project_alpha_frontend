@@ -1,4 +1,4 @@
-import React, { useEffect, useReducer, useState } from "react";
+import React, { useEffect, useReducer, useRef, useState } from "react";
 import { useParams } from "react-router";
 import Navbar from "../../component/navbar/navbar";
 import useMode from "../../customhooks/useMode";
@@ -7,9 +7,10 @@ import { MdArrowDropDownCircle } from "react-icons/md";
 import {configButtonColor} from './components/configButtonColor';
 import MultilineInputComponent from "../../component/inputComponents/MultilineInputComponent";
 import Card from '../../component/rightDrawerCardDiv/cardDiv';
-
+import axios from 'axios'
 
 import DateTimePicker from "react-datetime-picker";
+import Cookies, { set } from "js-cookie";
 var maxDate = new Date();
 var numberOfDaysToAdd = 6;
 maxDate.setDate(maxDate.getDate() + numberOfDaysToAdd);
@@ -51,7 +52,6 @@ const getContentHeight=(state,drawerNumber)=>{
   
 }
 const getValue=(term,div)=>{
-  console.log(term,div);
   if(div===2)
   {
     switch (term) {
@@ -173,7 +173,24 @@ const rightReducer=(state,action)=>{
       break;
   }
 }
-function Dashboard() {
+const fetchData=async(id)=>{
+  try {
+      const res=await axios.post('http://localhost:5000/auth/discord/verify',{userId:id})
+      if(res.status===200)
+      {
+          return res;
+      }
+      return null;
+  } catch (error) {
+      const res=error.response;
+      if(res)
+      {
+          return res;
+      }
+  }
+}
+function Dashboard(props) {
+  let { uid, sid,did } = useParams();
   const [mode, changeMode, MODETYPE, updateMode] = useMode();
   const [value, onChange] = useState(new Date());
   const [rightDivPosition, changeRightDivPosition] = useState(
@@ -184,14 +201,59 @@ function Dashboard() {
   const [state, dispatch] = useReducer(reducer, initialState);
   const [focusThree,setFocusThree]=useState(false);
   const [focusFour,setFocusFour]=useState(false);
-  
+  const data=useRef()
   const [rightDrawerState,rightDrawerDispatch]=useReducer(rightReducer,{
     isFirstDrawerOpen:true,
     isSecondDrawerOpen:true,
     isThirdDrawerOpen:true
   });
-
-  let { uid, sid } = useParams();
+  const [status, setStatus] = useState(sid==='null'&&Cookies.get('id')?true:false); //logged in
+  const [isTemp, setIsTemp] = useState(sid==='null'&&Cookies.get('id')?false:true); //logged in
+  const [imageSource, setImageSource] = useState(sid==='null'&&Cookies.get('avatar')?Cookies.get('avatar'):null);
+  const [userName, setUserName] = useState(sid==='null'&&Cookies.get('userName')?Cookies.get('userName'):false);
+  const [userTag, setUserTag] = useState(sid==='null'&&Cookies.get('userTag')?Cookies.get('userTag'):false);
+  const [loadingPercentage,setLoadingPercentage]=useState(0);
+  useEffect(() => {
+    if(sid!=='null' && uid==='null' && Cookies.get('discordId')!==undefined && did===Cookies.get('discordId'))
+    {
+      setIsTemp(false);
+      setStatus(true);
+      setUserName(Cookies.get('userName'))
+      setImageSource(Cookies.get('avatar'))
+      setUserTag(Cookies.get('userTag'))
+    }
+    if(sid!=='null')
+    {
+      setLoadingPercentage(.2)
+      axios.get(`http://localhost:5000/link/info?did=${did}&sid=${sid}`).then((res)=>{
+        setLoadingPercentage(1)
+        if(res.status===200)
+        {
+          data.current =JSON.parse(res.data)
+          if(data.current)
+          {
+            setStatus(true);
+            setIsTemp(true);
+            setUserName(data.current.userName);
+            setUserTag(data.current.userTag);
+            setImageSource(`https://cdn.discordapp.com/avatars/${data.current.discordId}/${data.current.avatar}`)
+          }
+        }
+        setTimeout(() => {
+          setLoadingPercentage(0)
+        }, 200);
+      }).catch((error)=>{
+        window.location=`/error/${error.response.status}`
+      })
+    }
+  }, []);
+  const handleLogout = () => {
+    setStatus((status) => !status);
+    Cookies.remove("id");
+    Cookies.remove("userName");
+    Cookies.remove("userTag");
+    Cookies.remove("avatar");
+  };
   const handleOnModeUpdate = () => {
     updateMode();
   };
@@ -281,7 +343,16 @@ function Dashboard() {
   };
   return (
     <>
-      <Navbar onUpdateMode={handleOnModeUpdate} />
+      <Navbar
+        onUpdateMode={handleOnModeUpdate}
+        userName={userName}
+        userTag={userTag}
+        imageSource={imageSource}
+        status={status}
+        handleLogout={handleLogout}
+        isTemp={isTemp}
+        loadingPercentage={loadingPercentage}
+      />
       <div
         className="dashboard-full-div"
         style={{
@@ -496,7 +567,7 @@ function Dashboard() {
             }}
           >
             <Card
-              contentHeight={getContentHeight(rightDrawerState,1)}
+              contentHeight={getContentHeight(rightDrawerState, 1)}
               headerBackgroundColor="#eeedad"
               backgroundColor="teal"
               isOpen={rightDrawerState.isFirstDrawerOpen}
@@ -512,7 +583,7 @@ function Dashboard() {
               }}
             ></Card>
             <Card
-              contentHeight={getContentHeight(rightDrawerState,2)}
+              contentHeight={getContentHeight(rightDrawerState, 2)}
               headerBackgroundColor="#555"
               backgroundColor="#cacaca"
               isOpen={rightDrawerState.isSecondDrawerOpen}
@@ -528,7 +599,7 @@ function Dashboard() {
               }}
             ></Card>
             <Card
-              contentHeight={getContentHeight(rightDrawerState,3)}
+              contentHeight={getContentHeight(rightDrawerState, 3)}
               headerBackgroundColor="skyblue"
               backgroundColor="#545454"
               isOpen={rightDrawerState.isThirdDrawerOpen}

@@ -39,17 +39,21 @@
     transform: translateY(-50%);
     z-index: 3;
 }
-.navbar-links span
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@500&display=swap');
+.navbar-links__link
 {
     margin: 0 20px;
-    letter-spacing: 1px;
+    letter-spacing: 1.5px;
     font-weight: 600;
     font-size: 1rem;
     cursor: pointer;
+    font-family: 'Roboto Condensed', sans-serif;
+    text-decoration: none;
 }
-.navbar-links span:hover,.navbar-links span:focus
+.navbar-links__link:hover,.navbar-links__link:focus
 {
     text-shadow: 2px 2px 3px rgb(88, 88, 88);
+    outline: none;
 }
 .navbar-theme-togle
 {
