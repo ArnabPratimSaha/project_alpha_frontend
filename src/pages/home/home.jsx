@@ -3,10 +3,30 @@ import Navbar from '../../component/navbar/navbar';
 import useMode from '../../customhooks/useMode'
 import './home.css';
 import lottie from "lottie-web";
-
+import Cookies from 'js-cookie';
 export default function Home() {
     const [mode,changeMode,MODETYPE,updateMode]=useMode();
-    const [value, onChange] = useState(new Date());
+    const [status,setStatus]=useState(false);//logged in
+    const [imageSource,setImageSource]=useState(null);
+    const [userName,setUserName]=useState(null);
+    const [userTag,setUserTag]=useState(null);
+    useEffect(()=>{
+        const userId=Cookies.get('id')
+        if(userId)
+        {
+            setStatus(true);
+        }
+        else
+            setStatus(false)
+    },[])
+    useEffect(()=>{
+        if(Cookies.get('id'))
+        {
+            setImageSource(Cookies.get('avatar'))
+            setUserName(Cookies.get('userName'))
+            setUserTag(Cookies.get('userTag'))
+        }
+    },[status])
     const handleOnModeUpdate=()=>{
         updateMode();
     }
@@ -20,9 +40,16 @@ export default function Home() {
             animationData: require("./main robot.json")
           });
     },[])
+    const handleLogout=()=>{
+        setStatus((status)=>!status)
+        Cookies.remove('id')
+        Cookies.remove('userName')
+        Cookies.remove('userTag')
+        Cookies.remove('avatar')
+    }
     return (
         <div className='home-full-div' style={{backgroundColor:mode===MODETYPE.DARK?'#444':'#cacacaca'}}>
-            <Navbar onUpdateMode={handleOnModeUpdate}/>
+            <Navbar onUpdateMode={handleOnModeUpdate} userName={userName} userTag={userTag} imageSource={imageSource} status={status} handleLogout={handleLogout}/>
             <div className='home-intro' >
                 <div className='home-intro__title' style={{color:mode===MODETYPE.DARK?'#fff':'#233'}}>
                     <h1>Let Vivi handle your anouncement's</h1>

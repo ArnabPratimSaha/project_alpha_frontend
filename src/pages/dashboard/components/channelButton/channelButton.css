@@ -1,0 +1,20 @@
+.channelbutton-fulldiv
+{
+    display: flex;
+    align-items: center;
+    height: 2rem;
+    padding: 0 10px;
+    justify-content: center;
+    margin: 5px;
+    border: 1px solid transparent;
+    border-radius: 2px;
+}
+.channelbutton-fulldiv h2
+{
+    margin: 0 15px;
+    padding: 0;
+    font-family: 'Roboto Condensed', sans-serif;
+    font-size: 1rem;
+    font-weight: 400;
+    cursor: default;
+}
