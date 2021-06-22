@@ -11,363 +11,335 @@
     width: 100%;
     position: relative;
     overflow: hidden;
+    background-color: #555;
+}
+.dashboard-leftright-wrapper-div
+{
+    position: absolute;
+    height: 90%;
+    top: 10%;
+    width: 100%;
+    overflow: hidden;
+}
+.dashboard-button-div
+{
+    height: 10%;
+    display: flex;
+    justify-content: stretch;
+    position: relative;
+    align-items: stretch;
+}
+.dashboard-button-div__button
+{
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: background-color 300ms ease-in-out,color 400ms ease-in-out;
+}
+/* .dashboard-button-div__button__icon
+{
+    color: #666;
+}
+.dashboard-button-div__button__icon:hover
+{
+    color: #333;
+} */
+.dashboard-button-div_underline
+{
+    width: calc(100%/6);
+    height: 5px;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    background-color: #00bfff;
+    transition: left 300ms ease-in-out;
 }
 .dashboard-left-div
 {
     position: absolute;
     width: 60%;
     height: 100%;
-    transition: width 400ms ease-in-out;
-    z-index: 2;
 }
-.dashboard-button-div
+.dashboard-left-div-eachdiv__title
 {
-    width: 75%;
-    position: absolute;
-    height: 3rem;
-    border: 1px solid #000;
-    border-radius: 5px;
-    z-index: 3;
-    left: 5%;
-    top: 5%;
-    text-align: left;
+    font-size: 1.2rem;
+    padding: 0;
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
 }
-.dashboard-button-div button
+.dashboard-left-div__message-div
 {
-    position: absolute;
-    bottom: 5%;
-    background: transparent;
-    border: 1px solid #000;
-    border-radius: 5px;
-    height: 75%;
-    width: 25%;
-    overflow: hidden;
-    cursor: pointer;
-}
-.dashboard-button-div button:hover,.dashboard-button-div button:focus
-{
-    box-shadow: 2px 2px 3px #444,-2px -2px 3px #444;
-}
-.dashboard-button-div button:nth-child(1)
-{
-    left: 2%;
-}
-.dashboard-button-div__message
-{
-    left: 2%;
-}
-.dashboard-button-div__members
-{
-    left: 50%;
-    transform: translateX(-50%);
-}
-.dashboard-button-div__rolesandchannels
-{
-    right: 2%;
-}
-.dashboard-toggle-button
-{
-    width: 3rem;
-    height: 3rem;
-    position: absolute;
-    right: 5%;
-    top: 5%;
-    z-index: 3;
-    display: none;
-}
-.dashboard-toggle-button__icon
-{
-    font-size: 3rem;
-    position: absolute;
-    top: 50%;
-    right: 0%;
-    transform-origin: center;
-    transform-box: fill-box;
-    transform: translateY(-50%) rotateZ(-90deg);
-    z-index: 1;
-    color: #000;
-    cursor: pointer;
-    transition: transform 400ms ease-in-out;
-    z-index: 1;
-    
-}
-.dashboard-message-div
-{
+    background-color: inherit;
     position: absolute;
     width: 100%;
     height: 100%;
-    left: 0;
-    z-index: 2;
-    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+
 }
-.dashboard-label
+.dashboard-left-div__message-div__title
 {
+    width: 90%;
+}
+.dashboard-left-div__message-div__title input
+{
+    padding: 10px;
+    font-size: 1.5rem;
+    width: 100%;
+    background: transparent;
+    border: none;
+}
+.dashboard-left-div__message-div__title input:focus
+{
+    outline: none;
+}
+.dashboard-left-div__message-div__message
+{
+    width: 90%;
+    height: 60%;
+}
+.dashboard-left-div__message-div__message textarea
+{
+    padding: 10px;
+    font-size: 1.5rem;
+    width: 100%;
+    background: transparent;
+    border: none;
+    resize: none;
+}
+.dashboard-left-div__message-div__message textarea:focus
+{
+    outline: none;
+}
+.dashboard-left-div__guild-div
+{
+    background-color: inherit;
     position: absolute;
-    padding: 0;
-    left: 0;
-    top: 0%;
-    transform: translateY(-50%);
-    left: 5%;
-    border: 1px solid transparent;
-    border-radius: 20px;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
 }
-.dashboard-label p
+.dashboard-left-div__guild-div__titile
 {
+    display: flex;
+    align-items: center;
+    height: 4rem;
+    margin: 10px 0;
+}
+.dashboard-left-div__guild-div__titile span
+{
+    font-family: 'Roboto Condensed', sans-serif;
+    font-size: 2rem;
+    margin: 0 10px;
+}
+.dashboard-left-div__guild-div__result
+{
+    width: 90%;
+    height: 60%;
+    padding: 15px;
+}
+.dashboard-left-div__guild-div__result_wrapper
+{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    align-content: flex-start;
+    overflow-y: scroll;
+}
+.dashboard-left-div__role-div
+{
+    background-color: inherit;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
+.dashboard-left-div__role-div__content
+{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 70%;
+    width: 90%;
+    align-items: center;
+    margin: 2rem auto;
+}
+.dashboard-left-div__channel-div__info
+{
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+    margin: 10px;
+    color: #444;
+}
+.dashboard-left-div__channel-div__info p
+{
+    font-size: .8rem;
     margin: 0;
     padding: 0;
-    text-transform: capitalize;
-    font-size: 1rem;
-    font-weight: 600;
-    letter-spacing: .9px;
 }
-.dashboard-message-div__info
+.dashboard-left-div__channel-div
 {
+    background-color: inherit;
     position: absolute;
-    border: 1px solid #000;
-    border-radius: 3px;
-    top: 18%;
-    width: 90%;
-    height: 10%;
-    left: 50%;
-    transform: translateX(-50%);
-    transition: box-shadow 200ms ease-in-out;
+    width: 100%;
+    height: 100%;
 }
-.dashboard-message-div__info input
+.dashboard-left-div__channel-div__content
+{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 70%;
+    width: 90%;
+    align-items: center;
+    margin: 2rem auto;
+}
+.dashboard-left-div__channel-div__content-search
 {
     width: 100%;
-    padding: 0 2%;
-    height: 100%;
-    background-color: transparent;
-    border: none;
-    font-size: 1.3rem;
-    font-weight: 400;
-    letter-spacing: 1px;
-    font-family: sans-serif;
 }
-.dashboard-message-div__info input:focus,.dashboard-message-div__info input:hover
+.dashboard-left-div__channel-div__content-search input
 {
-    outline: none;
-}
-.dashboard-message-input-wrapper
-{
-    border: 1px solid #000;
-    border-radius: 3px;
-    text-align: left;
-    width: 90%;
-    margin: 0 auto;
-    position: absolute;
-    height: 50%;
-    top: 33%;
-    left: 50%;
-    transform: translateX(-50%);
-    transition: box-shadow 200ms ease-in-out;
-}
-.dashboard-message-input-wrapper textarea
-{
-    margin: 10px;
-    background: transparent;
-    border: 0;
-    margin-left: 10px;
-    width: 100%;
-    resize: none;
-    height: 100%;
-    font-weight: 500;
-    font-family: sans-serif;
-    word-wrap: break-word;
-    font-size: 1rem;
-}
-.dashboard-message-input-wrapper textarea::placeholder
-{
-    color: #000;
-    font-weight: 400;
-    letter-spacing: 1px;
-}
-.dashboard-message-input-wrapper textarea:focus,.dashboard-message-input-wrapper textarea:hover
-{
-    outline: 0;
-}
-.dashboard-message-datetime-picker
-{
-    position: absolute;
-    border: 1px solid #000;
-    border-radius: 3px;
-    text-align: left;
-    width: 75%;
-    height: 10%;
-    bottom: 2%;
-    left: 5%;
-}
-.dashboard-message-send-div
-{
-    position: absolute;
-    border: 1px solid #000;
-    border-radius: 3px;
-    text-align: left;
-    width: 10%;
-    height: 10%;
-    bottom: 2%;
-    right: 5%;
-    cursor: pointer;
-}
-@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@300;400;500;600&display=swap');
-.dashboard-message-send-div span
-{
-    text-transform: uppercase;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%,-50%);
+    padding: 10px;
     font-size: 1.5rem;
-    font-weight: 400;
-    font-family: 'Barlow Condensed', sans-serif;
-}
-.dashboard-message-send-div::before,.dashboard-message-send-div::before
-{
-    content: '';
-    background-color: #66dbff;
-    position: absolute;
     width: 100%;
-    height: 100%;
-    top: 0;
-    left: 0;
-    z-index: -1;
-    transform-origin: left;
-    transform: scaleX(0);
-    transition: transform 400ms ease-in-out;
-}
-.dashboard-message-send-div:focus::before,.dashboard-message-send-div:hover::before
-{
-    transform: scaleX(1);
-}
-.dashboard-message-datetime-picker__datepicker
-{
-    width: 100%;
-    position: absolute;
-    font-size: 1rem;
-    height: 80%;
-    bottom: 0;
-    outline: none !important;
-}
-.dashboard-memberselect-div
-{
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    left: 0;
-    z-index: 1;
-}
-.dashboard-memberselect-div__search-div
-{
-    position: absolute;
-    width: 90%;
-    left: 5%;
-    top: 18%;
-}
-.dashboard-memberselect-div__result-div
-{
-    position: absolute;
-    width: 90%;
-    left: 5%;
-    top: 33%;
-    height: 50%;
-}
-.dashboard-memberselect-div__result-div textarea
-{
-
-}
-@import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@400,500,600,1,600&display=swap');
-.MultilineInputComponent_input
-{
-    flex: 1;
-    margin:15px 10px;
-    border: none;
     background: transparent;
-    font-size: 1rem;
-    font-family: 'Open Sans', sans-serif;
-
+    border: none;
 }
-.MultilineInputComponent_input::placeholder
-{
-    color: #cacaca;
-}
-.MultilineInputComponent_input:focus
+.dashboard-left-div__channel-div__content-search input:focus
 {
     outline: none;
 }
-.dashboard-roleselect-div
+.dashboard-left-div__channel-div__content-result
 {
+    width: 100%;
+    height: 70%;
+    padding: 10px 0;
+}
+.dashboard-left-div__member-div
+{
+    background-color: inherit;
     position: absolute;
     width: 100%;
     height: 100%;
-    left: 0;
-    z-index: 1;
 }
-.dashboard-roleselect-div__search-div
+.dashboard-left-div__final-div
 {
+    background-color: inherit;
     position: absolute;
-    width: 90%;
-    left: 5%;
-    top: 18%;
-}
-.dashboard-roleselect-div__result-div
-{
-    position: absolute;
-    width: 90%;
-    left: 5%;
-    top: 33%;
-    height: 50%;
-}
-.searchresult-div
-{
-    flex:1;
-    background:teal;
-    display:flex;
-    flex-wrap:wrap;
-    padding: 20px;
-    overflow: hidden;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    
 }
 .dashboard-right-div
 {
     position: absolute;
     width: 40%;
     height: 100%;
-    background: #00bfff !important;
     z-index: 2;
     transition: left 300ms ease-in-out;
     display: flex;
     flex-direction: column;
+    border-left: 1px solid #333;
+}
+.card-memberbutton
+{
+    margin: 0 5px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    font-size: .8rem;
+}
+.dashboard-left-div__final-div-datetime
+{
+    width: 90%;
+    margin: 20px auto 0 auto;
+    height: 70%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+.dashboard-left-div__final-div-submit
+{
+    width: 90%;
+    margin: 15px auto 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.dashboard-left-div__final-div-submit-preview
+{
+    display: flex;
+    align-items: center;
+}
+.dashboard-left-div__final-div-submit-preview p
+{
+    font-size: .7rem;
+    font-weight: 600;
+
+}
+.dashboard-left-div__final-div-submit-datepicker
+{
+    width: 100%;
+    text-align: left;
+    margin: 15px 0;
+    display: flex;
+    justify-content: space-evenly;
+
+}
+.dashboard-left-div__final-div-submit-datetime-show
+{
+    display: flex;
+    justify-content: space-evenly;
+    width: 100%;
+}
+.react-calendar
+{
+    width: 13rem !important;
+}
+.custom-checkbox
+{
+    width: 10px;
+    height: 10px;
+    border: 2px solid #222;
+    border-radius: 3px;
+    cursor: pointer;
+    margin-left: 15px;
+    margin-right: 5px;
+}
+.custom-checkbox:hover
+{
+    box-shadow: 2px 2px 5px #555;
+}
+.submit-button
+{
+    margin-right: 15px;
+    height: 1.5rem;
+    padding: 0 20px;
+    background-color: rgb(151, 151, 151);
+    border: 1px solid transparent;
+    border-radius: 1px;
+    cursor: pointer;    
+}
+.submit-button:hover
+{
+    box-shadow: 2px 2px 5px #222;
 }
 @media only screen and (max-width: 900px) {
-    .dashboard-left-div
-    {
-        width: 100%;
-    }
-    .dashboard-button-div
-    {
-        left: 5%;
-        transform: translateX(0);
-    }
-    .dashboard-toggle-button
-    {
-        display: block;
-    }
-    .dashboard-toggle-button__icon
-    {
-        font-size: 2rem;
-        right: 0;
-        left: auto;
-        transform:translateY(-50%) rotateZ(90deg);
-    }
-    .dashboard-message-datetime-picker__datepicker
-    {
-        font-size: .5rem;
-        padding: 0;
-        margin: 0;
-    }
-    .dashboard-button-div button
-    {
-        font-size: .6rem;
-    }
     .dashboard-right-div
     {
         width: 80%;

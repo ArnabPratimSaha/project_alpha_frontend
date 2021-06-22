@@ -12,37 +12,7 @@ function CardDiv(props) {
                 <TiArrowSortedDown style={{transform:props.isOpen?'rotateZ(180deg)':'rotateZ(0deg)'}} className='card-header-logo'/>
             </div>
             <div className='card-content' style={{backgroundColor:props.backgroundColor,height:props.contentHeight}}>
-                <Card />
-                <Card />
-                <Card />
-                <Card />
-                <Card />
-                <Card />
-                <Card />
-                <Card />
-                <Card />
-                <Card />
-                <Card />
-                <Card />
-                <Card />
-                <Card />
-                <Card />
-                <Card />
-                <Card />
-                <Card />
-                <Card />
-                <Card />
-                <Card />
-                <Card />
-                <Card />
-                <Card />
-                <Card />
-                <Card />
-                <Card />
-                <Card />
-                <Card />
-                <Card />
-                <Card />
+                {props.children}
             </div>
         </div>
     )

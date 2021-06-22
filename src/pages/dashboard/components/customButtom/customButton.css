@@ -1,0 +1,22 @@
+.custom-button-count-div
+{
+    color: #fff;
+    font-size: 8px;
+    background-color: red;
+    border: 1px solid transparent;
+    border-radius: 100%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    position: absolute;
+    transform: translate(50%,-50%);
+    z-index: 0;
+}
+.custom-button-error
+{
+    position: absolute;
+    transform: translate(-50%,50%);
+}
