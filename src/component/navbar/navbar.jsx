@@ -108,19 +108,19 @@ export default function Navbar(props) {
                     <Owl onChange={handleChange}/>
                 </div>
                 <h1 className='navbar-brandname' style={{color:mode===MODETYPE.DARK?'#fff':'#222'}}>Vivo</h1>
-                <div className='navlinks-mobile' style={{top:shrink?'0':'100%',backgroundColor:mode===MODETYPE.DARK?'#555':'#ffff',color:mode===MODETYPE.DARK?'#fff':'#222'}}>
-                    <span>
+                <div className='navlinks-mobile' style={{top:shrink?'0':'100%',backgroundColor:mode===MODETYPE.DARK?'#555':'#ffff',color:mode===MODETYPE.DARK?'#fff':'#222',}}>
+                    <a style={{color:mode===MODETYPE.DARK?'#fff':'#222',}} href='/home' className='navbar-links__link'>
                         Home
-                    </span>
-                    <span>
+                    </a>
+                    <a style={{color:mode===MODETYPE.DARK?'#fff':'#222',}} className='navbar-links__link' href={`/dashboard/${Cookies.get('id')}/null/${Cookies.get('discordId')}`}>
                         Dashboard
-                    </span>
-                    <span>
+                    </a>
+                    <a style={{color:mode===MODETYPE.DARK?'#fff':'#222',}} className='navbar-links__link'>
                         Messages
-                    </span>
-                    <span>
+                    </a>
+                    <a style={{color:mode===MODETYPE.DARK?'#fff':'#222',}} className='navbar-links__link'>
                         Learn About
-                    </span>
+                    </a>
                 </div>
             </div>
         </div>

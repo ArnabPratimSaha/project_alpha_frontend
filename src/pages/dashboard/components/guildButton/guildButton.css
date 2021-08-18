@@ -10,7 +10,6 @@
     border-radius: 5px;
     cursor: pointer;
     margin: 5px;
-
 }
 .guild-button-fulldiv img
 {
@@ -25,4 +24,20 @@
     cursor: pointer;
     font-weight: 400;
     color: #fff;
+    margin-left: 5px;
+}
+@media only screen and (max-width: 900px) {
+    .guild-button-fulldiv
+    {
+        padding: 3px 5px;
+    }
+    .guild-button-fulldiv img
+    {
+        width: 2rem;
+        height: 2rem;
+    }
+    .guild-button-fulldiv h3
+    {
+        font-size: 1rem;
+    }
 }

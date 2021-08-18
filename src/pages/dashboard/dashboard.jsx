@@ -22,15 +22,26 @@ import AdminIcon from "./components/adminIcon/adminIcon";
 import MemberButton from "./components/memberButton/memberButton";
 import Clock from 'react-clock';
 import Calendar from 'react-calendar';
-
 import DateTimePicker from "react-datetime-picker";
 import Cookies, { set } from "js-cookie";
-var maxDate = new Date();
-var numberOfDaysToAdd = 14;
-maxDate.setDate(maxDate.getDate() + numberOfDaysToAdd);
 
-var minDate = new Date();
-minDate.setDate(minDate.getDate());
+var newDate = new Date();
+var numberOfDaysToAdd = 14;
+newDate.setDate(newDate.getDate() + numberOfDaysToAdd);
+const calcTimeString=(date)=>{
+  return(
+    date.getFullYear() + "-" +
+    `${date.getMonth() + 1 < 10 ? `0${date.getMonth() + 1}` : `${date.getMonth() + 1}`}` + '-' +
+    `${date.getDate() < 10 ? `0${date.getDate()}` : `${date.getDate()}`}` + "T" +
+    `${date.getHours() < 10 ? `0${date.getHours()}` : `${date.getHours()}`}` + ':' +
+    `${date.getMinutes() < 10 ? `0${date.getMinutes()}` : `${date.getMinutes()}`}`
+  )
+}
+const extractTimeFromString=(string)=>{
+  return(
+    new Date(`${string.split("T")[0]} ${string.split("T")[1]}:00`.replace(/-/g,"/"))
+  )
+}
 const getContentHeight=(state,drawerNumber)=>{
   if(drawerNumber===1)
   {
@@ -200,9 +211,13 @@ let cancelChannelReq;
 let cancelRoleReq;
 let cancelMemberReq;
 function Dashboard(props) {
+  const timer = useRef(null)
+  const [counter, setCounter] = useState(0)
+  const today = useRef(new Date());
+  const maxDate = useRef(newDate);
   let { uid, sid, did } = useParams();
   const [mode, changeMode, MODETYPE, updateMode] = useMode();
-  const [value, onChange] = useState(new Date());
+  const [selectedTime, setSelectedTime] = useState(calcTimeString(today.current))
   const [rightDivVisible, setRightDivVisible] = useState(
     window.innerWidth > 900 ? true : false
   );
@@ -255,8 +270,24 @@ function Dashboard(props) {
   const [title, setTitle] = useState('');
   const [message,setMessage]=useState('');
 
-  const [checked, setChecked] = useState(true)
+  const [checked, setChecked] = useState(true)//getting the dm
+  const [isReady, setIsReady] = useState(false)
+  useEffect(() => {
+    timer.current=setInterval(() => {
+      setCounter((state)=>state+1)
+    }, 1000);
+    return () => {
+      clearInterval(timer.current)
+    }
+  }, [])
+  useEffect(() => {
+    if (extractTimeFromString(selectedTime) < new Date()) {
+      setSelectedTime(calcTimeString(new Date()))
+    }
+    return () => {
 
+    }
+  }, [counter])
   useEffect(() => {
     if (
       sid !== "null" &&
@@ -308,21 +339,23 @@ function Dashboard(props) {
   const handleOnModeUpdate = () => {
     updateMode();
   };
+  //managing the right div size
   useEffect(() => {
     window.addEventListener("resize", () => {
       window.innerWidth>900?setBottomBarWidth(16.667):setBottomBarWidth(14.28571)
-      changeIsRightDivSliderButtonClicked(false);
       window.innerWidth > 900
         ? setRightDivVisible(true)
         : setRightDivVisible(false);
     
     });
     window.addEventListener("resize", () => {
-      changeIsRightDivSliderButtonClicked(false);
       window.innerWidth > 900
         ? setLeftDivWidthFull(false)
         : setLeftDivWidthFull(true)
     });
+    return ()=>{
+      // window.removeEventListener('resize');
+    }
   }, []);
   useEffect(() => {
     if(status)
@@ -384,6 +417,7 @@ function Dashboard(props) {
         cancelMemberReq=c;
       })}).then((res)=>{
         setMembers(res.data.members);
+        console.log(res);
       }).catch((err)=>{
         if(!axios.isCancel(err) && err.response)
         {
@@ -426,13 +460,35 @@ function Dashboard(props) {
     }
   }
   const handleMessageSend=()=>{
-    axios.post(`http://localhost:5000/discord/post?did=${did}&gid=${activeGuild.guildId}`,
-    {message:message,selectedRoles:selectedRoles,selectedChannels:selectedChannels,selectedMembers:selectedMembers}).then(res=>{
-      console.log(res);
-    }).catch(err=>{
-
-    })
+    if(activeGuild && (selectedChannels || selectedMembers || selectedRoles))
+    {
+      axios
+        .post(
+          `http://localhost:5000/discord/post?did=${did}&gid=${activeGuild.guildId}`,
+          {
+            message: message,
+            selectedRoles: selectedRoles,
+            selectedChannels: selectedChannels,
+            selectedMembers: selectedMembers,
+            // selectedTime: time,
+            preview: checked,
+          }
+        )
+        .then((res) => {
+          console.log(res);
+        })
+        .catch((err) => {});
+    }
   }
+  const handleTimeChange=(e)=>{
+    console.log(e.target.value);
+    console.log(calcTimeString(today.current))
+    setSelectedTime(e.target.value)
+  }
+  useEffect(() => {
+    
+   console.log(`isRightDivSliderButtonClicked ${isRightDivSliderButtonClicked}`);
+  }, [isRightDivSliderButtonClicked])
   return (
     <>
       <Navbar
@@ -514,7 +570,7 @@ function Dashboard(props) {
                 </Wrapper>
               </div>
               <div className='dashboard-left-div__channel-div' style={{zIndex:activeButton===2?'1':'0'}}>
-                <div className='dashboard-left-div__channel-div__info'>
+                <div className='dashboard-left-div__channel-div__info' style={{color:mode===MODETYPE.DARK?'#cacaca':'black'}}>
                   <p>Channels<GiWifiRouter/> and Roles<GiOfficeChair/> have higher priority than members<IoIosMan/>.If a member with same channel and role is selected then the channel will be priortise first then the role and lastly the user.</p>
                   <p>Channels,roles and members marked with <RiErrorWarningFill style={{color:'yellow'}}/> are ignored</p>
                 </div>
@@ -550,7 +606,7 @@ function Dashboard(props) {
                       <Wrapper isFocused={focusOne} label={focusOne?'search':'Search members'} classFulldiv='dashboard-left-div__channel-div__content-search'>
                         <input onFocus={()=>{setFocusOne(true)}} onBlur={()=>{setFocusOne(false)}} onChange={(e)=>{setSearchedMember(e.target.value)}} value={searchedMember}></input>
                       </Wrapper>
-                      <Wrapper label='roles' classFulldiv='dashboard-left-div__channel-div__content-result'>
+                      <Wrapper label='members' classFulldiv='dashboard-left-div__channel-div__content-result'>
                         <div className='dashboard-left-div__guild-div__result_wrapper'>
                           {members && members.map((c)=>{
                             return <MemberButton style={{backgroundColor:'#545454',color:'#fff'}} type='add' nickName={c.memberNickName} img={c.memberAvatar} userName={c.memberUserName} userTag={c.memberUserTag} id={c.memberId} key={c.memberId} onClick={handleMemberButtonClick} />
@@ -563,21 +619,37 @@ function Dashboard(props) {
                 <Wrapper label='date and time' classFulldiv='dashboard-left-div__final-div-datetime'>
                   <div className='dashboard-left-div__final-div-submit-datepicker'>
                     Pick a Date and Time
-                    <DateTimePicker
-                        onChange={onChange}
-                        value={value}
-                        minDate={minDate}
-                        maxDate={maxDate}
-                        disableClock={true}
-                      />
                   </div>
+                    <div className='dashboard-left-div__final-div-submit-datepicker'>
+                      <input
+                        type="datetime-local"
+                        value={selectedTime}
+                        min={calcTimeString(today.current)}
+                        max={calcTimeString(maxDate.current)}
+                        onChange={handleTimeChange}
+                        className='input-time-date'
+                        style={{backgroundColor:mode===MODETYPE.DARK?'#cacaca':'#ECECEC'}}
+                      />
+                    </div>
                 </Wrapper>
                 <Wrapper label='submit' classFulldiv='dashboard-left-div__final-div-submit'>
                   <div className='dashboard-left-div__final-div-submit-preview'>
-                    <div style={{ backgroundColor: checked ? '#00Afff' : '#cacaca' }} className='custom-checkbox' onClick={() => { setChecked(!checked) }}></div>
-                    <p>I want the preview to be DM'ed me along with the conformation</p>
+                    <div style={{ backgroundColor: isReady ? '#00afff' : '#cacaca' }} className='custom-checkbox' onClick={() => {
+                      if (activeGuild && (selectedChannels.length > 0 || selectedMembers.length > 0 || selectedRoles.length > 0)) {
+                        setIsReady(!isReady);
+                        return;
+                      }
+                      setIsReady(false);
+                    }}></div>
+                    <p>click this checkbox in order to continued</p>
                   </div>
-                  <button onClick={handleMessageSend} className='submit-button'>Send</button>
+                  <div className='dashboard-left-div__final-div-submit-preview'>
+                    <div style={{ backgroundColor: checked ? '#00Afff' : '#cacaca' }} className='custom-checkbox' onClick={() => { setChecked(!checked) }}></div>
+                    <p>I want the preview of the message to be DM'ed me along with the conformation</p>
+                  </div>
+                  <div className='dashboard-left-div__final-div-submit-preview'>
+                    <button onClick={handleMessageSend} style={{ background: isReady ? '#00cc00' : '#cacaca' }} disabled={!isReady} className='submit-button'>Send</button>
+                  </div>
                 </Wrapper>
               </div>
             </div>
@@ -590,8 +662,9 @@ function Dashboard(props) {
               >
               <Card
                 contentHeight={getContentHeight(rightDrawerState, 1)}
-                headerBackgroundColor="#eeedad"
-                backgroundColor="teal"
+                textColor={mode===MODETYPE.DARK?'#000':'#cacaca'}
+                headerBackgroundColor={mode===MODETYPE.DARK?'#cacaca':'#666'}
+                backgroundColor={mode===MODETYPE.DARK?'#555':'#cacaca'}
                 isOpen={rightDrawerState.isFirstDrawerOpen}
                 top="0"
                 headerTitle="members"
@@ -631,8 +704,9 @@ function Dashboard(props) {
               </Card>
               <Card
                 contentHeight={getContentHeight(rightDrawerState, 2)}
-                headerBackgroundColor="#555"
-                backgroundColor="#cacaca"
+                textColor={mode===MODETYPE.DARK?'#000':'#cacaca'}
+                headerBackgroundColor={mode===MODETYPE.DARK?'#cacaca':'#666'}
+                backgroundColor={mode===MODETYPE.DARK?'#555':'#cacaca'}
                 isOpen={rightDrawerState.isSecondDrawerOpen}
                 top={getValue(calculateTop(rightDrawerState, 2), 2)}
                 headerTitle="roles"
@@ -653,8 +727,10 @@ function Dashboard(props) {
               </Card>
               <Card
                 contentHeight={getContentHeight(rightDrawerState, 3)}
-                headerBackgroundColor="skyblue"
-                backgroundColor="#545454"
+                textColor={mode===MODETYPE.DARK?'#000':'#cacaca'}
+                color={mode===MODETYPE.DARK?'#cacaca':'#222'}
+                headerBackgroundColor={mode===MODETYPE.DARK?'#cacaca':'#666'}
+                backgroundColor={mode===MODETYPE.DARK?'#555':'#cacaca'}
                 isOpen={rightDrawerState.isThirdDrawerOpen}
                 top={getValue(calculateTop(rightDrawerState, 3), 3)}
                 headerTitle="channels"
@@ -676,6 +752,9 @@ function Dashboard(props) {
             </div>
           </div>
         </div>
+      </div>
+      <div style={{width:"100%",height:'20rem'}}>
+
       </div>
     </>
   );

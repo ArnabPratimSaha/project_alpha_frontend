@@ -12,6 +12,7 @@
     position: relative;
     overflow: hidden;
     background-color: #555;
+    border-bottom:1px solid black ;
 }
 .dashboard-leftright-wrapper-div
 {
@@ -264,11 +265,16 @@
     align-items: center;
     font-size: .8rem;
 }
+.dashboard-left-div__final-div
+{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+}
 .dashboard-left-div__final-div-datetime
 {
     width: 90%;
     margin: 20px auto 0 auto;
-    height: 70%;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
@@ -277,14 +283,18 @@
 {
     width: 90%;
     margin: 15px auto 0 auto;
+    padding: 5px 0;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    flex-wrap: wrap;
 }
 .dashboard-left-div__final-div-submit-preview
 {
     display: flex;
     align-items: center;
+    text-align: left;
+    margin-left: 15px;
 }
 .dashboard-left-div__final-div-submit-preview p
 {
@@ -318,7 +328,6 @@
     border: 2px solid #222;
     border-radius: 3px;
     cursor: pointer;
-    margin-left: 15px;
     margin-right: 5px;
 }
 .custom-checkbox:hover
@@ -339,9 +348,40 @@
 {
     box-shadow: 2px 2px 5px #222;
 }
+.input-time-date
+{
+    border: 1px solid transparent;
+    border-radius: 5px;
+    background: #cacaca;
+    padding: 5px 10px;
+    width:15rem;
+    max-width: 80%;
+    transition: all 400ms ease-in-out;
+}
+.input-time-date:focus
+{
+    outline: none;
+    filter: drop-shadow(5px 5px 5px #333);
+}
+::-webkit-calendar-picker-indicator {
+    color: #444;
+    cursor: pointer;
+}
 @media only screen and (max-width: 900px) {
+    .dashboard-left-div__guild-div__titile
+    {
+        height: 1.5rem;
+    }
     .dashboard-right-div
     {
         width: 80%;
+    }
+    .dashboard-left-div__guild-div__titile span
+    {
+        font-size: 1rem;
+    }
+    .input-time-date
+    {
+        width: 20rem;
     }
 }
