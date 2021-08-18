@@ -275,7 +275,7 @@
     height: 40%;
     transition: all 400ms ease-in-out;
 }
-.navlinks-mobile span
+.navlinks-mobile a
 {
     margin: 0 20px;
     letter-spacing: 1px;
