@@ -8,21 +8,15 @@ import { BsFillChatDotsFill } from "react-icons/bs";
 import { IoIosMan } from "react-icons/io";
 import { GiOfficeChair,GiWifiRouter } from "react-icons/gi";
 import { AiFillSetting,AiFillWarning } from "react-icons/ai";
-import {configButtonColor} from './components/configButtonColor';
 import Wrapper from "../../component/inputComponents/MultilineInputComponent";
 import CustomButton from './components/customButtom/customButton';
 import Card from '../../component/rightDrawerCardDiv/cardDiv';
 import GuildButton from './components/guildButton/guildButton';
 import TouchableCard from "../../component/userCard/userCard";
-import randomColor from 'randomcolor'
-import { RiErrorWarningFill, RiWindowLine } from 'react-icons/ri';
 import axios from 'axios'
 import ChannelButton from "./components/channelButton/channelButton";
 import AdminIcon from "./components/adminIcon/adminIcon";
 import MemberButton from "./components/memberButton/memberButton";
-import Clock from 'react-clock';
-import Calendar from 'react-calendar';
-import DateTimePicker from "react-datetime-picker";
 import Cookies, { set } from "js-cookie";
 
 var newDate = new Date();
@@ -271,7 +265,7 @@ function Dashboard(props) {
   const [message,setMessage]=useState('');
 
   const [checked, setChecked] = useState(true)//getting the dm
-  const [isReady, setIsReady] = useState(false)
+  const [isReady, setIsReady] = useState(false)//ready to be sent
   useEffect(() => {
     timer.current=setInterval(() => {
       setCounter((state)=>state+1)
@@ -379,7 +373,6 @@ function Dashboard(props) {
       })}).then((res)=>{
         setChannels(res.data.channels);
       }).catch((err)=>{
-        console.log(err);
         if(!axios.isCancel(err) && err.response)
         {
           window.location=`/error/${err.response.status}`;
@@ -426,6 +419,12 @@ function Dashboard(props) {
       })
     }
   }, [searchedMember,activeGuild])
+  useEffect(() => {
+    if(selectedMembers.length===0 && selectedChannels.length===0 && selectedRoles.length===0 )
+    {
+      setIsReady(false);
+    }
+  }, [selectedChannels,selectedMembers,selectedRoles])
   const handleTextareaChange = (event) => {
     setMessage(event.target.value)
   };
@@ -466,11 +465,12 @@ function Dashboard(props) {
         .post(
           `http://localhost:5000/discord/post?did=${did}&gid=${activeGuild.guildId}`,
           {
+            title:title,
             message: message,
             selectedRoles: selectedRoles,
             selectedChannels: selectedChannels,
             selectedMembers: selectedMembers,
-            // selectedTime: time,
+            selectedTime: extractTimeFromString(selectedTime),
             preview: checked,
           }
         )
@@ -481,14 +481,8 @@ function Dashboard(props) {
     }
   }
   const handleTimeChange=(e)=>{
-    console.log(e.target.value);
-    console.log(calcTimeString(today.current))
     setSelectedTime(e.target.value)
   }
-  useEffect(() => {
-    
-   console.log(`isRightDivSliderButtonClicked ${isRightDivSliderButtonClicked}`);
-  }, [isRightDivSliderButtonClicked])
   return (
     <>
       <Navbar
@@ -547,16 +541,20 @@ function Dashboard(props) {
                 width: leftDivWidthFull ? "100%" : "60%",
               }}
             >
-              <div className='dashboard-left-div__message-div'  style={{zIndex:activeButton===5?'1':'0'}}>
+              <div className='dashboard-left-div__message-div' style={{ zIndex: activeButton === 5 ? '1' : '0' }}>
+
                 <span className='dashboard-left-div-eachdiv__title'>message</span>
                 <Wrapper label='title' isFocused={focusOne} classFulldiv='dashboard-left-div__message-div__title'>
-                  <input onFocus={()=>{setFocusOne(true)}} onBlur={()=>{setFocusOne(false)}}></input>
+                  <input onFocus={() => { setFocusOne(true) }} onBlur={() => { setFocusOne(false) }} value={title} onChange={(e) => { setTitle(e.target.value) }}></input>
                 </Wrapper>
                 <Wrapper label='message' isFocused={focusTwo} classFulldiv='dashboard-left-div__message-div__message'>
-                  <textarea onFocus={()=>{setFocusTwo(true)}} onChange={handleTextareaChange} onBlur={()=>{setFocusTwo(false)}}></textarea>
+                  <textarea onFocus={() => { setFocusTwo(true) }} onChange={handleTextareaChange} onBlur={() => { setFocusTwo(false) }}></textarea>
                 </Wrapper>
               </div>
-              <div className='dashboard-left-div__guild-div' style={{zIndex:activeButton===1?'1':'0'}}>
+              <div className='dashboard-left-div__guild-div' style={{ zIndex: activeButton === 1 ? '1' : '0' }}>
+                <div className='dashboard-left-div__channel-div__info' style={{ color: mode === MODETYPE.DARK ? '#fff' : 'black' }}>
+                  <p>select <GiWifiRouter /> to send a message a channel and <IoIosMan /> to DM a perticular member from discord.Select <GiOfficeChair/> to tag a role [can only be used while sending a message to a channel]</p>
+                </div>
                 <div className='dashboard-left-div__guild-div__titile'>
                   <span>Selected server :</span>
                   {activeGuild?<GuildButton backgroundColor={activeGuild.guildColor} id={activeGuild.guildId} guildName={activeGuild.guildName} avatar={activeGuild.guildAvatar} onClick={()=>{}}/>:"none"}
@@ -570,10 +568,6 @@ function Dashboard(props) {
                 </Wrapper>
               </div>
               <div className='dashboard-left-div__channel-div' style={{zIndex:activeButton===2?'1':'0'}}>
-                <div className='dashboard-left-div__channel-div__info' style={{color:mode===MODETYPE.DARK?'#cacaca':'black'}}>
-                  <p>Channels<GiWifiRouter/> and Roles<GiOfficeChair/> have higher priority than members<IoIosMan/>.If a member with same channel and role is selected then the channel will be priortise first then the role and lastly the user.</p>
-                  <p>Channels,roles and members marked with <RiErrorWarningFill style={{color:'yellow'}}/> are ignored</p>
-                </div>
                 <div className='dashboard-left-div__channel-div__content'>
                     <Wrapper isFocused={focusOne} label={focusOne?'search':'Search Channels'} classFulldiv='dashboard-left-div__channel-div__content-search'>
                       <input onFocus={()=>{setFocusOne(true)}} onBlur={()=>{setFocusOne(false)}} onChange={(e)=>{setSearchChannel(e.target.value)}} value={searchChannel}></input>

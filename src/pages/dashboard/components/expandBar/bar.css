@@ -1,0 +1,210 @@
+.bar-fulldiv
+{
+    width: 90%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.bar-bardiv
+{
+    width: 100%;
+    background-color: burlywood;
+    height: 3rem;
+    cursor: pointer;
+    border: .5px solid black;
+    position: relative;
+    border-radius: 5px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.bar-bardiv::after
+{
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
+.discord-div
+{
+    width: fit-content;
+    display: flex;
+    align-items: center;
+    border: 1px solid transparent;
+    margin-left: 5px;
+    border-radius: 3px;
+    padding: 0 10px;
+    background-color: #366ED8;
+    box-shadow: inset 3px 3px 5px #064ACB,
+                inset -3px -3px 5px #064ACB
+    ;
+}
+.discord-div p
+{
+    color: #fff;
+    margin: 0 5px;
+    padding: 0;
+    font-family: 'Roboto Condensed', sans-serif;
+    font-size: .8rem;
+}
+.discord-div-pic
+{
+    margin-left: 20px;
+}
+.discord-div-pic img
+{
+    width: 30px;
+    height: 30px;
+    border: 1px solid transparent;
+    border-radius: 100%;
+}
+.message-div
+{
+    width: 60%;
+    height: 80%;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    border: 1px solid transparent;
+    margin-left: 5px;
+    border-radius: 3px;
+    text-align: left;
+    padding: 0 10px;
+}
+.message-div p
+{
+    margin: 0;
+    padding: 0;
+}
+.bar-bodydiv
+{
+    width: 100%;
+    overflow: hidden;
+    height: fit-content;
+    background-color: chartreuse;
+    transform: transale3d(0,0,0);
+    transition: height 200ms ease-in-out;
+}
+.status-div
+{
+    width: fit-content;
+    padding: 5px 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid transparent;
+    margin-left: 5px;
+    margin-right: 5px;
+    border-radius: 3px;
+    text-align: left;
+    position: relative;
+    z-index: 1;
+    filter: drop-shadow(4px 4px 5px #2f2f96);
+}
+.cancel-div,.done-div,.ongoing-div
+{
+    display: flex;
+    align-items: center;
+}
+.dot
+{
+    margin: 0 5px;
+    height: 10px;
+    width: 10px;
+    border: 1px solid transparent;
+    border-radius: 100%;
+}
+.dot-red
+{
+    background-color: red;
+    box-shadow: 1px 1px 3px red,
+                -1px -1px 3px red,
+                1px -1px 3px red,
+                -1px 1px 3px red
+                ;
+}
+.dot-yellow
+{
+    background-color: yellowgreen;
+    box-shadow: 1px 1px 3px yellowgreen,
+                -1px -1px 3px yellowgreen,
+                1px -1px 3px yellowgreen,
+                -1px 1px 3px yellowgreen
+                ;
+}
+.dot-green
+{
+    background-color: green;
+    box-shadow: 1px 1px 3px green,
+                -1px -1px 3px green,
+                1px -1px 3px green,
+                -1px 1px 3px green
+                ;
+}
+.status-div p
+{
+    margin: 0;
+    padding: 0;
+    font-family: 'Roboto Condensed', sans-serif;
+    font-size: .8rem;
+    color: #fff;
+}
+.status-div::after
+{
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background-color: #7579E7;
+    z-index: -1;
+    border: 1px solid transparent;
+    border-radius: 20px;
+}
+@media only screen and (max-width: 900px) {
+    .discord-div-pic
+    {
+        margin-left: 0;
+    }
+    .discord-div
+    {
+        box-shadow: none;
+        background-color: transparent;
+    }
+    .discord-div p
+    {
+        display: none;
+    }
+    .message-div
+    {
+        margin: 0;
+        padding: 0;
+        font-size: .7rem;
+        height: .8rem;
+        white-space: nowrap;
+    }
+    .status-div
+    {
+        justify-content: flex-end;
+        padding: 5px 10px;
+        text-align: center;
+        filter: drop-shadow(2px 2px 3px #2f2f96);
+    }
+    .status-div p
+    {
+        font-size: .6rem;
+        padding: 0;
+    }
+    .ongoing-div p
+    {
+        font-size: .4rem;
+        
+    }
+    .dot
+    {
+        width: 5px;
+        height: 5px;
+        margin-left: 0;
+    }
+}

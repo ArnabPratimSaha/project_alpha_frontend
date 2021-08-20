@@ -11,6 +11,7 @@
     "lottie-web": "^5.7.8",
     "randomcolor": "^0.6.2",
     "react": "^17.0.2",
+    "react-bootstrap": "^2.0.0-beta.5",
     "react-calendar": "^3.4.0",
     "react-clock": "^3.0.0",
     "react-datetime-picker": "^3.2.1",

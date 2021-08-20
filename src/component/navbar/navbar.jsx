@@ -73,7 +73,7 @@ export default function Navbar(props) {
                     <a className='navbar-links__link' href={`/dashboard/${Cookies.get('id')}/null/${Cookies.get('discordId')}`} style={{color:mode===MODETYPE.DARK?'#fff':'#222'}}> 
                         Dashboard
                     </a>
-                    <a className='navbar-links__link' style={{color:mode===MODETYPE.DARK?'#fff':'#222'}}>
+                    <a className='navbar-links__link' href={`/log/${Cookies.get('id')}/null/${Cookies.get('discordId')}`} style={{color:mode===MODETYPE.DARK?'#fff':'#222'}}>
                         Log
                     </a>
                     <a className='navbar-links__link' style={{color:mode===MODETYPE.DARK?'#fff':'#222'}}>
@@ -115,8 +115,8 @@ export default function Navbar(props) {
                     <a style={{color:mode===MODETYPE.DARK?'#fff':'#222',}} className='navbar-links__link' href={`/dashboard/${Cookies.get('id')}/null/${Cookies.get('discordId')}`}>
                         Dashboard
                     </a>
-                    <a style={{color:mode===MODETYPE.DARK?'#fff':'#222',}} className='navbar-links__link'>
-                        Messages
+                    <a style={{color:mode===MODETYPE.DARK?'#fff':'#222',}} href={`/log/${Cookies.get('id')}/null/${Cookies.get('discordId')}`} className='navbar-links__link'>
+                        Log
                     </a>
                     <a style={{color:mode===MODETYPE.DARK?'#fff':'#222',}} className='navbar-links__link'>
                         Learn About
