@@ -5,7 +5,8 @@ import useMode from "../../customhooks/useMode";
 import './log.css';
 import Cookies from "js-cookie";
 import axios from 'axios'
-import Bar from "../dashboard/components/expandBar/bar";
+import Bar from '../../component/expandBar/bar';
+import Switch from "../../component/switch/switch";
 
 var newDate = new Date();
 var numberOfDaysToAdd = 1;
@@ -56,7 +57,7 @@ function Log(props) {
             <Bar mode={mode} MODETYPE={MODETYPE} status='CANCEL' />
             <Bar mode={mode} MODETYPE={MODETYPE} status='DONE'/>
             <Bar mode={mode} MODETYPE={MODETYPE} status='ONGOING' time={newDate} />
-
+            <Switch onChange={(c)=>{console.log(c);}}/>
             </div>
             
         </>

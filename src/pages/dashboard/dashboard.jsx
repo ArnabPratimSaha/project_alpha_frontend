@@ -18,7 +18,12 @@ import ChannelButton from "./components/channelButton/channelButton";
 import AdminIcon from "./components/adminIcon/adminIcon";
 import MemberButton from "./components/memberButton/memberButton";
 import Cookies, { set } from "js-cookie";
+import Switch from "../../component/switch/switch";
 
+const type={
+  channel:'CHANNEL',
+  dm:'DM'
+}
 var newDate = new Date();
 var numberOfDaysToAdd = 14;
 newDate.setDate(newDate.getDate() + numberOfDaysToAdd);
@@ -211,6 +216,7 @@ function Dashboard(props) {
   const maxDate = useRef(newDate);
   let { uid, sid, did } = useParams();
   const [mode, changeMode, MODETYPE, updateMode] = useMode();
+  const [messageType, setMessageType] = useState(type.channel)
   const [selectedTime, setSelectedTime] = useState(calcTimeString(today.current))
   const [rightDivVisible, setRightDivVisible] = useState(
     window.innerWidth > 900 ? true : false
@@ -431,6 +437,12 @@ function Dashboard(props) {
   const handleClick=(id)=>{
       setActiveButton(id)
   }
+  const handleSwitchChange=(side)=>{
+    if(side==='LEFT')
+      setMessageType(type.channel)
+    else
+      setMessageType(type.dm)
+  }
   const handleToggleRightDiv=()=>{
     changeIsRightDivSliderButtonClicked(!isRightDivSliderButtonClicked)
   }
@@ -511,10 +523,10 @@ function Dashboard(props) {
             <CustomButton  className='dashboard-button-div__button' id={1} onClick={handleClick} style={{backgroundColor:activeButton===1?'#cacaca':'#555',color:activeButton===1?'#00afff':'#fff'}}>
               <FaDiscord className='dashboard-button-div__button__icon'/>
             </CustomButton>
-            <CustomButton error={activeGuild?false:true} count={channels&&channels.length!=0?channels.length:null} className='dashboard-button-div__button' id={2}  onClick={handleClick}  style={{backgroundColor:activeButton===2?'#cacaca':'#555',color:activeButton===2?'#00afff':'#fff'}}>
+            <CustomButton error={activeGuild?messageType===type.channel?false:true:true} count={channels&&channels.length!=0?channels.length:null} className='dashboard-button-div__button' id={2}  onClick={handleClick}  style={{backgroundColor:activeButton===2?'#cacaca':'#555',color:activeButton===2?'#00afff':'#fff'}}>
               <GiWifiRouter className='dashboard-button-div__button__icon'/>
             </CustomButton>
-            <CustomButton error={activeGuild?false:true} count={roles&&roles.length!=0?roles.length:null} className='dashboard-button-div__button' id={3} onClick={handleClick}  style={{backgroundColor:activeButton===3?'#cacaca':'#555',color:activeButton===3?'#00afff':'#fff'}}>
+            <CustomButton error={activeGuild?messageType===type.channel?false:true:true} count={roles&&roles.length!=0?roles.length:null} className='dashboard-button-div__button' id={3} onClick={handleClick}  style={{backgroundColor:activeButton===3?'#cacaca':'#555',color:activeButton===3?'#00afff':'#fff'}}>
               <GiOfficeChair className='dashboard-button-div__button__icon'/>
             </CustomButton>
             <CustomButton error={activeGuild?false:true} className='dashboard-button-div__button' id={4} onClick={handleClick} style={{backgroundColor:activeButton===4?'#cacaca':'#555',color:activeButton===4?'#00afff':'#fff'}}>
@@ -556,8 +568,11 @@ function Dashboard(props) {
                   <p>select <GiWifiRouter /> to send a message a channel and <IoIosMan /> to DM a perticular member from discord.Select <GiOfficeChair/> to tag a role [can only be used while sending a message to a channel]</p>
                 </div>
                 <div className='dashboard-left-div__guild-div__titile'>
-                  <span>Selected server :</span>
-                  {activeGuild?<GuildButton backgroundColor={activeGuild.guildColor} id={activeGuild.guildId} guildName={activeGuild.guildName} avatar={activeGuild.guildAvatar} onClick={()=>{}}/>:"none"}
+                  <div className='dashboard-left-div__guild-div-select-div'>
+                    <span>Selected server :</span>
+                    {activeGuild?<GuildButton backgroundColor={activeGuild.guildColor} id={activeGuild.guildId} guildName={activeGuild.guildName} avatar={activeGuild.guildAvatar} onClick={()=>{}}/>:"none"}
+                  </div>
+                  <Switch left='Channel' right='DM' onChange={handleSwitchChange}/>
                 </div>
                 <Wrapper label='discord servers' classFulldiv='dashboard-left-div__guild-div__result'>
                   <div className='dashboard-left-div__guild-div__result_wrapper'>

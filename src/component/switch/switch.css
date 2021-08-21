@@ -1,0 +1,60 @@
+.switch-fulldiv
+{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.switch-bottombar
+{
+    height: 2px ;
+    width: 100%;
+    background-color: #00bfff;
+    transform-origin: center;
+    transition: transform 300ms ease-in-out;
+}
+.switch-left-div,.switch-right-div
+{
+    text-align: center;
+    margin:0 10px;
+}
+.switch-left-div p
+{
+    margin: 0;
+    padding: 0;
+}
+
+.switch-right-div p
+{
+    margin: 0;
+    padding: 0;
+}
+.switch-div-switch
+{
+    position: relative;
+    cursor: pointer;
+    height: 50px;
+    width: 50px;
+}
+.switch-bar
+{
+    position: absolute;
+    width: 50px;
+    height: 2px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    background-color: #333;
+    top: 50%;
+    transform: translateY(-50%);
+
+}
+.switch-toggeler
+{
+    position: absolute;
+    width: 15px;
+    height: 15px;
+    background-color: #00bfff;
+    border: 1px solid transparent;
+    border-radius: 100%;
+    top: 50%;
+    transition: transform 200ms ease-in-out;
+}

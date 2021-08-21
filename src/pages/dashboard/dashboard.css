@@ -130,12 +130,20 @@
     justify-content: space-evenly;
     align-items: center;
 }
+.dashboard-left-div__guild-div-select-div
+{
+    display: flex;
+    width: 60%;
+    align-items: center;
+}
 .dashboard-left-div__guild-div__titile
 {
     display: flex;
     align-items: center;
     height: 4rem;
     margin: 10px 0;
+    width: 100%;
+    justify-content: space-evenly;
 }
 .dashboard-left-div__guild-div__titile span
 {
