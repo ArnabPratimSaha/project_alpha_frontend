@@ -11,19 +11,19 @@
     background-color: burlywood;
     height: 3rem;
     cursor: pointer;
-    border: 1px solid black;
+    border: .5px solid black;
     position: relative;
     border-radius: 5px;
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
-.bar-bardiv:hover
+.bar-bardiv::after
 {
-    border-bottom-width: 4px;
-    border-top-width: .1px;
-    border-left-width:0.1px ;
-    border-right-width: 4px ;
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
 }
 .discord-div
 {
@@ -154,24 +154,131 @@
     border: 1px solid transparent;
     border-radius: 20px;
 }
+.bar-bodydiv
+{
+    width: 100%;
+    overflow: hidden;
+    height: fit-content;
+    transform: transale3d(0,0,0);
+    transition: height 200ms ease-in-out;
+    display: flex;
+}
+.bar-bodydiv-left-div
+{
+    flex: 3;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.bar-bodydiv-title
+{
+    width: 95%;
+    height: fit-content;
+    border: 1px solid transparent;
+    border-radius: 5px;
+    padding: 5px 10px;
+    background-color: brown;
+    box-sizing: border-box;
+    overflow: scroll;
+    flex: 1;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+}
+.bar-bodydiv-body
+{
+    flex: 4;
+    width: 95%;
+    border: 1px solid transparent;
+    border-radius: 5px;
+    padding: 5px 10px;
+    background-color: rgb(175, 124, 124);
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    box-sizing: border-box;
+    overflow: scroll;
+    margin-top: 5px;
+}
+.bar-bodydiv-body::-webkit-scrollbar,.bar-bodydiv-title::-webkit-scrollbar
+{
+    display: none;
+}
+.bar-bodydiv-right-div
+{
+    flex: 1;
+    margin: 5px 10px;
+    border: 2px solid #cacaca;
+    border-radius: 5px;
+    box-sizing: border-box;
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+}
+.bar-bodydiv-right-div::before
+{
+    content: '';
+    position: absolute;
+    width: 105%;
+    height: 110%;
+    border: 2px solid #cacaca;
+    border-radius: 5px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    z-index: -1;
+}
+.bar-bodydiv-right-div-info
+{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+}
+.bar-bodydiv-right-div-icon-div
+{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+.bar-bodydiv-right-div-info-messagetype span,.bar-bodydiv-right-div-info-status span
+{
+    margin: 10px 0;
+    margin-left: 5px;
+    font-size: 1rem;
+    color: #fff;
+    background-color: #006c91;
+    border: 1px solid transparent;
+    font-family: 'Roboto Condensed', sans-serif;
+    border-radius: 2px;
+    padding: 0 5px;
+    letter-spacing: .5px;
+    text-transform: uppercase;
+}
 .bar-icon
 {
     font-size: 1.5rem;
     margin: 0 5px;
     cursor: pointer;
 }
-.bar-icon:hover
-{
-    color: #666;
-}
-.status-div-icon-div
-{
-    width: fit-content;
-    padding: 0 10px;
-    display: flex;
-    justify-content: space-between;
-}
 
+.bar-bodydiv-right-div-icon
+{
+    display: flex;
+    justify-content: flex-end;
+}
+.bar-bodydiv-right-div-delete
+{
+    display: flex;
+    justify-content: flex-end;
+}
+.delete-icon
+{
+    margin-bottom: 5px;
+    color: tomato;
+}
+.delete-icon:hover
+{
+    color: red;
+}
 @media only screen and (max-width: 900px) {
     .discord-div-pic
     {
@@ -181,13 +288,6 @@
     {
         box-shadow: none;
         background-color: transparent;
-    }
-    .bar-bardiv::after
-    {
-        content: '';
-        position: absolute;
-        width: 100%;
-        height: 100%;
     }
     .discord-div p
     {
@@ -200,14 +300,6 @@
         font-size: .7rem;
         height: .8rem;
         white-space: nowrap;
-    }
-    .bar-bardiv
-    {
-        border-width: .5px;
-    }
-    .bar-bardiv:hover
-    {
-        border-width: .5px;
     }
     .status-div
     {
@@ -240,8 +332,8 @@
     {
         font-size: 1.2rem;
     }
-    .status-div-icon-div
+    .bar-bodydiv-right-div-info-messagetype span,.bar-bodydiv-right-div-info-status span
     {
-        display: none;
+        font-size: .8rem;
     }
 }

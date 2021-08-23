@@ -1,0 +1,18 @@
+.pagetoggler-fulldiv
+{
+    display: flex;
+    align-items: center;
+}
+.pagetoggler-history,.pagetoggler-favourite
+{
+    border: 1px solid #666;
+    border-bottom: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+}
+.pagetoggler-icons
+{
+    font-size: 1.2rem;
+}

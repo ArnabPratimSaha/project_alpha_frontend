@@ -431,6 +431,13 @@ function Dashboard(props) {
       setIsReady(false);
     }
   }, [selectedChannels,selectedMembers,selectedRoles])
+  useEffect(() => {
+    setSelectedChannels([])
+    setSearchedRole([])
+
+    return () => {
+    }
+  }, [messageType])
   const handleTextareaChange = (event) => {
     setMessage(event.target.value)
   };
@@ -450,17 +457,23 @@ function Dashboard(props) {
     setActiveGuild(discordData.find((e)=>e.guildId===id))
   }
   const handleChannelButtonClick=(id)=>{
-    const channel=selectedChannels.find((e)=>e.channelId===id);
-    if(!channel)
+    if(messageType===type.channel)
     {
-      setSelectedChannels([...selectedChannels,channels.find(e=>e.channelId===id)])
+      const channel=selectedChannels.find((e)=>e.channelId===id);
+      if(!channel)
+      {
+        setSelectedChannels([...selectedChannels,channels.find(e=>e.channelId===id)])
+      }
     }
   }
   const handleRoleButtonClick=(id)=>{
-    const role=selectedRoles.find((e)=>e.roleId===id);
-    if(!role)
+    if(messageType===type.channel)
     {
-      setSelectedRoles([...selectedRoles,roles.find(e=>e.roleId===id)])
+      const role=selectedRoles.find((e)=>e.roleId===id);
+      if(!role)
+      {
+        setSelectedRoles([...selectedRoles,roles.find(e=>e.roleId===id)])
+      }
     }
   }
   const handleMemberButtonClick=id=>{
@@ -508,11 +521,7 @@ function Dashboard(props) {
         loadingPercentage={loadingPercentage}
       />
       <div
-        className="dashboard-full-div"
-        style={{
-          backgroundColor: mode === MODETYPE.DARK ? "#444" : "#cacacaca",
-        }}
-      >
+        className="dashboard-full-div" style={{backgroundColor: mode === MODETYPE.DARK ? "#444" : "#cacacaca",}}>
         <div className="dashboard-content-div">
           <div className='dashboard-button-div'
             style={{
