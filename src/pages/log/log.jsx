@@ -24,6 +24,7 @@ const status={
 }
 newDate.setDate(newDate.getDate() + numberOfDaysToAdd);
 const limit=10;
+let cancelSearchReq;
 function Log(props) {
     let { uid, sid, did } = useParams();
     const firstTimePageChange = useRef(true)
@@ -42,6 +43,7 @@ function Log(props) {
     const [hasMoreFavouriteData, setHasMoreFavouriteData] = useState(false);
     const [historyData, setHistoryData] = useState([]);
     const [favouriteData, setFavouriteData] = useState([]);
+    const [query, setQuery] = useState('')
     const [imageSource, setImageSource] = useState(
         sid === "null" && Cookies.get("avatar") ? Cookies.get("avatar") : null
     );
@@ -68,7 +70,7 @@ function Log(props) {
         updateMode();
     };
     const fetchHistoryData=()=>{
-        axios.get(`http://localhost:5000/log/getinfo?did=${did}&type=${toggleIndex[selectedFilterIndex]}&limit=${limit}&page=${allPageNumber.current}&fav=${false}`).then((res)=>{
+        axios.get(`http://localhost:5000/log/searchinfo?did=${did}&type=${toggleIndex[selectedFilterIndex]}&limit=${limit}&page=${allPageNumber.current}&fav=${false}&query=${query.trim()}`).then((res)=>{
             if(res.data.length<limit)
             {
                 setHasMoreHistoryData(false);
@@ -84,7 +86,7 @@ function Log(props) {
         })
     }
     const fetchFavouriteDate=()=>{
-        axios.get(`http://localhost:5000/log/getinfo?did=${did}&type=${toggleIndex[selectedFilterIndex]}&limit=${limit}&page=${favouritePageNumber.current}&fav=${true}`).then((res) => {
+        axios.get(`http://localhost:5000/log/searchinfo?did=${did}&type=${toggleIndex[selectedFilterIndex]}&limit=${limit}&page=${favouritePageNumber.current}&fav=${true}&query=${query.trim()}`).then((res) => {
             if (res.data.length < limit) {
                 setHasMoreFavouriteData(false);
             }
@@ -99,7 +101,8 @@ function Log(props) {
     }
     // making a api call for the favourite page for just one time
     useEffect(() => {
-        axios.get(`http://localhost:5000/log/getinfo?did=${did}&type=${toggleIndex[selectedFilterIndex]}&limit=${limit}&page=${favouritePageNumber.current}&fav=${false}`).then((res) => {
+        allPageNumber.current=1;
+        axios.get(`http://localhost:5000/log/searchinfo?did=${did}&type=${toggleIndex[selectedFilterIndex]}&limit=${limit}&page=${allPageNumber.current}&fav=${false}&query=${query.trim()}`).then((res) => {
             if (res.data.length < limit) {
                 setHasMoreHistoryData(false);
             }
@@ -111,8 +114,8 @@ function Log(props) {
         }).catch((err) => {
             console.log(err);
         })
-        allPageSelectedIndex.current = 0;
-        axios.get(`http://localhost:5000/log/getinfo?did=${did}&type=${toggleIndex[selectedFilterIndex]}&limit=${limit}&page=${favouritePageNumber.current}&fav=${true}`).then((res) => {
+        favouritePageNumber.current=1;
+        axios.get(`http://localhost:5000/log/searchinfo?did=${did}&type=${toggleIndex[selectedFilterIndex]}&limit=${limit}&page=${favouritePageNumber.current}&fav=${true}&query=${query.trim()}`).then((res) => {
             if (res.data.length < limit) {
                 setHasMoreFavouriteData(false);
             }
@@ -124,8 +127,7 @@ function Log(props) {
         }).catch((err) => {
             console.log(err);
         })
-        favouritePageSelectedIndex.current = 0;
-    }, [])
+    }, [query])
     useEffect(() => {
         if(firstTimePageChange.current)
         {
@@ -136,7 +138,7 @@ function Log(props) {
         {
             if (selectedFilterIndex != allPageSelectedIndex.current) {
                 allPageNumber.current=1;
-                axios.get(`http://localhost:5000/log/getinfo?did=${did}&type=${toggleIndex[selectedFilterIndex]}&limit=${limit}&page=${allPageNumber.current}&fav=${false}`).then((res) => {
+                axios.get(`http://localhost:5000/log/searchinfo?did=${did}&type=${toggleIndex[selectedFilterIndex]}&limit=${limit}&page=${allPageNumber.current}&fav=${false}&query=${query.trim()}`).then((res) => {
                     if (res.data.length < limit) {
                         setHasMoreHistoryData(false);
                     }
@@ -156,7 +158,7 @@ function Log(props) {
             {
                 console.log(favouritePageSelectedIndex.current);
                 favouritePageNumber.current=1;
-                axios.get(`http://localhost:5000/log/getinfo?did=${did}&type=${toggleIndex[selectedFilterIndex]}&limit=${limit}&page=${favouritePageNumber.current}&fav=${true}`).then((res) => {
+                axios.get(`http://localhost:5000/log/searchinfo?did=${did}&type=${toggleIndex[selectedFilterIndex]}&limit=${limit}&page=${favouritePageNumber.current}&fav=${true}&query=${query.trim()}`).then((res) => {
                     if (res.data.length < limit) {
                         setHasMoreFavouriteData(false);
                     }
@@ -180,7 +182,7 @@ function Log(props) {
         }
         if (activePage === page.ALL) {
             allPageNumber.current=1;//resetting the page number
-            axios.get(`http://localhost:5000/log/getinfo?did=${did}&type=${toggleIndex[selectedFilterIndex]}&limit=${limit}&page=${allPageNumber.current}&fav=${false}`).then((res) => {
+            axios.get(`http://localhost:5000/log/searchinfo?did=${did}&type=${toggleIndex[selectedFilterIndex]}&limit=${limit}&page=${allPageNumber.current}&fav=${false}&query=${query.trim()}`).then((res) => {
                 if (res.data.length < limit) {
                     setHasMoreHistoryData(false);
                 }
@@ -197,7 +199,7 @@ function Log(props) {
         else
         {
             favouritePageNumber.current=1;//resetting the page number
-            axios.get(`http://localhost:5000/log/getinfo?did=${did}&type=${toggleIndex[selectedFilterIndex]}&limit=${limit}&page=${favouritePageNumber.current}&fav=${true}`).then((res) => {
+            axios.get(`http://localhost:5000/log/searchinfo?did=${did}&type=${toggleIndex[selectedFilterIndex]}&limit=${limit}&page=${favouritePageNumber.current}&fav=${true}&query=${query.trim()}`).then((res) => {
                 if (res.data.length < limit) {
                     setHasMoreFavouriteData(false);
                 }
@@ -213,7 +215,13 @@ function Log(props) {
         }
 
     }, [selectedFilterIndex])
-    
+    const handleStartClick = async (mid, isFav) => {
+        try {
+            await axios.patch(`${process.env.REACT_APP_BACKENDAPI}log?mid=${mid}`)
+        } catch (error) {
+
+        }
+    }
     return (
         <>
             <Navbar
@@ -235,18 +243,18 @@ function Log(props) {
                             <Dropdown mode={mode} MODETYPE={MODETYPE} onChange={(e)=>{setSelectedFilterIndex(e)}} options={toggleIndex}/>
                         </div>
                         <div className='log-guild-search-div'>
-                            <SearchBar mode={mode} MODETYPE={MODETYPE} />
+                            <SearchBar mode={mode} MODETYPE={MODETYPE} onChange={(v)=>{setQuery(v)}}/>
                         </div>
                     </div>
                     <div className='log-history-output' style={{ backgroundColor: mode === MODETYPE.DARK ? "#444" : "#EEEEEE", }}>
                         <div className='log-history-output-history' style={{ zIndex: activePage === page.ALL ? '2' : '1', backgroundColor: mode === MODETYPE.DARK ? "#444" : "#EEEEEE" }}>
                             <ScrollComponent className='log-history-output-history-content' onIntersect={fetchHistoryData} hasMore={hasMoreHistoryData}>
-                                {historyData.map((e, i) => <Bar mode={mode} key={i} MODETYPE={MODETYPE} status={e.status} time={e.time} title={e.title} />)}
+                                {historyData.map((e, i) => <Bar mode={mode} key={i} MODETYPE={MODETYPE} status={e.status} time={e.time} title={e.title} mid={e.messageId} guildName={e.guildName} icon={e.guildAvatar} fav={e.favourite} onStarClick={handleStartClick} uid={uid} did={did}/>)}
                             </ScrollComponent>
                         </div>
                         <div className='log-history-output-favourite' style={{zIndex:activePage===page.FAVOURITE?'2':'1',backgroundColor: mode === MODETYPE.DARK ? "#444" : "#EEEEEE"}}>
                             <ScrollComponent className='log-history-output-history-content' onIntersect={fetchFavouriteDate} hasMore={hasMoreFavouriteData}>
-                                {favouriteData.map((e, i) => <Bar mode={mode} key={i} MODETYPE={MODETYPE} status={e.status} time={e.time} title={e.title} />)}
+                                {favouriteData.map((e, i) => <Bar mode={mode} key={i} MODETYPE={MODETYPE} status={e.status} time={e.time} title={e.title} guildName={e.guildName} mid={e.messageId} icon={e.guildAvatar} fav={e.favourite} onStarClick={handleStartClick} uid={uid} did={did}/>)}
                             </ScrollComponent>
                         </div>
                     </div>

@@ -33,11 +33,9 @@
     border: 1px solid transparent;
     margin-left: 5px;
     border-radius: 3px;
+    height:fit-content;
     padding: 0 10px;
-    background-color: #366ED8;
-    box-shadow: inset 3px 3px 5px #064ACB,
-                inset -3px -3px 5px #064ACB
-    ;
+    justify-content: space-between;
 }
 .discord-div p
 {
@@ -49,7 +47,20 @@
 }
 .discord-div-pic
 {
-    margin-left: 20px;
+    margin-right: 5px   ;
+}
+.discord-div-pic div
+{
+    background-color: #333;
+    color: #fff;
+    width: 2rem;
+    height: 2rem;
+    border: 1px solid transparent;
+    border-radius: 100%;
+    font-size: .8rem;
+    padding: 5px;
+    box-sizing: border-box;
+    
 }
 .discord-div-pic img
 {
@@ -70,6 +81,7 @@
     border-radius: 3px;
     text-align: left;
     padding: 0 10px;
+    flex: 1;
 }
 .message-div p
 {
@@ -82,21 +94,24 @@
     width: fit-content;
     padding: 5px 10px;
     display: flex;
-    justify-content: center;
+    justify-content: space-evenly;
     align-items: center;
     border: 1px solid transparent;
-    margin-left: 5px;
-    margin-right: 5px;
-    border-radius: 3px;
+    border-radius: 10px;
     text-align: left;
     position: relative;
     z-index: 1;
-    filter: drop-shadow(4px 4px 5px #2f2f96);
 }
 .cancel-div,.done-div,.ongoing-div
 {
     display: flex;
     align-items: center;
+}
+.status-icon
+{
+    font-size: 1rem;
+    color: #fff;
+    margin-right: 5px;
 }
 .dot
 {
@@ -140,19 +155,6 @@
     font-family: 'Roboto Condensed', sans-serif;
     font-size: .8rem;
     color: #fff;
-}
-.status-div::after
-{
-    content: '';
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    top: 0;
-    left: 0;
-    background-color: #7579E7;
-    z-index: -1;
-    border: 1px solid transparent;
-    border-radius: 20px;
 }
 .bar-icon
 {

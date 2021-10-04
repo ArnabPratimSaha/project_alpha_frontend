@@ -19,6 +19,7 @@ import AdminIcon from "./components/adminIcon/adminIcon";
 import MemberButton from "./components/memberButton/memberButton";
 import Cookies, { set } from "js-cookie";
 import Switch from "../../component/switch/switch";
+import Toast from "../../component/toast/toast";
 
 const type={
   channel:'CHANNEL',
@@ -209,6 +210,13 @@ const foundRole=(userRoles,roles)=>{
 let cancelChannelReq;
 let cancelRoleReq;
 let cancelMemberReq;
+
+const toast={
+  DEFAULT:'DEFAULT',
+  WARNING:'WARNING',
+  ERROR:'ERROR'
+}
+
 function Dashboard(props) {
   const timer = useRef(null)
   const [counter, setCounter] = useState(0)
@@ -272,6 +280,16 @@ function Dashboard(props) {
 
   const [checked, setChecked] = useState(true)//getting the dm
   const [isReady, setIsReady] = useState(false)//ready to be sent
+  const [showToast, setShowToast] = useState(false)//showing the toast
+  const [toastMessage, setToastMessage] = useState('')//showing the toast message
+  const [toastType, setToastType] = useState(toast.DEFAULT)//toast type
+  const [toastDuration, setToastDuration] = useState(4)
+  const showToastMessage=(message,type,duration)=>{
+    setShowToast(true);
+    setToastMessage(message)
+    setToastType(type)
+    setToastDuration(duration)
+  }
   useEffect(() => {
     timer.current=setInterval(() => {
       setCounter((state)=>state+1)
@@ -363,10 +381,15 @@ function Dashboard(props) {
       axios.get(`http://localhost:5000/discord/permission?discordId=${did}`).then((res)=>{
         setDiscordData(res.data.guilds)
       }).catch((err)=>{
-        window.location=`/error/${err.response.status}`
+        // window.location=`/error/${err.response.status}`
       })
     }
   }, [status])
+  useEffect(() => {
+    setSelectedRoles([])
+    setSelectedMembers([])
+    setSelectedChannels([])
+  }, [activeGuild])
   useEffect(() => {
     if(cancelChannelReq)
     {
@@ -405,6 +428,7 @@ function Dashboard(props) {
       })
     }
   }, [searchedRole,activeGuild])
+
   useEffect(() => {
     if(cancelMemberReq)
     {
@@ -431,12 +455,16 @@ function Dashboard(props) {
       setIsReady(false);
     }
   }, [selectedChannels,selectedMembers,selectedRoles])
+  const firstTimeToast = useRef(true)
   useEffect(() => {
     setSelectedChannels([])
-    setSearchedRole([])
-
-    return () => {
+    setSelectedRoles([])
+    if(firstTimeToast.current)
+    {
+      firstTimeToast.current=false;
+      return;
     }
+    showToastMessage(`switch to ${messageType} mode`,toast.DEFAULT,1)
   }, [messageType])
   const handleTextareaChange = (event) => {
     setMessage(event.target.value)
@@ -476,14 +504,39 @@ function Dashboard(props) {
       }
     }
   }
-  const handleMemberButtonClick=id=>{
-    const member=selectedMembers.find((e)=>e.memberId===id);
-    if(!member)
-    {
-      setSelectedMembers([...selectedMembers,members.find(e=>e.memberId===id)])
+  const handleMemberButtonClick = id => {
+    const member = selectedMembers.find((e) => e.memberId === id);
+    if (!member) {
+      setSelectedMembers([...selectedMembers, members.find(e => e.memberId === id)])
     }
   }
-  const handleMessageSend=()=>{
+  const handleMessageSend = () => {
+    if (!activeGuild) {
+      showToastMessage('please select a server', toast.ERROR, 6)
+      return;
+    }
+    if (messageType === type.channel) {
+      if (selectedChannels.length === 0) {
+        showToastMessage('please select a channel', toast.ERROR, 6)
+        return;
+      }
+    }
+    if(messageType===type.dm)
+    {
+      if (selectedMembers.length === 0) {
+        showToastMessage('please select atleast a member', toast.ERROR, 6)
+        return;
+      }
+    }
+    console.log(title.trim().length);
+    if (title.trim().length <= 3) {
+      showToastMessage('please add a title', toast.WARNING, 6)
+      return;
+    }
+    if (message.trim().length <= 3) {
+      showToastMessage('message field cannot be left empty', toast.ERROR, 6)
+      return;
+    }
     if(activeGuild && (selectedChannels || selectedMembers || selectedRoles))
     {
       axios
@@ -497,10 +550,11 @@ function Dashboard(props) {
             selectedMembers: selectedMembers,
             selectedTime: extractTimeFromString(selectedTime),
             preview: checked,
+            type:messageType
           }
         )
         .then((res) => {
-          console.log(res);
+          showToastMessage('message sent',toast.DEFAULT,5)
         })
         .catch((err) => {});
     }
@@ -520,6 +574,7 @@ function Dashboard(props) {
         isTemp={isTemp}
         loadingPercentage={loadingPercentage}
       />
+      <Toast isOpen={showToast} message={toastMessage} toastType={toastType} onClose={()=>{setShowToast(false)}} toastDuration={toastDuration}/>
       <div
         className="dashboard-full-div" style={{backgroundColor: mode === MODETYPE.DARK ? "#444" : "#cacacaca",}}>
         <div className="dashboard-content-div">
@@ -579,14 +634,14 @@ function Dashboard(props) {
                 <div className='dashboard-left-div__guild-div__titile'>
                   <div className='dashboard-left-div__guild-div-select-div'>
                     <span>Selected server :</span>
-                    {activeGuild?<GuildButton backgroundColor={activeGuild.guildColor} id={activeGuild.guildId} guildName={activeGuild.guildName} avatar={activeGuild.guildAvatar} onClick={()=>{}}/>:"none"}
+                    {activeGuild?<GuildButton mode={mode} MODETYPE={MODETYPE} backgroundColor={activeGuild.guildColor} id={activeGuild.guildId} guildName={activeGuild.guildName} avatar={activeGuild.guildAvatar} onClick={()=>{}}/>:"none"}
                   </div>
                   <Switch left='Channel' right='DM' onChange={handleSwitchChange}/>
                 </div>
                 <Wrapper label='discord servers' classFulldiv='dashboard-left-div__guild-div__result'>
                   <div className='dashboard-left-div__guild-div__result_wrapper'>
                     {discordData && discordData.map((e)=>{
-                      return <GuildButton backgroundColor={e.guildColor} id={e.guildId} key={e.guildId} guildName={e.guildName} avatar={e.guildAvatar} onClick={handleGuildButtonClick}/>
+                      return <GuildButton mode={mode} MODETYPE={MODETYPE} backgroundColor={e.guildColor} id={e.guildId} key={e.guildId} guildName={e.guildName} avatar={e.guildAvatar} onClick={handleGuildButtonClick}/>
                     })}
                   </div>
                 </Wrapper>
@@ -599,7 +654,7 @@ function Dashboard(props) {
                     <Wrapper label='Channels' classFulldiv='dashboard-left-div__channel-div__content-result'>
                       <div className='dashboard-left-div__guild-div__result_wrapper'>
                         {channels && channels.map((c)=>{
-                          return <ChannelButton style={{backgroundColor:c.channelColor}} name={c.channelName} id={c.channelId} key={c.channelId} onClick={handleChannelButtonClick} />
+                          return <ChannelButton name={c.channelName} id={c.channelId} key={c.channelId} onClick={handleChannelButtonClick} />
                         })}
                       </div>
                     </Wrapper>
@@ -666,7 +721,7 @@ function Dashboard(props) {
                     <p>I want the preview of the message to be DM'ed me along with the conformation</p>
                   </div>
                   <div className='dashboard-left-div__final-div-submit-preview'>
-                    <button onClick={handleMessageSend} style={{ background: isReady ? '#00cc00' : '#cacaca' }} disabled={!isReady} className='submit-button'>Send</button>
+                    <button onClick={handleMessageSend} style={{ background: isReady ? '#00cc00' : '#cacaca' }} className='submit-button'>Send</button>
                   </div>
                 </Wrapper>
               </div>
@@ -680,8 +735,8 @@ function Dashboard(props) {
               >
               <Card
                 contentHeight={getContentHeight(rightDrawerState, 1)}
-                textColor={mode===MODETYPE.DARK?'#000':'#cacaca'}
-                headerBackgroundColor={mode===MODETYPE.DARK?'#cacaca':'#666'}
+                textColor={mode===MODETYPE.DARK?'#fff':'#000'}
+                headerBackgroundColor={mode===MODETYPE.DARK?'#333':'#666'}
                 backgroundColor={mode===MODETYPE.DARK?'#555':'#cacaca'}
                 isOpen={rightDrawerState.isFirstDrawerOpen}
                 top="0"
@@ -722,8 +777,8 @@ function Dashboard(props) {
               </Card>
               <Card
                 contentHeight={getContentHeight(rightDrawerState, 2)}
-                textColor={mode===MODETYPE.DARK?'#000':'#cacaca'}
-                headerBackgroundColor={mode===MODETYPE.DARK?'#cacaca':'#666'}
+                textColor={mode===MODETYPE.DARK?'#fff':'#000'}
+                headerBackgroundColor={mode===MODETYPE.DARK?'#333':'#666'}
                 backgroundColor={mode===MODETYPE.DARK?'#555':'#cacaca'}
                 isOpen={rightDrawerState.isSecondDrawerOpen}
                 top={getValue(calculateTop(rightDrawerState, 2), 2)}
@@ -745,9 +800,9 @@ function Dashboard(props) {
               </Card>
               <Card
                 contentHeight={getContentHeight(rightDrawerState, 3)}
-                textColor={mode===MODETYPE.DARK?'#000':'#cacaca'}
+                textColor={mode===MODETYPE.DARK?'#fff':'#000'}
+                headerBackgroundColor={mode===MODETYPE.DARK?'#333':'#666'}
                 color={mode===MODETYPE.DARK?'#cacaca':'#222'}
-                headerBackgroundColor={mode===MODETYPE.DARK?'#cacaca':'#666'}
                 backgroundColor={mode===MODETYPE.DARK?'#555':'#cacaca'}
                 isOpen={rightDrawerState.isThirdDrawerOpen}
                 top={getValue(calculateTop(rightDrawerState, 3), 3)}

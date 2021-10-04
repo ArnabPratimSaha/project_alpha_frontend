@@ -141,21 +141,20 @@
     display: flex;
     align-items: center;
     height: 4rem;
-    margin: 10px 0;
-    width: 100%;
-    justify-content: space-evenly;
+    width: 95%;
+    justify-content: space-between;
 }
 .dashboard-left-div__guild-div__titile span
 {
     font-family: 'Roboto Condensed', sans-serif;
-    font-size: 2rem;
-    margin: 0 10px;
+    font-size: 1.2rem;
 }
 .dashboard-left-div__guild-div__result
 {
-    width: 90%;
+    width: 95%;
     height: 60%;
     padding: 15px;
+    box-sizing: border-box;
 }
 .dashboard-left-div__guild-div__result_wrapper
 {
@@ -188,8 +187,8 @@
     display: flex;
     flex-direction: column;
     text-align: left;
-    margin: 10px;
     color: #444;
+    width: 95%;
 }
 .dashboard-left-div__channel-div__info p
 {

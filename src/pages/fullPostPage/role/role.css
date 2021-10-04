@@ -1,0 +1,48 @@
+.role-view-fulldiv
+{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: fit-content;
+    margin-right: 5px;
+    position: relative;
+    padding-right: 5px;
+}
+.role-admin-div
+{
+    background-color: crimson;
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items:center;
+    width: .6rem;
+    height: 100%;
+}
+.role-admin-div span
+{
+    font-weight: 600;
+    padding: 0;
+    margin: 0;
+    font-size: .6rem;
+    height: fit-content;
+}
+.role-deleted-role,.role-role-name
+{
+    margin: 0;
+    padding: 0;
+    margin-left: 3px;
+}
+.role-deleted-role
+{
+    text-transform: uppercase;
+    letter-spacing: 0px;
+    font-family: monospace;
+    font-size: 1rem;
+    font-weight: 800;
+}
+.role-role-name
+{
+    font-size: .8rem;
+    font-weight: 600;
+    margin-left: 3px;
+}
