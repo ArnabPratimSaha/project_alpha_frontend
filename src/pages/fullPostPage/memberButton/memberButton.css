@@ -1,0 +1,26 @@
+.member-button-fulldiv
+{
+    display: flex;
+    margin-right: 10px;
+}
+.memberButton-left-div img
+{
+    height: 2rem;
+    width: 2rem;
+    border-radius: 100%;
+
+}
+.memberButton-userName h3,.memberButton-userTag p
+{
+    font-size: .6rem;
+    margin: 0;
+    
+}
+.memberButton-userName h3
+{
+    font-size: .8rem;
+}
+.memberButton-right-div
+{
+    margin-left: 5px;
+}

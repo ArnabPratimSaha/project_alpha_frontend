@@ -1,0 +1,89 @@
+.dropdown-fulldiv
+{
+    position: relative;
+    width: 7rem;
+    height: 2rem;
+    background-color: transparent;
+    border: none;
+}
+.dropdown-fulldiv:focus
+{
+    outline: none;
+}
+.dropdown-box
+{
+    width: 100%;
+    height: 100%;
+    border: 1px solid transparent;
+    border-radius: 3px;
+    display: flex;
+    overflow: hidden;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+}
+.dropdown-box::after
+{
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    cursor: pointer;
+}
+.dropdown-box-selecteditem
+{
+    flex: 3;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.dropdown-box span
+{
+    font-size: .6rem;
+}
+.dropdown-icons
+{
+    font-size: 1.2rem;
+}
+.dropdown-option
+{
+    position: absolute;
+    min-width: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: fit-content;
+    height: fit-content;
+    padding: 5px;
+    background-color: thistle;
+    z-index: 1000;
+    border: 1px solid transparent;
+    border-radius: 3px;
+}
+.dropdown-option-item
+{
+    border-bottom: 1px solid #555;
+    min-height: 1.8rem;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.dropdown-option-item:hover
+{
+    background-color: #666;
+    color: #000;
+}
+
+.dropdown-option-item__last
+{
+    border: none;
+}
+@media only screen and (max-width: 900px) {
+    .dropdown-fulldiv
+    {
+        width: 6rem;
+        height: 2rem;
+    }
+}

@@ -1,0 +1,22 @@
+.timecard-fulldiv
+{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.timecard-detail p,.timecard-time p
+{
+    font-size: .8rem;
+    font-weight: 600;
+}
+.timecard-time p
+{
+    margin-left: 10px;
+    font-weight: 700;
+}
+@media only screen and (max-width: 900px) {
+    .timecard-detail p,.timecard-time p
+    {
+        font-size: .5rem;
+    }
+}

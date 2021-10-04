@@ -58,9 +58,9 @@
 .navbar-theme-togle
 {
     position: absolute ;
-    right: 0px;
-    width: 5rem;
-    height: 100%;
+    right: 0;
+    width: 4rem;
+    height: 3rem;
     top: 50%;
     z-index: 2;
     transform: translateY(-50%);

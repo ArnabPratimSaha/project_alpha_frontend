@@ -17,9 +17,10 @@
     position: relative;
     transition: box-shadow 400ms ease-in-out;
     z-index: 2;
-    box-shadow: 
-        inset 11px 11px 8px -10px #333,
-        inset -11px -11px 8px -10px #333; 
+    border-bottom: 1px solid transparent;
+    border-top: 1px solid transparent;
+    box-sizing: content-box
+
 }
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans&display=swap');
 .card-header h2

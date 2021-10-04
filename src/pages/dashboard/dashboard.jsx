@@ -8,23 +8,23 @@ import { BsFillChatDotsFill } from "react-icons/bs";
 import { IoIosMan } from "react-icons/io";
 import { GiOfficeChair,GiWifiRouter } from "react-icons/gi";
 import { AiFillSetting,AiFillWarning } from "react-icons/ai";
-import {configButtonColor} from './components/configButtonColor';
 import Wrapper from "../../component/inputComponents/MultilineInputComponent";
 import CustomButton from './components/customButtom/customButton';
 import Card from '../../component/rightDrawerCardDiv/cardDiv';
 import GuildButton from './components/guildButton/guildButton';
 import TouchableCard from "../../component/userCard/userCard";
-import randomColor from 'randomcolor'
-import { RiErrorWarningFill, RiWindowLine } from 'react-icons/ri';
 import axios from 'axios'
 import ChannelButton from "./components/channelButton/channelButton";
 import AdminIcon from "./components/adminIcon/adminIcon";
 import MemberButton from "./components/memberButton/memberButton";
-import Clock from 'react-clock';
-import Calendar from 'react-calendar';
-import DateTimePicker from "react-datetime-picker";
 import Cookies, { set } from "js-cookie";
+import Switch from "../../component/switch/switch";
+import Toast from "../../component/toast/toast";
 
+const type={
+  channel:'CHANNEL',
+  dm:'DM'
+}
 var newDate = new Date();
 var numberOfDaysToAdd = 14;
 newDate.setDate(newDate.getDate() + numberOfDaysToAdd);
@@ -210,6 +210,13 @@ const foundRole=(userRoles,roles)=>{
 let cancelChannelReq;
 let cancelRoleReq;
 let cancelMemberReq;
+
+const toast={
+  DEFAULT:'DEFAULT',
+  WARNING:'WARNING',
+  ERROR:'ERROR'
+}
+
 function Dashboard(props) {
   const timer = useRef(null)
   const [counter, setCounter] = useState(0)
@@ -217,6 +224,7 @@ function Dashboard(props) {
   const maxDate = useRef(newDate);
   let { uid, sid, did } = useParams();
   const [mode, changeMode, MODETYPE, updateMode] = useMode();
+  const [messageType, setMessageType] = useState(type.channel)
   const [selectedTime, setSelectedTime] = useState(calcTimeString(today.current))
   const [rightDivVisible, setRightDivVisible] = useState(
     window.innerWidth > 900 ? true : false
@@ -271,7 +279,17 @@ function Dashboard(props) {
   const [message,setMessage]=useState('');
 
   const [checked, setChecked] = useState(true)//getting the dm
-  const [isReady, setIsReady] = useState(false)
+  const [isReady, setIsReady] = useState(false)//ready to be sent
+  const [showToast, setShowToast] = useState(false)//showing the toast
+  const [toastMessage, setToastMessage] = useState('')//showing the toast message
+  const [toastType, setToastType] = useState(toast.DEFAULT)//toast type
+  const [toastDuration, setToastDuration] = useState(4)
+  const showToastMessage=(message,type,duration)=>{
+    setShowToast(true);
+    setToastMessage(message)
+    setToastType(type)
+    setToastDuration(duration)
+  }
   useEffect(() => {
     timer.current=setInterval(() => {
       setCounter((state)=>state+1)
@@ -363,10 +381,15 @@ function Dashboard(props) {
       axios.get(`http://localhost:5000/discord/permission?discordId=${did}`).then((res)=>{
         setDiscordData(res.data.guilds)
       }).catch((err)=>{
-        window.location=`/error/${err.response.status}`
+        // window.location=`/error/${err.response.status}`
       })
     }
   }, [status])
+  useEffect(() => {
+    setSelectedRoles([])
+    setSelectedMembers([])
+    setSelectedChannels([])
+  }, [activeGuild])
   useEffect(() => {
     if(cancelChannelReq)
     {
@@ -379,7 +402,6 @@ function Dashboard(props) {
       })}).then((res)=>{
         setChannels(res.data.channels);
       }).catch((err)=>{
-        console.log(err);
         if(!axios.isCancel(err) && err.response)
         {
           window.location=`/error/${err.response.status}`;
@@ -406,6 +428,7 @@ function Dashboard(props) {
       })
     }
   }, [searchedRole,activeGuild])
+
   useEffect(() => {
     if(cancelMemberReq)
     {
@@ -426,11 +449,34 @@ function Dashboard(props) {
       })
     }
   }, [searchedMember,activeGuild])
+  useEffect(() => {
+    if(selectedMembers.length===0 && selectedChannels.length===0 && selectedRoles.length===0 )
+    {
+      setIsReady(false);
+    }
+  }, [selectedChannels,selectedMembers,selectedRoles])
+  const firstTimeToast = useRef(true)
+  useEffect(() => {
+    setSelectedChannels([])
+    setSelectedRoles([])
+    if(firstTimeToast.current)
+    {
+      firstTimeToast.current=false;
+      return;
+    }
+    showToastMessage(`switch to ${messageType} mode`,toast.DEFAULT,1)
+  }, [messageType])
   const handleTextareaChange = (event) => {
     setMessage(event.target.value)
   };
   const handleClick=(id)=>{
       setActiveButton(id)
+  }
+  const handleSwitchChange=(side)=>{
+    if(side==='LEFT')
+      setMessageType(type.channel)
+    else
+      setMessageType(type.dm)
   }
   const handleToggleRightDiv=()=>{
     changeIsRightDivSliderButtonClicked(!isRightDivSliderButtonClicked)
@@ -439,56 +485,83 @@ function Dashboard(props) {
     setActiveGuild(discordData.find((e)=>e.guildId===id))
   }
   const handleChannelButtonClick=(id)=>{
-    const channel=selectedChannels.find((e)=>e.channelId===id);
-    if(!channel)
+    if(messageType===type.channel)
     {
-      setSelectedChannels([...selectedChannels,channels.find(e=>e.channelId===id)])
+      const channel=selectedChannels.find((e)=>e.channelId===id);
+      if(!channel)
+      {
+        setSelectedChannels([...selectedChannels,channels.find(e=>e.channelId===id)])
+      }
     }
   }
   const handleRoleButtonClick=(id)=>{
-    const role=selectedRoles.find((e)=>e.roleId===id);
-    if(!role)
+    if(messageType===type.channel)
     {
-      setSelectedRoles([...selectedRoles,roles.find(e=>e.roleId===id)])
+      const role=selectedRoles.find((e)=>e.roleId===id);
+      if(!role)
+      {
+        setSelectedRoles([...selectedRoles,roles.find(e=>e.roleId===id)])
+      }
     }
   }
-  const handleMemberButtonClick=id=>{
-    const member=selectedMembers.find((e)=>e.memberId===id);
-    if(!member)
-    {
-      setSelectedMembers([...selectedMembers,members.find(e=>e.memberId===id)])
+  const handleMemberButtonClick = id => {
+    const member = selectedMembers.find((e) => e.memberId === id);
+    if (!member) {
+      setSelectedMembers([...selectedMembers, members.find(e => e.memberId === id)])
     }
   }
-  const handleMessageSend=()=>{
+  const handleMessageSend = () => {
+    if (!activeGuild) {
+      showToastMessage('please select a server', toast.ERROR, 6)
+      return;
+    }
+    if (messageType === type.channel) {
+      if (selectedChannels.length === 0) {
+        showToastMessage('please select a channel', toast.ERROR, 6)
+        return;
+      }
+    }
+    if(messageType===type.dm)
+    {
+      if (selectedMembers.length === 0) {
+        showToastMessage('please select atleast a member', toast.ERROR, 6)
+        return;
+      }
+    }
+    console.log(title.trim().length);
+    if (title.trim().length <= 3) {
+      showToastMessage('please add a title', toast.WARNING, 6)
+      return;
+    }
+    if (message.trim().length <= 3) {
+      showToastMessage('message field cannot be left empty', toast.ERROR, 6)
+      return;
+    }
     if(activeGuild && (selectedChannels || selectedMembers || selectedRoles))
     {
       axios
         .post(
           `http://localhost:5000/discord/post?did=${did}&gid=${activeGuild.guildId}`,
           {
+            title:title,
             message: message,
             selectedRoles: selectedRoles,
             selectedChannels: selectedChannels,
             selectedMembers: selectedMembers,
-            // selectedTime: time,
+            selectedTime: extractTimeFromString(selectedTime),
             preview: checked,
+            type:messageType
           }
         )
         .then((res) => {
-          console.log(res);
+          showToastMessage('message sent',toast.DEFAULT,5)
         })
         .catch((err) => {});
     }
   }
   const handleTimeChange=(e)=>{
-    console.log(e.target.value);
-    console.log(calcTimeString(today.current))
     setSelectedTime(e.target.value)
   }
-  useEffect(() => {
-    
-   console.log(`isRightDivSliderButtonClicked ${isRightDivSliderButtonClicked}`);
-  }, [isRightDivSliderButtonClicked])
   return (
     <>
       <Navbar
@@ -501,12 +574,9 @@ function Dashboard(props) {
         isTemp={isTemp}
         loadingPercentage={loadingPercentage}
       />
+      <Toast isOpen={showToast} message={toastMessage} toastType={toastType} onClose={()=>{setShowToast(false)}} toastDuration={toastDuration}/>
       <div
-        className="dashboard-full-div"
-        style={{
-          backgroundColor: mode === MODETYPE.DARK ? "#444" : "#cacacaca",
-        }}
-      >
+        className="dashboard-full-div" style={{backgroundColor: mode === MODETYPE.DARK ? "#444" : "#cacacaca",}}>
         <div className="dashboard-content-div">
           <div className='dashboard-button-div'
             style={{
@@ -517,10 +587,10 @@ function Dashboard(props) {
             <CustomButton  className='dashboard-button-div__button' id={1} onClick={handleClick} style={{backgroundColor:activeButton===1?'#cacaca':'#555',color:activeButton===1?'#00afff':'#fff'}}>
               <FaDiscord className='dashboard-button-div__button__icon'/>
             </CustomButton>
-            <CustomButton error={activeGuild?false:true} count={channels&&channels.length!=0?channels.length:null} className='dashboard-button-div__button' id={2}  onClick={handleClick}  style={{backgroundColor:activeButton===2?'#cacaca':'#555',color:activeButton===2?'#00afff':'#fff'}}>
+            <CustomButton error={activeGuild?messageType===type.channel?false:true:true} count={channels&&channels.length!=0?channels.length:null} className='dashboard-button-div__button' id={2}  onClick={handleClick}  style={{backgroundColor:activeButton===2?'#cacaca':'#555',color:activeButton===2?'#00afff':'#fff'}}>
               <GiWifiRouter className='dashboard-button-div__button__icon'/>
             </CustomButton>
-            <CustomButton error={activeGuild?false:true} count={roles&&roles.length!=0?roles.length:null} className='dashboard-button-div__button' id={3} onClick={handleClick}  style={{backgroundColor:activeButton===3?'#cacaca':'#555',color:activeButton===3?'#00afff':'#fff'}}>
+            <CustomButton error={activeGuild?messageType===type.channel?false:true:true} count={roles&&roles.length!=0?roles.length:null} className='dashboard-button-div__button' id={3} onClick={handleClick}  style={{backgroundColor:activeButton===3?'#cacaca':'#555',color:activeButton===3?'#00afff':'#fff'}}>
               <GiOfficeChair className='dashboard-button-div__button__icon'/>
             </CustomButton>
             <CustomButton error={activeGuild?false:true} className='dashboard-button-div__button' id={4} onClick={handleClick} style={{backgroundColor:activeButton===4?'#cacaca':'#555',color:activeButton===4?'#00afff':'#fff'}}>
@@ -547,33 +617,36 @@ function Dashboard(props) {
                 width: leftDivWidthFull ? "100%" : "60%",
               }}
             >
-              <div className='dashboard-left-div__message-div'  style={{zIndex:activeButton===5?'1':'0'}}>
+              <div className='dashboard-left-div__message-div' style={{ zIndex: activeButton === 5 ? '1' : '0' }}>
+
                 <span className='dashboard-left-div-eachdiv__title'>message</span>
                 <Wrapper label='title' isFocused={focusOne} classFulldiv='dashboard-left-div__message-div__title'>
-                  <input onFocus={()=>{setFocusOne(true)}} onBlur={()=>{setFocusOne(false)}}></input>
+                  <input onFocus={() => { setFocusOne(true) }} onBlur={() => { setFocusOne(false) }} value={title} onChange={(e) => { setTitle(e.target.value) }}></input>
                 </Wrapper>
                 <Wrapper label='message' isFocused={focusTwo} classFulldiv='dashboard-left-div__message-div__message'>
-                  <textarea onFocus={()=>{setFocusTwo(true)}} onChange={handleTextareaChange} onBlur={()=>{setFocusTwo(false)}}></textarea>
+                  <textarea onFocus={() => { setFocusTwo(true) }} onChange={handleTextareaChange} onBlur={() => { setFocusTwo(false) }}></textarea>
                 </Wrapper>
               </div>
-              <div className='dashboard-left-div__guild-div' style={{zIndex:activeButton===1?'1':'0'}}>
+              <div className='dashboard-left-div__guild-div' style={{ zIndex: activeButton === 1 ? '1' : '0' }}>
+                <div className='dashboard-left-div__channel-div__info' style={{ color: mode === MODETYPE.DARK ? '#fff' : 'black' }}>
+                  <p>select <GiWifiRouter /> to send a message a channel and <IoIosMan /> to DM a perticular member from discord.Select <GiOfficeChair/> to tag a role [can only be used while sending a message to a channel]</p>
+                </div>
                 <div className='dashboard-left-div__guild-div__titile'>
-                  <span>Selected server :</span>
-                  {activeGuild?<GuildButton backgroundColor={activeGuild.guildColor} id={activeGuild.guildId} guildName={activeGuild.guildName} avatar={activeGuild.guildAvatar} onClick={()=>{}}/>:"none"}
+                  <div className='dashboard-left-div__guild-div-select-div'>
+                    <span>Selected server :</span>
+                    {activeGuild?<GuildButton mode={mode} MODETYPE={MODETYPE} backgroundColor={activeGuild.guildColor} id={activeGuild.guildId} guildName={activeGuild.guildName} avatar={activeGuild.guildAvatar} onClick={()=>{}}/>:"none"}
+                  </div>
+                  <Switch left='Channel' right='DM' onChange={handleSwitchChange}/>
                 </div>
                 <Wrapper label='discord servers' classFulldiv='dashboard-left-div__guild-div__result'>
                   <div className='dashboard-left-div__guild-div__result_wrapper'>
                     {discordData && discordData.map((e)=>{
-                      return <GuildButton backgroundColor={e.guildColor} id={e.guildId} key={e.guildId} guildName={e.guildName} avatar={e.guildAvatar} onClick={handleGuildButtonClick}/>
+                      return <GuildButton mode={mode} MODETYPE={MODETYPE} backgroundColor={e.guildColor} id={e.guildId} key={e.guildId} guildName={e.guildName} avatar={e.guildAvatar} onClick={handleGuildButtonClick}/>
                     })}
                   </div>
                 </Wrapper>
               </div>
               <div className='dashboard-left-div__channel-div' style={{zIndex:activeButton===2?'1':'0'}}>
-                <div className='dashboard-left-div__channel-div__info' style={{color:mode===MODETYPE.DARK?'#cacaca':'black'}}>
-                  <p>Channels<GiWifiRouter/> and Roles<GiOfficeChair/> have higher priority than members<IoIosMan/>.If a member with same channel and role is selected then the channel will be priortise first then the role and lastly the user.</p>
-                  <p>Channels,roles and members marked with <RiErrorWarningFill style={{color:'yellow'}}/> are ignored</p>
-                </div>
                 <div className='dashboard-left-div__channel-div__content'>
                     <Wrapper isFocused={focusOne} label={focusOne?'search':'Search Channels'} classFulldiv='dashboard-left-div__channel-div__content-search'>
                       <input onFocus={()=>{setFocusOne(true)}} onBlur={()=>{setFocusOne(false)}} onChange={(e)=>{setSearchChannel(e.target.value)}} value={searchChannel}></input>
@@ -581,7 +654,7 @@ function Dashboard(props) {
                     <Wrapper label='Channels' classFulldiv='dashboard-left-div__channel-div__content-result'>
                       <div className='dashboard-left-div__guild-div__result_wrapper'>
                         {channels && channels.map((c)=>{
-                          return <ChannelButton style={{backgroundColor:c.channelColor}} name={c.channelName} id={c.channelId} key={c.channelId} onClick={handleChannelButtonClick} />
+                          return <ChannelButton name={c.channelName} id={c.channelId} key={c.channelId} onClick={handleChannelButtonClick} />
                         })}
                       </div>
                     </Wrapper>
@@ -648,7 +721,7 @@ function Dashboard(props) {
                     <p>I want the preview of the message to be DM'ed me along with the conformation</p>
                   </div>
                   <div className='dashboard-left-div__final-div-submit-preview'>
-                    <button onClick={handleMessageSend} style={{ background: isReady ? '#00cc00' : '#cacaca' }} disabled={!isReady} className='submit-button'>Send</button>
+                    <button onClick={handleMessageSend} style={{ background: isReady ? '#00cc00' : '#cacaca' }} className='submit-button'>Send</button>
                   </div>
                 </Wrapper>
               </div>
@@ -662,8 +735,8 @@ function Dashboard(props) {
               >
               <Card
                 contentHeight={getContentHeight(rightDrawerState, 1)}
-                textColor={mode===MODETYPE.DARK?'#000':'#cacaca'}
-                headerBackgroundColor={mode===MODETYPE.DARK?'#cacaca':'#666'}
+                textColor={mode===MODETYPE.DARK?'#fff':'#000'}
+                headerBackgroundColor={mode===MODETYPE.DARK?'#333':'#666'}
                 backgroundColor={mode===MODETYPE.DARK?'#555':'#cacaca'}
                 isOpen={rightDrawerState.isFirstDrawerOpen}
                 top="0"
@@ -704,8 +777,8 @@ function Dashboard(props) {
               </Card>
               <Card
                 contentHeight={getContentHeight(rightDrawerState, 2)}
-                textColor={mode===MODETYPE.DARK?'#000':'#cacaca'}
-                headerBackgroundColor={mode===MODETYPE.DARK?'#cacaca':'#666'}
+                textColor={mode===MODETYPE.DARK?'#fff':'#000'}
+                headerBackgroundColor={mode===MODETYPE.DARK?'#333':'#666'}
                 backgroundColor={mode===MODETYPE.DARK?'#555':'#cacaca'}
                 isOpen={rightDrawerState.isSecondDrawerOpen}
                 top={getValue(calculateTop(rightDrawerState, 2), 2)}
@@ -727,9 +800,9 @@ function Dashboard(props) {
               </Card>
               <Card
                 contentHeight={getContentHeight(rightDrawerState, 3)}
-                textColor={mode===MODETYPE.DARK?'#000':'#cacaca'}
+                textColor={mode===MODETYPE.DARK?'#fff':'#000'}
+                headerBackgroundColor={mode===MODETYPE.DARK?'#333':'#666'}
                 color={mode===MODETYPE.DARK?'#cacaca':'#222'}
-                headerBackgroundColor={mode===MODETYPE.DARK?'#cacaca':'#666'}
                 backgroundColor={mode===MODETYPE.DARK?'#555':'#cacaca'}
                 isOpen={rightDrawerState.isThirdDrawerOpen}
                 top={getValue(calculateTop(rightDrawerState, 3), 3)}

@@ -9,7 +9,8 @@ import Home from './pages/home/home';
 import Dashboard from './pages/dashboard/dashboard';
 import Authentication from './pages/authentication/authentication';
 import Error from './pages/error/error';
-
+import Log from './pages/log/log';
+import PostPage from './pages/fullPostPage/postPage';
 function App() {
   return (
     <div className="App">
@@ -20,6 +21,12 @@ function App() {
           </Route>
           <Route path='/dashboard/:uid/:sid/:did'>
               <Dashboard/>
+          </Route>
+          <Route path='/log/:uid/:sid/:did'>
+              <Log/>
+          </Route>
+          <Route path='/post/:uid/:sid/:did/:pid'>
+            <PostPage/>
           </Route>
           <Route path='/auth/:uid'>
               <Authentication/>
