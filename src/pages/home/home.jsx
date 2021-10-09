@@ -63,6 +63,9 @@ export default function Home() {
                     <span style={{borderColor:mode===MODETYPE.DARK?'#fff':'#000',color:mode===MODETYPE.DARK?'#fff':'#222'}}>learn more</span>
                 </div>
             </div>
+            <div className='used-discord-div'>
+
+            </div>
             <div className='home-learn-more' style={{backgroundColor:mode===MODETYPE.DARK?'#555':'#cacaca'}}>
             </div>
         </div>
