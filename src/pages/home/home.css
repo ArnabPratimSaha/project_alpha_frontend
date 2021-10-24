@@ -94,6 +94,53 @@
 {
     height: 40rem;
 }
+.bot-server-used-div
+{
+    padding:0 5rem;
+    margin-top: 5rem;
+}
+.bot-server-used-div h1
+{
+    font-family: 'Oswald', sans-serif;
+    font-weight: 400;
+}
+.bot-server-used
+{
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+.bot-info-div
+{
+    padding:0 5rem;
+    margin-top: 15rem;
+}
+.bot-info-send-channel-info,.bot-info-send-dm-info,.bot-info-log
+{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+}
+.bot-info-send-dm-info
+{
+    flex-wrap: wrap-reverse;
+    margin-top: 10rem
+}
+.bot-info-log
+{
+    margin-top: 10rem;
+}
+.send-channel-info__image img,.send-dm-info__image img
+{
+
+}
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100&display=swap');
+.send-channel-info__text h1,.send-dm-info__text h1,.bot-info-log__text h1
+{
+    font-size: 1.2rem;
+    font-family: 'Roboto', sans-serif;
+}
 @media only screen and (max-width: 900px) {
     .bot-div
     {
