@@ -1,0 +1,20 @@
+.button-component
+{
+    cursor: pointer;
+    border: none;
+    padding: .8rem 2rem;
+    font-size: 1.2rem;
+    font-family: 'Roboto Condensed', sans-serif;
+    font-weight: 600;
+    border: 1px solid transparent;
+    border-radius: 5px;
+    filter: saturate(200%);
+}
+.button-component:focus
+{
+    outline: none;
+}
+.button-component:hover,.button-component:focus
+{
+    filter: saturate(100%);
+}

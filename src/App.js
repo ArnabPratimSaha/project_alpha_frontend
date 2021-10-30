@@ -28,7 +28,7 @@ function App() {
           <Route path='/post/:uid/:sid/:did/:pid'>
             <PostPage/>
           </Route>
-          <Route path='/auth/:uid'>
+          <Route path='/auth/:did'>
               <Authentication/>
           </Route>
           <Route path='/error/:code'>

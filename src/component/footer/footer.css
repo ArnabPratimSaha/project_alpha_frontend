@@ -1,0 +1,84 @@
+.footer-fulldiv
+{
+    width: 100%;
+    color: #acacac;
+    display: flex;
+    justify-content: space-between;
+    padding:5rem 10%;
+    position: relative;
+    box-sizing: border-box;
+}
+.footer-left-div
+{
+    width: 20%;
+    text-align: left;
+}
+.left-div-robot-div
+{
+    width: 10rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.copyright-section
+{
+    margin-top: 2rem;
+    font-size: .6rem;
+}
+.footer-right-div
+{
+    width: 50%;
+    display: flex;
+    justify-content: space-between;
+}
+.footer-right-div__one,.footer-right-div__two,.footer-right-div__three
+{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+.footer-right-div__one p,.footer-right-div__two p,.footer-right-div__three p
+{
+    font-size: .9rem;
+    font-family: 'Comfortaa', cursive;
+    margin-bottom: 2rem;
+}
+.footer-right-div__one a,.footer-right-div__two a,.footer-right-div__three a
+{
+    font-size: .8rem;
+    margin-bottom: 1rem;
+    color: inherit;
+    text-decoration: none;
+}
+.footer-right-div__one a:hover,.footer-right-div__two a:hover,.footer-right-div__three a:hover
+{
+    text-shadow: 2px 2px 5px #00bfff;
+}
+@media only screen and (max-width: 900px) {
+    .footer-fulldiv
+    {
+        padding:2rem 5%;
+        flex-direction: column;
+    }
+    .footer-left-div p
+    {
+        font-size: .8rem;
+    }
+    .footer-left-div
+    {
+        width:100%;
+    }
+    .footer-right-div
+    {
+        width: 100%;
+        text-align: left;
+    }
+    .footer-right-div__one p,.footer-right-div__two p,.footer-right-div__three p
+    {
+        font-size: .8rem;
+    }
+    .copyright-section
+    {
+        font-size: 0.5rem !important;
+    }
+}

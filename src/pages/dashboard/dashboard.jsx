@@ -20,6 +20,8 @@ import MemberButton from "./components/memberButton/memberButton";
 import Cookies, { set } from "js-cookie";
 import Switch from "../../component/switch/switch";
 import Toast from "../../component/toast/toast";
+import Modal from "../../component/modal/modal";
+import Footer from "../../component/footer/footer";
 
 const type={
   channel:'CHANNEL',
@@ -224,8 +226,10 @@ function Dashboard(props) {
   const maxDate = useRef(newDate);
   let { uid, sid, did } = useParams();
   const [mode, changeMode, MODETYPE, updateMode] = useMode();
-  const [messageType, setMessageType] = useState(type.channel)
-  const [selectedTime, setSelectedTime] = useState(calcTimeString(today.current))
+  const [isModalOn, setIsModalOn] = useState(false);
+  const [modalText, setModalText] = useState('');
+  const [messageType, setMessageType] = useState(type.channel);
+  const [selectedTime, setSelectedTime] = useState(calcTimeString(today.current));
   const [rightDivVisible, setRightDivVisible] = useState(
     window.innerWidth > 900 ? true : false
   );
@@ -239,7 +243,7 @@ function Dashboard(props) {
   const [activeGuild, setActiveGuild] = useState()
   const [focusOne, setFocusOne] = useState(false);
   const [focusTwo, setFocusTwo] = useState(false);
-  const data = useRef();
+  const data = useRef();//for temp user
   const [rightDrawerState, rightDrawerDispatch] = useReducer(rightReducer, {
     isFirstDrawerOpen: true,
     isSecondDrawerOpen: true,
@@ -283,7 +287,7 @@ function Dashboard(props) {
   const [showToast, setShowToast] = useState(false)//showing the toast
   const [toastMessage, setToastMessage] = useState('')//showing the toast message
   const [toastType, setToastType] = useState(toast.DEFAULT)//toast type
-  const [toastDuration, setToastDuration] = useState(4)
+  const [toastDuration, setToastDuration] = useState(4)//toast Duration
   const showToastMessage=(message,type,duration)=>{
     setShowToast(true);
     setToastMessage(message)
@@ -306,22 +310,20 @@ function Dashboard(props) {
 
     }
   }, [counter])
+  //temp user
   useEffect(() => {
-    if (
-      sid !== "null" &&
-      uid === "null" &&
-      Cookies.get("discordId") !== undefined &&
-      did === Cookies.get("discordId")
-    ) {
-      setIsTemp(false);
+    const discordId=Cookies.get("discordId");
+    if(!discordId && !sid)window.location='/home';
+    if(sid)setIsTemp(true);
+    else setIsTemp(false);
+    if (did === discordId) {
       setStatus(true);
       setUserName(Cookies.get("userName"));
       setImageSource(Cookies.get("avatar"));
       setUserTag(Cookies.get("userTag"));
     }
-    if (sid !== "null") {
+    else {
       setLoadingPercentage(0.2);
-      
       axios
         .get(`http://localhost:5000/link/info?did=${did}&sid=${sid}`)
         .then((res) => {
@@ -331,11 +333,19 @@ function Dashboard(props) {
             if (data.current) {
               setStatus(true);
               setIsTemp(true);
-              setUserName(data.current.userName);
-              setUserTag(data.current.userTag);
-              setImageSource(
-                `https://cdn.discordapp.com/avatars/${data.current.discordId}/${data.current.avatar}`
-              );
+              setIsModalOn(true);
+              setModalText('OTP is sent on your discord');
+              axios.get(`http://localhost:5000/link/sendcode?id=${did}&en=${sid}`).then((response)=>{
+                console.log('working');
+                Cookies.set('avatar',data.current.avatar)
+                Cookies.set('userName',data.current.userName);
+                Cookies.set('userTag',data.current.userTag);
+                setUserName(data.current.userName);
+                setUserTag(data.current.userTag);
+                setImageSource(data.current.avatar);
+              }).catch((e)=>{
+                console.log(e);
+              })
             }
           }
           setTimeout(() => {
@@ -343,33 +353,35 @@ function Dashboard(props) {
           }, 200);
         })
         .catch((error) => {
+          console.log(error);
           window.location = `/error/${error.response.status}`;
         });
-    }
-  }, []);
-  const handleLogout = () => {
-    setStatus((status) => !status);
-    Cookies.remove("id");
-    Cookies.remove("userName");
-    Cookies.remove("userTag");
-    Cookies.remove("avatar");
-  };
-  const handleOnModeUpdate = () => {
-    updateMode();
-  };
-  //managing the right div size
-  useEffect(() => {
+      }
+    }, []);
+    const handleLogout = () => {
+      setStatus((status) => !status);
+      Cookies.remove("id");
+      Cookies.remove("discordId");
+      Cookies.remove("userName");
+      Cookies.remove("userTag");
+      Cookies.remove("avatar");
+    };
+const handleOnModeUpdate = () => {
+      updateMode();
+    };
+    //managing the right div size
+    useEffect(() => {
     window.addEventListener("resize", () => {
       window.innerWidth>900?setBottomBarWidth(16.667):setBottomBarWidth(14.28571)
       window.innerWidth > 900
-        ? setRightDivVisible(true)
-        : setRightDivVisible(false);
-    
+      ? setRightDivVisible(true)
+      : setRightDivVisible(false);
+      
     });
     window.addEventListener("resize", () => {
       window.innerWidth > 900
-        ? setLeftDivWidthFull(false)
-        : setLeftDivWidthFull(true)
+      ? setLeftDivWidthFull(false)
+      : setLeftDivWidthFull(true)
     });
     return ()=>{
       // window.removeEventListener('resize');
@@ -562,11 +574,40 @@ function Dashboard(props) {
   const handleTimeChange=(e)=>{
     setSelectedTime(e.target.value)
   }
+  const handleModalClick = (v) => {
+    axios.get(`http://localhost:5000/link/validate?id=${did}&en=${sid}&c=${v}`).then((response) => {
+      if(response.status===200)
+      {
+        showToastMessage(`Welcome ${userName}#${userTag}`, toast.DEFAULT, 3);
+        Cookies.set('discordId',data.current.discordId);
+      }
+      else
+      {
+        setStatus((status) => !status);
+        if(!Cookies.get('id'))
+        {
+          Cookies.remove("discordId");
+          Cookies.remove("userName");
+          Cookies.remove("userTag");
+          Cookies.remove("avatar");
+        }
+      }
+    }).catch((error) => {
+      showToastMessage('OOPS.. wrong OTP', toast.ERROR, 3);
+      if(!Cookies.get('id'))
+        {
+          Cookies.remove("discordId");
+          Cookies.remove("userName");
+          Cookies.remove("userTag");
+          Cookies.remove("avatar");
+        }
+    })
+  }
   return (
     <>
       <Navbar
         onUpdateMode={handleOnModeUpdate}
-        userName={userName}
+        userName={userName}w
         userTag={userTag}
         imageSource={imageSource}
         status={status}
@@ -574,7 +615,8 @@ function Dashboard(props) {
         isTemp={isTemp}
         loadingPercentage={loadingPercentage}
       />
-      <Toast isOpen={showToast} message={toastMessage} toastType={toastType} onClose={()=>{setShowToast(false)}} toastDuration={toastDuration}/>
+      <Modal isOpen={isModalOn} onClick={handleModalClick} text={modalText} mode={mode} MODETYPE={MODETYPE} />
+      <Toast isOpen={showToast} message={toastMessage} toastType={toastType} onClose={() => { setShowToast(false) }} toastDuration={toastDuration} />
       <div
         className="dashboard-full-div" style={{backgroundColor: mode === MODETYPE.DARK ? "#444" : "#cacacaca",}}>
         <div className="dashboard-content-div">
@@ -826,9 +868,7 @@ function Dashboard(props) {
           </div>
         </div>
       </div>
-      <div style={{width:"100%",height:'20rem'}}>
-
-      </div>
+      <Footer mode={mode} MODETYPE={MODETYPE}/>
     </>
   );
 }

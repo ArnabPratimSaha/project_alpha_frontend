@@ -58,15 +58,15 @@ export default function Navbar(props) {
     }
     return (
         <div>
-            <div className='main-body' style={{height:shrink?'3rem':'5rem',backgroundColor:mode===MODETYPE.DARK?'#333':'#cacaca'}}>
-                <div className='navbar-svg' style={{backgroundColor:mode===MODETYPE.DARK?'#333':'#cacaca'}}>
+            <div className='main-body' style={{height:shrink?'3rem':'5rem',backgroundColor:mode===MODETYPE.DARK?'#222':'#a8a8a8'}}>
+                <div className='navbar-svg' style={{backgroundColor:mode===MODETYPE.DARK?'#222':'#a8a8a8'}}>
                     <ViviFace/>
                 </div>
-                <div className='navbar-loading-div' style={{backgroundColor:mode===MODETYPE.DARK?'#333':'#cacaca'}}>
+                <div className='navbar-loading-div' style={{backgroundColor:mode===MODETYPE.DARK?'#222':'#a8a8a8'}}>
                     <div className='navbar-loading-bar' style={{transform:`scaleX(${loadingPercentage})`}}>
                     </div>
                 </div>
-                <div className='navbar-links' style={{color:mode===MODETYPE.DARK?'#fff':'#222',backgroundColor:mode===MODETYPE.DARK?'#333':'#cacaca'}}>
+                <div className='navbar-links' style={{color:mode===MODETYPE.DARK?'#fff':'#222',backgroundColor:mode===MODETYPE.DARK?'#222':'#a8a8a8'}}>
                     <a className='navbar-links__link' href='/home' style={{color:mode===MODETYPE.DARK?'#fff':'#222'}}>
                         Home
                     </a>
@@ -80,7 +80,7 @@ export default function Navbar(props) {
                         Learn About
                     </a>
                 </div>
-                <div className='navbar-credentials' style={{color:mode===MODETYPE.DARK?'#fff':'#222',backgroundColor:mode===MODETYPE.DARK?'#333':'#cacaca'}}>
+                <div className='navbar-credentials' style={{color:mode===MODETYPE.DARK?'#fff':'#222',backgroundColor:mode===MODETYPE.DARK?'#222':'#a8a8a8'}}>
                     {!props.status &&<div className='navbar-login' onClick={handleLogin}>
                         <span>Log in</span>
                     </div>}

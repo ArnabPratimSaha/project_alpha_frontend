@@ -10,6 +10,9 @@ import Dropdown from "../../component/dropdown/dropdown";
 import SearchBar from "../../component/search-bar/searchBar";
 import PageToggler from "../../component/pageToggeler/pageToggler";
 import ScrollComponent from "../../component/infiniteScrollComponent/scrollComponent";
+import RobotDown from "../../component/robotdown/robotDown";
+import Modal from "../../component/modal/modal";
+import Toast from "../../component/toast/toast";
 var newDate = new Date();
 var numberOfDaysToAdd = 1;
 const page={
@@ -22,13 +25,27 @@ const status={
     CANCELLED:'CANCELLED',
     SENT:'SENT',
 }
+const toast={
+    DEFAULT:'DEFAULT',
+    WARNING:'WARNING',
+    ERROR:'ERROR'
+  }
 newDate.setDate(newDate.getDate() + numberOfDaysToAdd);
-const limit=10;
+const limit=15;//limit of requesting logs per request
 let cancelSearchReq;
 function Log(props) {
     let { uid, sid, did } = useParams();
     const firstTimePageChange = useRef(true)
     const firstTimeFilterChange = useRef(true)
+
+    const [isModalOn, setIsModalOn] = useState(false);//modal
+    const [modalText, setModalText] = useState('');//modal
+    const data = useRef();//for temp user
+
+    const [showToast, setShowToast] = useState(false)//showing the toast
+    const [toastMessage, setToastMessage] = useState('')//showing the toast message
+    const [toastType, setToastType] = useState(toast.DEFAULT)//toast type
+    const [toastDuration, setToastDuration] = useState(4)//toast Duration
 
     const [activePage, setActivePage] = useState(page.ALL)//page thats active
 
@@ -66,6 +83,53 @@ function Log(props) {
         Cookies.remove("userTag");
         Cookies.remove("avatar");
     };
+    //temp user
+    useEffect(() => {
+        if (
+            sid !== "null" &&
+            uid === "null" &&
+            Cookies.get("discordId") !== undefined &&
+            did === Cookies.get("discordId")
+        ) {
+            setIsTemp(false);
+            setStatus(true);
+            setUserName(Cookies.get("userName"));
+            setImageSource(Cookies.get("avatar"));
+            setUserTag(Cookies.get("userTag"));
+        }
+        if (sid !== "null") {
+            setLoadingPercentage(0.2);
+
+            axios
+                .get(`http://localhost:5000/link/info?did=${did}&sid=${sid}`)
+                .then((res) => {
+                    setLoadingPercentage(1);
+                    if (res.status === 200) {
+                        data.current = JSON.parse(res.data);
+                        if (data.current) {
+                            setStatus(true);
+                            setIsTemp(true);
+                            setIsModalOn(true);
+                            setModalText('OTP is sent on your discord');
+                            axios.get(`http://localhost:5000/link/sendcode?id=${did}&en=${sid}`).then((response) => {
+                                setUserName(data.current.userName);
+                                setUserTag(data.current.userTag);
+                                setImageSource(data.current.avatar);
+                            }).catch((e) => {
+                                console.log(e);
+                            })
+                        }
+                    }
+                    setTimeout(() => {
+                        setLoadingPercentage(0);
+                    }, 200);
+                })
+                .catch((error) => {
+                    console.log(error);
+                    window.location = `/error/${error.response.status}`;
+                });
+        }
+    }, []);
     const handleOnModeUpdate = () => {
         updateMode();
     };
@@ -222,6 +286,20 @@ function Log(props) {
 
         }
     }
+    const showToastMessage=(message,type,duration)=>{
+        setShowToast(true);
+        setToastMessage(message)
+        setToastType(type)
+        setToastDuration(duration)
+      }
+    //handle modal click
+    const handleModalClick = (v) => {
+        axios.get(`http://localhost:5000/link/validate?id=${did}&en=${sid}&c=${v}`).then((response) => {
+          showToastMessage(`Welcome ${userName}#${userTag}`, toast.DEFAULT, 3);
+        }).catch((error) => {
+          showToastMessage('OOPS.. wrong OTP', toast.ERROR, 3);
+        })
+      }
     return (
         <>
             <Navbar
@@ -234,7 +312,9 @@ function Log(props) {
                 isTemp={isTemp}
                 loadingPercentage={loadingPercentage}
             />
-            <div className='log-body' style={{backgroundColor: mode === MODETYPE.DARK ? "#444" : "#EEEEEE",}}>
+            <Modal isOpen={isModalOn} onClick={handleModalClick} text={modalText} mode={mode} MODETYPE={MODETYPE} />
+            <Toast isOpen={showToast} message={toastMessage} toastType={toastType} onClose={() => { setShowToast(false) }} toastDuration={toastDuration} />
+            <div className='log-body' style={{backgroundColor: mode === MODETYPE.DARK ? "#333" : "#cacaca",}}>
                 <div className='log-history' >
                     <div className='log-history-setting' style={{borderColor: mode === MODETYPE.DARK ? "#cacaca" : "#333",}}>
                         <div className='log-history-setting-sort-div' style={{color: mode === MODETYPE.DARK ? "#fff" : "#444",}}>
@@ -248,14 +328,20 @@ function Log(props) {
                     </div>
                     <div className='log-history-output' style={{ backgroundColor: mode === MODETYPE.DARK ? "#444" : "#EEEEEE", }}>
                         <div className='log-history-output-history' style={{ zIndex: activePage === page.ALL ? '2' : '1', backgroundColor: mode === MODETYPE.DARK ? "#444" : "#EEEEEE" }}>
-                            <ScrollComponent className='log-history-output-history-content' onIntersect={fetchHistoryData} hasMore={hasMoreHistoryData}>
+                            {historyData&&<ScrollComponent className='log-history-output-history-content' onIntersect={fetchHistoryData} hasMore={hasMoreHistoryData}>
                                 {historyData.map((e, i) => <Bar mode={mode} key={i} MODETYPE={MODETYPE} status={e.status} time={e.time} title={e.title} mid={e.messageId} guildName={e.guildName} icon={e.guildAvatar} fav={e.favourite} onStarClick={handleStartClick} uid={uid} did={did}/>)}
-                            </ScrollComponent>
+                            </ScrollComponent>}
+                            {favouriteData.length===0&&<div className='log-empty-result-div'>
+                                <h1>NO DATA FOUND</h1>
+                            </div>}
                         </div>
                         <div className='log-history-output-favourite' style={{zIndex:activePage===page.FAVOURITE?'2':'1',backgroundColor: mode === MODETYPE.DARK ? "#444" : "#EEEEEE"}}>
-                            <ScrollComponent className='log-history-output-history-content' onIntersect={fetchFavouriteDate} hasMore={hasMoreFavouriteData}>
+                            {favouriteData&&<ScrollComponent className='log-history-output-history-content' onIntersect={fetchFavouriteDate} hasMore={hasMoreFavouriteData}>
                                 {favouriteData.map((e, i) => <Bar mode={mode} key={i} MODETYPE={MODETYPE} status={e.status} time={e.time} title={e.title} guildName={e.guildName} mid={e.messageId} icon={e.guildAvatar} fav={e.favourite} onStarClick={handleStartClick} uid={uid} did={did}/>)}
-                            </ScrollComponent>
+                            </ScrollComponent>}
+                            {favouriteData.length===0&&<div className='log-empty-result-div'>
+                                <h1>NO DATA FOUND</h1>
+                            </div>}
                         </div>
                     </div>
                 </div>

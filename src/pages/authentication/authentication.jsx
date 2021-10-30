@@ -7,9 +7,9 @@ import axios from 'axios';
 import Cookie from 'js-cookie';
 import Loader from "react-loader-spinner";
 import { colorPalettes } from '../../stylesandthemes/themes';
-const fetchData=async(type,value)=>{
+const fetchData=async(id)=>{
     try {
-        const res=await axios.get(`http://localhost:5000/user/info?type=${type}&value=${value}`)
+        const res=await axios.get(`http://localhost:5000/user/info?id=${id}`)
         console.log(res);
         if(res.status===200)
         {
@@ -27,7 +27,7 @@ const fetchData=async(type,value)=>{
 
 function Authentication() {
     const [mode, changeMode, MODETYPE, updateMode] = useMode();
-    const {uid}=useParams();
+    const {did}=useParams();
     const [isVerifying, setIsVerifying] = useState(true)
     const [verified, setVerified] = useState(false)
     const [message, setMessage] = useState('verifying')
@@ -36,7 +36,7 @@ function Authentication() {
     const [userTag,setUserTag]=useState(null);
     const data = useRef(null)
     useEffect(()=>{
-        fetchData('userId',uid).then((res)=>{
+        fetchData(did).then((res)=>{
             console.log(res);
             if(res.status===200)
             {
@@ -62,8 +62,8 @@ function Authentication() {
             Cookie.set('discordId',data.current.discordId,{expires:14});
             Cookie.set('userName',data.current.userName,{expires:14});
             Cookie.set('userTag',data.current.userTag,{expires:14});
-            Cookie.set('avatar',`https://cdn.discordapp.com/avatars/${data.current.discordId}/${data.current.avatar}`,{expires:14})
-            setImageSource(`https://cdn.discordapp.com/avatars/${data.current.discordId}/${data.current.avatar}`)
+            Cookie.set('avatar',data.current.avatar,{expires:14})
+            setImageSource(data.current.avatar)
             setUserName(data.current.userName)
             setUserTag(data.current.userTag)
             setMessage('redirecting to home')
