@@ -224,10 +224,8 @@ function Dashboard(props) {
   const [counter, setCounter] = useState(0)
   const today = useRef(new Date());
   const maxDate = useRef(newDate);
-  let { uid, sid, did } = useParams();
+  let { uid, did } = useParams();
   const [mode, changeMode, MODETYPE, updateMode] = useMode();
-  const [isModalOn, setIsModalOn] = useState(false);
-  const [modalText, setModalText] = useState('');
   const [messageType, setMessageType] = useState(type.channel);
   const [selectedTime, setSelectedTime] = useState(calcTimeString(today.current));
   const [rightDivVisible, setRightDivVisible] = useState(
@@ -243,26 +241,22 @@ function Dashboard(props) {
   const [activeGuild, setActiveGuild] = useState()
   const [focusOne, setFocusOne] = useState(false);
   const [focusTwo, setFocusTwo] = useState(false);
-  const data = useRef();//for temp user
   const [rightDrawerState, rightDrawerDispatch] = useReducer(rightReducer, {
     isFirstDrawerOpen: true,
     isSecondDrawerOpen: true,
     isThirdDrawerOpen: true,
   });
   const [status, setStatus] = useState(
-    sid === "null" && Cookies.get("id") ? true : false
-  ); //logged in
-  const [isTemp, setIsTemp] = useState(
-    sid === "null" && Cookies.get("id") ? false : true
+    Cookies.get('temp_id')||Cookies.get('id') ? true : false
   ); //logged in
   const [imageSource, setImageSource] = useState(
-    sid === "null" && Cookies.get("avatar") ? Cookies.get("avatar") : null
+    Cookies.get('temp_id')? Cookies.get("temp_avatar") : Cookies.get('id')?Cookies.get("avatar"):null
   );
   const [userName, setUserName] = useState(
-    sid === "null" && Cookies.get("userName") ? Cookies.get("userName") : false
+    Cookies.get('temp_id')? Cookies.get("temp_userName") : Cookies.get('id')?Cookies.get("userName"):null
   );
   const [userTag, setUserTag] = useState(
-    sid === "null" && Cookies.get("userTag") ? Cookies.get("userTag") : false
+    Cookies.get('temp_id')? Cookies.get("temp_userTag") : Cookies.get('id')?Cookies.get("userTag"):null
   );
   const [loadingPercentage, setLoadingPercentage] = useState(0);
   const [discordData,setDiscordData]=useState(null);
@@ -284,6 +278,7 @@ function Dashboard(props) {
 
   const [checked, setChecked] = useState(true)//getting the dm
   const [isReady, setIsReady] = useState(false)//ready to be sent
+  
   const [showToast, setShowToast] = useState(false)//showing the toast
   const [toastMessage, setToastMessage] = useState('')//showing the toast message
   const [toastType, setToastType] = useState(toast.DEFAULT)//toast type
@@ -312,59 +307,33 @@ function Dashboard(props) {
   }, [counter])
   //temp user
   useEffect(() => {
-    const discordId=Cookies.get("discordId");
-    if(!discordId && !sid)window.location='/home';
-    if(sid)setIsTemp(true);
-    else setIsTemp(false);
-    if (did === discordId) {
-      setStatus(true);
-      setUserName(Cookies.get("userName"));
-      setImageSource(Cookies.get("avatar"));
-      setUserTag(Cookies.get("userTag"));
-    }
-    else {
-      setLoadingPercentage(0.2);
-      axios
-        .get(`http://localhost:5000/link/info?did=${did}&sid=${sid}`)
-        .then((res) => {
-          setLoadingPercentage(1);
-          if (res.status === 200) {
-            data.current = JSON.parse(res.data);
-            if (data.current) {
-              setStatus(true);
-              setIsTemp(true);
-              setIsModalOn(true);
-              setModalText('OTP is sent on your discord');
-              axios.get(`http://localhost:5000/link/sendcode?id=${did}&en=${sid}`).then((response)=>{
-                console.log('working');
-                Cookies.set('avatar',data.current.avatar)
-                Cookies.set('userName',data.current.userName);
-                Cookies.set('userTag',data.current.userTag);
-                setUserName(data.current.userName);
-                setUserTag(data.current.userTag);
-                setImageSource(data.current.avatar);
-              }).catch((e)=>{
-                console.log(e);
-              })
-            }
-          }
-          setTimeout(() => {
-            setLoadingPercentage(0);
-          }, 200);
-        })
-        .catch((error) => {
-          console.log(error);
-          window.location = `/error/${error.response.status}`;
-        });
-      }
-    }, []);
+    if(uid==='undefined' || did==='undefined')window.location=`${process.env.REACT_APP_BACKENDAPI}auth/discord`;
+    axios.get(`${process.env.REACT_APP_BACKENDAPI}user/info?uid=${uid}&did=${did}`).then(res=>{
+
+    }).catch(e=>{
+
+    })
+  }, []);
     const handleLogout = () => {
-      setStatus((status) => !status);
-      Cookies.remove("id");
-      Cookies.remove("discordId");
-      Cookies.remove("userName");
-      Cookies.remove("userTag");
-      Cookies.remove("avatar");
+      if(!Cookies.get('temp_id')) setStatus((status) => !status);
+      if(Cookies.get('temp_id'))
+      {
+        Cookies.remove("temp_id");
+        Cookies.remove("temp_discordId");
+        Cookies.remove("temp_userName");
+        Cookies.remove("temp_userTag");
+        Cookies.remove("temp_avatar");
+      }
+      else
+      {
+        Cookies.remove("id");
+        Cookies.remove("discordId");
+        Cookies.remove("userName");
+        Cookies.remove("userTag");
+        Cookies.remove("avatar");
+
+      }
+      window.location='/home';
     };
 const handleOnModeUpdate = () => {
       updateMode();
@@ -574,35 +543,6 @@ const handleOnModeUpdate = () => {
   const handleTimeChange=(e)=>{
     setSelectedTime(e.target.value)
   }
-  const handleModalClick = (v) => {
-    axios.get(`http://localhost:5000/link/validate?id=${did}&en=${sid}&c=${v}`).then((response) => {
-      if(response.status===200)
-      {
-        showToastMessage(`Welcome ${userName}#${userTag}`, toast.DEFAULT, 3);
-        Cookies.set('discordId',data.current.discordId);
-      }
-      else
-      {
-        setStatus((status) => !status);
-        if(!Cookies.get('id'))
-        {
-          Cookies.remove("discordId");
-          Cookies.remove("userName");
-          Cookies.remove("userTag");
-          Cookies.remove("avatar");
-        }
-      }
-    }).catch((error) => {
-      showToastMessage('OOPS.. wrong OTP', toast.ERROR, 3);
-      if(!Cookies.get('id'))
-        {
-          Cookies.remove("discordId");
-          Cookies.remove("userName");
-          Cookies.remove("userTag");
-          Cookies.remove("avatar");
-        }
-    })
-  }
   return (
     <>
       <Navbar
@@ -612,10 +552,9 @@ const handleOnModeUpdate = () => {
         imageSource={imageSource}
         status={status}
         handleLogout={handleLogout}
-        isTemp={isTemp}
+        isTemp={false}
         loadingPercentage={loadingPercentage}
       />
-      <Modal isOpen={isModalOn} onClick={handleModalClick} text={modalText} mode={mode} MODETYPE={MODETYPE} />
       <Toast isOpen={showToast} message={toastMessage} toastType={toastType} onClose={() => { setShowToast(false) }} toastDuration={toastDuration} />
       <div
         className="dashboard-full-div" style={{backgroundColor: mode === MODETYPE.DARK ? "#444" : "#cacacaca",}}>

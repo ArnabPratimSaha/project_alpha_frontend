@@ -54,7 +54,7 @@ export default function Navbar(props) {
         }, 1000);
     }
     const handleLogin=()=>{
-        window.location='http://localhost:5000/auth/discord'
+        window.location=`${process.env.REACT_APP_BACKENDAPI}auth/discord`
     }
     return (
         <div>
@@ -70,10 +70,10 @@ export default function Navbar(props) {
                     <a className='navbar-links__link' href='/home' style={{color:mode===MODETYPE.DARK?'#fff':'#222'}}>
                         Home
                     </a>
-                    <a className='navbar-links__link' href={`/dashboard/${Cookies.get('id')}/null/${Cookies.get('discordId')}`} style={{color:mode===MODETYPE.DARK?'#fff':'#222'}}> 
+                    <a className='navbar-links__link' href={`/dashboard/${Cookies.get('temp_id')?Cookies.get('temp_id'):Cookies.get('id')}/${Cookies.get('temp_discordId')?Cookies.get('temp_discordId'):Cookies.get('discordId')}`} style={{color:mode===MODETYPE.DARK?'#fff':'#222'}}> 
                         Dashboard
                     </a>
-                    <a className='navbar-links__link' href={`/log/${Cookies.get('id')}/null/${Cookies.get('discordId')}`} style={{color:mode===MODETYPE.DARK?'#fff':'#222'}}>
+                    <a className='navbar-links__link' href={`/log/${Cookies.get('temp_id')?Cookies.get('temp_id'):Cookies.get('id')}/${Cookies.get('temp_discordId')?Cookies.get('temp_discordId'):Cookies.get('discordId')}`} style={{color:mode===MODETYPE.DARK?'#fff':'#222'}}>
                         Log
                     </a>
                     <a className='navbar-links__link' style={{color:mode===MODETYPE.DARK?'#fff':'#222'}}>
@@ -84,24 +84,24 @@ export default function Navbar(props) {
                     {!props.status &&<div className='navbar-login' onClick={handleLogin}>
                         <span>Log in</span>
                     </div>}
-                    {props.status &&<div>
+                    {props.status &&<div className='navbar-loggedin-div'>
                         <div className='circle-image' >
                             <img src={props.imageSource} onClick={handleFocus}/> 
                             <span>{`${props.userName} #${props.userTag}`}</span>
-                            {!props.isTemp &&<div className='navbar-logout' onClick={onLogout}>
-                                <span>
-                                    Log Out
-                                </span>
-                            </div>}
                         </div>
-                        <div className='navbar-info-div' style={{backgroundColor:mode===MODETYPE.DARK?`#555`:`#cacacaca`}}>
+                        {!props.isTemp &&<div className='navbar-logout' onClick={onLogout}>
+                            <span>
+                                Log Out
+                            </span>
+                        </div>}
+                        {/* <div className='navbar-info-div' style={{backgroundColor:mode===MODETYPE.DARK?`#555`:`#cacacaca`}}>
                             <span>{`${props.userName} #${props.userTag}`}</span>
                             {!props.isTemp && <div className='navbar-logout-2' onClick={onLogout}>
                                 <span>
                                     Log Out
                                 </span>
                             </div>}
-                        </div>
+                        </div> */}
                     </div>}
                 </div>
                 <div className='navbar-theme-togle' >

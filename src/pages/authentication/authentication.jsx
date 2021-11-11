@@ -7,9 +7,9 @@ import axios from 'axios';
 import Cookie from 'js-cookie';
 import Loader from "react-loader-spinner";
 import { colorPalettes } from '../../stylesandthemes/themes';
-const fetchData=async(id)=>{
+const fetchData=async(id,uid)=>{
     try {
-        const res=await axios.get(`http://localhost:5000/user/info?id=${id}`)
+        const res=await axios.get(`${process.env.REACT_APP_BACKENDAPI}user/info?did=${id}&uid=${uid}`)
         console.log(res);
         if(res.status===200)
         {
@@ -27,7 +27,7 @@ const fetchData=async(id)=>{
 
 function Authentication() {
     const [mode, changeMode, MODETYPE, updateMode] = useMode();
-    const {did}=useParams();
+    const {did,uid}=useParams();
     const [isVerifying, setIsVerifying] = useState(true)
     const [verified, setVerified] = useState(false)
     const [message, setMessage] = useState('verifying')
@@ -36,7 +36,7 @@ function Authentication() {
     const [userTag,setUserTag]=useState(null);
     const data = useRef(null)
     useEffect(()=>{
-        fetchData(did).then((res)=>{
+        fetchData(did,uid).then((res)=>{
             console.log(res);
             if(res.status===200)
             {
@@ -49,10 +49,10 @@ function Authentication() {
             {
                 setIsVerifying(false);
                 setVerified(false)
-                window.location=`/error/${res.status}`
+                // window.location=`/error/${res.status}`;
             }
         }).catch((err)=>{
-            window.location=`/error/700`
+            // window.location=`/error/700`;
         })
     },[])
     useEffect(()=>{

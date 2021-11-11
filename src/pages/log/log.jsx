@@ -34,18 +34,9 @@ newDate.setDate(newDate.getDate() + numberOfDaysToAdd);
 const limit=15;//limit of requesting logs per request
 let cancelSearchReq;
 function Log(props) {
-    let { uid, sid, did } = useParams();
+    let { uid, did } = useParams();
     const firstTimePageChange = useRef(true)
     const firstTimeFilterChange = useRef(true)
-
-    const [isModalOn, setIsModalOn] = useState(false);//modal
-    const [modalText, setModalText] = useState('');//modal
-    const data = useRef();//for temp user
-
-    const [showToast, setShowToast] = useState(false)//showing the toast
-    const [toastMessage, setToastMessage] = useState('')//showing the toast message
-    const [toastType, setToastType] = useState(toast.DEFAULT)//toast type
-    const [toastDuration, setToastDuration] = useState(4)//toast Duration
 
     const [activePage, setActivePage] = useState(page.ALL)//page thats active
 
@@ -61,75 +52,45 @@ function Log(props) {
     const [historyData, setHistoryData] = useState([]);
     const [favouriteData, setFavouriteData] = useState([]);
     const [query, setQuery] = useState('')
+    const [status, setStatus] = useState(
+        Cookies.get('temp_id') || Cookies.get('id') ? true : false
+    ); //logged in
     const [imageSource, setImageSource] = useState(
-        sid === "null" && Cookies.get("avatar") ? Cookies.get("avatar") : null
+        Cookies.get('temp_id') ? Cookies.get("temp_avatar") : Cookies.get('id') ? Cookies.get("avatar") : null
     );
     const [userName, setUserName] = useState(
-        sid === "null" && Cookies.get("userName") ? Cookies.get("userName") : false
+        Cookies.get('temp_id') ? Cookies.get("temp_userName") : Cookies.get('id') ? Cookies.get("userName") : null
     );
     const [userTag, setUserTag] = useState(
-        sid === "null" && Cookies.get("userTag") ? Cookies.get("userTag") : false
+        Cookies.get('temp_id') ? Cookies.get("temp_userTag") : Cookies.get('id') ? Cookies.get("userTag") : null
     );
-    const [status, setStatus] = useState(
-        sid === "null" && Cookies.get("id") ? true : false
-    ); //logged in
-    const [isTemp, setIsTemp] = useState(
-        sid === "null" && Cookies.get("id") ? false : true
-    ); //logged in
-    const handleLogout = () => {
-        setStatus((status) => !status);
-        Cookies.remove("id");
-        Cookies.remove("userName");
-        Cookies.remove("userTag");
-        Cookies.remove("avatar");
-    };
-    //temp user
     useEffect(() => {
-        if (
-            sid !== "null" &&
-            uid === "null" &&
-            Cookies.get("discordId") !== undefined &&
-            did === Cookies.get("discordId")
-        ) {
-            setIsTemp(false);
-            setStatus(true);
-            setUserName(Cookies.get("userName"));
-            setImageSource(Cookies.get("avatar"));
-            setUserTag(Cookies.get("userTag"));
-        }
-        if (sid !== "null") {
-            setLoadingPercentage(0.2);
+        if (!Cookies.get('temp_id') && !Cookies.get('id')) window.location = './home';
+        axios.get(`${process.env.REACT_APP_BACKENDAPI}user/info?uid=${uid}&did=${did}`).then(res => {
 
-            axios
-                .get(`http://localhost:5000/link/info?did=${did}&sid=${sid}`)
-                .then((res) => {
-                    setLoadingPercentage(1);
-                    if (res.status === 200) {
-                        data.current = JSON.parse(res.data);
-                        if (data.current) {
-                            setStatus(true);
-                            setIsTemp(true);
-                            setIsModalOn(true);
-                            setModalText('OTP is sent on your discord');
-                            axios.get(`http://localhost:5000/link/sendcode?id=${did}&en=${sid}`).then((response) => {
-                                setUserName(data.current.userName);
-                                setUserTag(data.current.userTag);
-                                setImageSource(data.current.avatar);
-                            }).catch((e) => {
-                                console.log(e);
-                            })
-                        }
-                    }
-                    setTimeout(() => {
-                        setLoadingPercentage(0);
-                    }, 200);
-                })
-                .catch((error) => {
-                    console.log(error);
-                    window.location = `/error/${error.response.status}`;
-                });
-        }
+        }).catch(e => {
+            window.location='/home'//work
+        })
     }, []);
+    const handleLogout = () => {
+        if(!Cookies.get('temp_id')) setStatus((status) => !status);
+        if (Cookies.get('temp_id')) {
+            Cookies.remove("temp_id");
+            Cookies.remove("temp_discordId");
+            Cookies.remove("temp_userName");
+            Cookies.remove("temp_userTag");
+            Cookies.remove("temp_avatar");
+        }
+        else {
+            Cookies.remove("id");
+            Cookies.remove("discordId");
+            Cookies.remove("userName");
+            Cookies.remove("userTag");
+            Cookies.remove("avatar");
+
+        }
+        window.location = '/home';
+    };
     const handleOnModeUpdate = () => {
         updateMode();
     };
@@ -286,20 +247,6 @@ function Log(props) {
 
         }
     }
-    const showToastMessage=(message,type,duration)=>{
-        setShowToast(true);
-        setToastMessage(message)
-        setToastType(type)
-        setToastDuration(duration)
-      }
-    //handle modal click
-    const handleModalClick = (v) => {
-        axios.get(`http://localhost:5000/link/validate?id=${did}&en=${sid}&c=${v}`).then((response) => {
-          showToastMessage(`Welcome ${userName}#${userTag}`, toast.DEFAULT, 3);
-        }).catch((error) => {
-          showToastMessage('OOPS.. wrong OTP', toast.ERROR, 3);
-        })
-      }
     return (
         <>
             <Navbar
@@ -309,11 +256,9 @@ function Log(props) {
                 imageSource={imageSource}
                 status={status}
                 handleLogout={handleLogout}
-                isTemp={isTemp}
+                isTemp={false}
                 loadingPercentage={loadingPercentage}
             />
-            <Modal isOpen={isModalOn} onClick={handleModalClick} text={modalText} mode={mode} MODETYPE={MODETYPE} />
-            <Toast isOpen={showToast} message={toastMessage} toastType={toastType} onClose={() => { setShowToast(false) }} toastDuration={toastDuration} />
             <div className='log-body' style={{backgroundColor: mode === MODETYPE.DARK ? "#333" : "#cacaca",}}>
                 <div className='log-history' >
                     <div className='log-history-setting' style={{borderColor: mode === MODETYPE.DARK ? "#cacaca" : "#333",}}>
