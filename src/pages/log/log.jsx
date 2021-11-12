@@ -258,6 +258,8 @@ function Log(props) {
                 handleLogout={handleLogout}
                 isTemp={false}
                 loadingPercentage={loadingPercentage}
+                page={'log'}
+                key={'log'}
             />
             <div className='log-body' style={{backgroundColor: mode === MODETYPE.DARK ? "#333" : "#cacaca",}}>
                 <div className='log-history' >

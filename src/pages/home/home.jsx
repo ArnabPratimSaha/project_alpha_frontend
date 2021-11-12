@@ -64,7 +64,7 @@ export default function Home() {
     }, [])
     return (
         <div className='home-full-div' style={{ backgroundColor: mode === MODETYPE.DARK ? '#444' : '#cacacaca' }}>
-            <Navbar onUpdateMode={handleOnModeUpdate} userName={userName} userTag={userTag} imageSource={imageSource} status={status} handleLogout={handleLogout} />
+            <Navbar key='home' onUpdateMode={handleOnModeUpdate} userName={userName} userTag={userTag} imageSource={imageSource} status={status} handleLogout={handleLogout} page={'home'}/>
             <div className='home-intro' >
                 <div className='home-intro__title' style={{ color: mode === MODETYPE.DARK ? '#fff' : '#233' }}>
                     <h1>Let Vivi handle your anouncement's</h1>
@@ -83,7 +83,7 @@ export default function Home() {
                     <h1 style={{ color: mode === MODETYPE.DARK ? '#fff' : '#222' }}>{`VIVI is popular among ${serverInfo && serverInfo.length} servers`}</h1>
                 </Brightup>
                 <div className='bot-server-used'>
-                    {serverInfo.map((i, index) => <Brightup type='Y' direction='+' delay={400 * index}><Server mode={mode} MODETYPE={MODETYPE} count={i.memberCount} name={i.name} img={i.avater} isPartnered={i.isPartnered} /></Brightup>)}
+                    {serverInfo.map((i, index) => <Brightup key={index} type='Y' direction='+' delay={400 * index}><Server mode={mode} MODETYPE={MODETYPE} count={i.memberCount} name={i.name} img={i.avater} isPartnered={i.isPartnered} /></Brightup>)}
                 </div>
             </div>}
             <div className='bot-info-div'>

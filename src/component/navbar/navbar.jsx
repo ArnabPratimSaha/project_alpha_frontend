@@ -3,23 +3,40 @@ import useMode from '../../customhooks/useMode'
 import Owl from '../owlComponent/owl';
 import ViviFace from '../viviFace/viviFace';
 import './navbar.css'
-import {LightONE,DarkONE,colorPalettes} from '../../stylesandthemes/themes';
+import { LightONE, DarkONE, colorPalettes } from '../../stylesandthemes/themes';
 import Cookies from 'js-cookie';
+import RobotHead from '../robotHead/robotHead';
+import { FaDiscord } from "react-icons/fa";
 
 export default function Navbar(props) {
-    const [mode,changeMode,MODETYPE,updateMode]=useMode();
-    const [shrink,setShrink]=useState(false);
-    const [loadingPercentage,setLoadingPercentage]=useState(0);
-    window.addEventListener('scroll',(e)=>{
-        if(window.scrollY>400)
-        {
+    const [mode, changeMode, MODETYPE, updateMode] = useMode();
+    const [isWindowOpen, setIsWindowOpen] = useState(false);
+    const [shrink, setShrink] = useState(false);
+    const [loadingPercentage, setLoadingPercentage] = useState(0);
+    const [mobileSize, setMobileSize] = useState(window.innerWidth<900?true:false);
+    const [status, setStatus] = useState(props.status==='true'?true:false);
+    useEffect(() => {
+        if(props.status)setStatus(true);
+        else setStatus(false);
+    }, [props.status])
+    window.addEventListener('scroll', (e) => {
+        if (window.scrollY > 400) {
             setShrink(true);
         }
-        else
-        {
+        else {
             setShrink(false)
         }
-    })
+    });
+    useEffect(() => {
+        window.addEventListener('resize',()=>{
+            if(window.innerWidth>900){
+                setIsWindowOpen(false);
+                setMobileSize(false);
+            }
+            else
+                setMobileSize(true);
+        })
+    }, [])
     useEffect(()=>{
         setLoadingPercentage(props.loadingPercentage)
     },[props.loadingPercentage])
@@ -28,19 +45,8 @@ export default function Navbar(props) {
         props.onUpdateMode();
     }
     const handleFocus=()=>{
-        const div=document.getElementsByClassName('navbar-info-div')[0]
-        if(window.innerWidth>1200)
-        {
-            div.style.display='none';
-            return;
-        }
-        if(div.style.display==='block')
-        {
-            div.style.display='none'
-        }
-        else
-        {
-            div.style.display='block'
+        if (window.innerWidth < 900) {
+            setIsWindowOpen((s) => !s);
         }
     }
     const onLogout=()=>{
@@ -58,56 +64,50 @@ export default function Navbar(props) {
     }
     return (
         <div>
-            <div className='main-body' style={{height:shrink?'3rem':'5rem',backgroundColor:mode===MODETYPE.DARK?'#222':'#a8a8a8'}}>
+            <div className='main-body' style={{height:shrink?'3.5rem':'5rem',backgroundColor:mode===MODETYPE.DARK?'#222':'#a8a8a8'}}>
+                <div className='navbar-overlay' style={{backgroundColor:mode===MODETYPE.DARK?'#222':'#a8a8a8'}}></div>
                 <div className='navbar-svg' style={{backgroundColor:mode===MODETYPE.DARK?'#222':'#a8a8a8'}}>
-                    <ViviFace/>
+                    <RobotHead/>
                 </div>
                 <div className='navbar-loading-div' style={{backgroundColor:mode===MODETYPE.DARK?'#222':'#a8a8a8'}}>
                     <div className='navbar-loading-bar' style={{transform:`scaleX(${loadingPercentage})`}}>
                     </div>
                 </div>
                 <div className='navbar-links' style={{color:mode===MODETYPE.DARK?'#fff':'#222',backgroundColor:mode===MODETYPE.DARK?'#222':'#a8a8a8'}}>
-                    <a className='navbar-links__link' href='/home' style={{color:mode===MODETYPE.DARK?'#fff':'#222'}}>
+                    <a className='navbar-links__link' href={props.page!='home'?'/home':'#'} style={{color:props.page==='home'?'#007ca5':mode===MODETYPE.DARK?'#fff':'#222'}}>
                         Home
                     </a>
-                    <a className='navbar-links__link' href={`/dashboard/${Cookies.get('temp_id')?Cookies.get('temp_id'):Cookies.get('id')}/${Cookies.get('temp_discordId')?Cookies.get('temp_discordId'):Cookies.get('discordId')}`} style={{color:mode===MODETYPE.DARK?'#fff':'#222'}}> 
+                    <a className='navbar-links__link' href={props.page!='dashboard'?status?`/dashboard/${Cookies.get('temp_id')?Cookies.get('temp_id'):Cookies.get('id')}/${Cookies.get('temp_discordId')?Cookies.get('temp_discordId'):Cookies.get('discordId')}`:'#':'#'} style={{color:props.page==='dashboard'?'#007ca5':mode===MODETYPE.DARK?status?'#fff':'#666':status?'#222':'#555'}}> 
                         Dashboard
                     </a>
-                    <a className='navbar-links__link' href={`/log/${Cookies.get('temp_id')?Cookies.get('temp_id'):Cookies.get('id')}/${Cookies.get('temp_discordId')?Cookies.get('temp_discordId'):Cookies.get('discordId')}`} style={{color:mode===MODETYPE.DARK?'#fff':'#222'}}>
+                    <a className='navbar-links__link' href={props.page!='log'?status?`/log/${Cookies.get('temp_id')?Cookies.get('temp_id'):Cookies.get('id')}/${Cookies.get('temp_discordId')?Cookies.get('temp_discordId'):Cookies.get('discordId')}`:'#':'#'} style={{color:props.page==='log'?'#007ca5':mode===MODETYPE.DARK?status?'#fff':'#666':status?'#222':'#555'}}>
                         Log
                     </a>
-                    <a className='navbar-links__link' style={{color:mode===MODETYPE.DARK?'#fff':'#222'}}>
+                    <a className='navbar-links__link' style={{color:props.page==='learn'?'#007ca5':mode===MODETYPE.DARK?'#fff':'#222'}}>
                         Learn About
                     </a>
                 </div>
                 <div className='navbar-credentials' style={{color:mode===MODETYPE.DARK?'#fff':'#222',backgroundColor:mode===MODETYPE.DARK?'#222':'#a8a8a8'}}>
-                    {!props.status &&<div className='navbar-login' onClick={handleLogin}>
-                        <span>Log in</span>
-                    </div>}
+                    {!props.status && <button className='navbar-login' onClick={handleLogin}>Log in</button>}
                     {props.status &&<div className='navbar-loggedin-div'>
                         <div className='circle-image' >
-                            <img src={props.imageSource} onClick={handleFocus}/> 
-                            <span>{`${props.userName} #${props.userTag}`}</span>
+                            <div className='circle-image__image'>
+                                <img src={props.imageSource} onClick={handleFocus} />
+                                {Cookies.get('temp_id')&&<FaDiscord className='temp-user-discord-logo'/>}
+                            </div>
+                            {!mobileSize&&<span>{`${props.userName} #${props.userTag}`}</span>}
                         </div>
-                        {!props.isTemp &&<div className='navbar-logout' onClick={onLogout}>
-                            <span>
-                                Log Out
-                            </span>
+                        {!mobileSize&&<button className='navbar-logout' onClick={onLogout}>Log Out</button>}
+                        {isWindowOpen&&<div className='navbar-small-window' style={{ backgroundColor: mode === MODETYPE.DARK ? '#000' : '#444' }}>
+                            <span >{`${props.userName} #${props.userTag}`}</span>
+                            <button className='navbar-logout' onClick={onLogout}>Log Out</button>
                         </div>}
-                        {/* <div className='navbar-info-div' style={{backgroundColor:mode===MODETYPE.DARK?`#555`:`#cacacaca`}}>
-                            <span>{`${props.userName} #${props.userTag}`}</span>
-                            {!props.isTemp && <div className='navbar-logout-2' onClick={onLogout}>
-                                <span>
-                                    Log Out
-                                </span>
-                            </div>}
-                        </div> */}
                     </div>}
+                    <div className='navbar-theme-togle' >
+                        <Owl onChange={handleChange}/>
+                    </div>
                 </div>
-                <div className='navbar-theme-togle' >
-                    <Owl onChange={handleChange}/>
-                </div>
-                <h1 className='navbar-brandname' style={{color:mode===MODETYPE.DARK?'#fff':'#222'}}>Vivo</h1>
+                <h1 className='navbar-brandname' style={{backgroundColor:mode===MODETYPE.DARK?'#222':'#a8a8a8',color:mode===MODETYPE.DARK?'#fff':'#222'}}>Vivo</h1>
                 <div className='navlinks-mobile' style={{top:shrink?'0':'100%',backgroundColor:mode===MODETYPE.DARK?'#555':'#ffff',color:mode===MODETYPE.DARK?'#fff':'#222',}}>
                     <a style={{color:mode===MODETYPE.DARK?'#fff':'#222',}} href='/home' className='navbar-links__link'>
                         Home

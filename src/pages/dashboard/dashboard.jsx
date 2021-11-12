@@ -546,6 +546,7 @@ const handleOnModeUpdate = () => {
   return (
     <>
       <Navbar
+        key='dashboard'
         onUpdateMode={handleOnModeUpdate}
         userName={userName}w
         userTag={userTag}
@@ -554,6 +555,7 @@ const handleOnModeUpdate = () => {
         handleLogout={handleLogout}
         isTemp={false}
         loadingPercentage={loadingPercentage}
+        page={'dashboard'}
       />
       <Toast isOpen={showToast} message={toastMessage} toastType={toastType} onClose={() => { setShowToast(false) }} toastDuration={toastDuration} />
       <div

@@ -6,21 +6,28 @@
     z-index: 1000;
     top: 0;
     display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.navbar-overlay
+{
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
 }
 .navbar-svg
 {
-    position: absolute;
     width: 5rem;
-    left: 5%;
-    top: 50%;
-    transform: translateY(-50%);
-    z-index: 3;
 }
 .navbar-loading-div
 {
     width: 100%;
     height: 1.5px;
-    position: relative;
+    position: absolute;
+    top: 0;
     background-color: transparent;
 }
 .navbar-loading-bar
@@ -34,11 +41,6 @@
 }
 .navbar-links
 {
-    position: absolute;
-    top: 50%;
-    left: 20%;
-    transform: translateY(-50%);
-    z-index: 3;
 }
 @import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@500&display=swap');
 .navbar-links__link
@@ -51,192 +53,111 @@
     font-family: 'Roboto Condensed', sans-serif;
     text-decoration: none;
 }
-.navbar-links__link:hover,.navbar-links__link:focus
+/* .navbar-links__link:hover,.navbar-links__link:focus
 {
     text-shadow: 2px 2px 3px rgb(88, 88, 88);
     outline: none;
-}
+} */
 .navbar-theme-togle
 {
-    position: absolute ;
-    right: 0;
-    width: 4rem;
-    height: 3rem;
-    top: 50%;
-    z-index: 2;
-    transform: translateY(-50%);
+    width: 2rem;
+    height: 2rem;
+    margin-left:3rem;
 }
 .navbar-credentials
 {
-    position: relative;
-    right: 0%;
-    height: 100%;
-    z-index: 2;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 .navbar-loggedin-div
 {
     display: flex;
     justify-content: space-between;
+    align-items: center;
+    flex: 1;
 }
 .circle-image
 {
+    display: flex;
+    align-items: center;
+    margin-right: 2rem;
+    position: relative;
 }
 .circle-image img
 {
     border:1px solid transparent;
     border-radius: 100%;
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
     height: 2.9rem;
     width: 2.9rem;
-    left: 0;
 }
-.circle-image span
+.circle-image span,.navbar-small-window span
 {
-    position: absolute;
-    width: 40%;
     text-align: left;
     overflow: hidden;
-    top: 50%;
-    left: 20%;
-    transform: translateY(-50%);
-    font-size: .8rem;
+    font-size: .6rem;
     font-weight: 700;
+    margin-left: 5px;
+}
+.circle-image__image
+{
+    position: relative;
+}
+.temp-user-discord-logo
+{
+    color:#5a6fb9 ;
+    position: absolute;
+    top: 0;
+    right: 0;
+    transform: translate(20%,-20%);
+    font-size: 1.3rem;
+}
+.navbar-loggedin-div button,.navbar-small-window button
+{
+    background-color: #00bfff;
+    padding: 5px 10px;
+    border: 1px solid transparent;
+    border-radius: 5px;
+    cursor: pointer;
+    box-sizing: border-box;
+
+    font-weight: 400;
+    color: #fff;
+}
+.navbar-loggedin-div button:hover,.navbar-small-window button:hover
+{
+    background-color: #56d2fc;
 }
 
-.navbar-logout
-{
-    
-}
-/* background-color: rgb(0, 202, 202); */
-.navbar-logout:hover,.navbar-logout:focus
-{
-    background-color: darkcyan;
-}
-.navbar-logout span
-{
-    position: absolute;
-    padding: 0;
-    letter-spacing: 1px;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%,-50%) !important;
-    text-transform: uppercase;
-    font-weight: 400;
-    margin: 0;
-}
-.navbar-info-div
-{
-    height: 5rem;
-    position: absolute;
-    right: 0;
-    top: 100%;
-    background-color: darkcyan;
-    border: 1px solid none;
-    border-radius: 3px;
-    width: 30%;
-    transform: translateX(10%);
-    display: none ;
-}
-.navbar-info-div span
-{
-    position: absolute;
-    padding: 0;
-    letter-spacing: .2px;
-    top: 20%;
-    left: 50%;
-    transform: translate(-50%,-50%) !important;
-    text-transform: uppercase;
-    font-weight: 600;
-    margin: 0;
-    font-size: .6rem;
-}
-.navbar-logout-2:hover,.navbar-logout-2:focus
-{
-    background-color: darkcyan;
-}
-.navbar-logout-2
-{
-    position: absolute;
-    margin: 0;
-    top: 60%;
-    left: 50%;
-    background-color: rgb(0, 202, 202);
-    transform: translate(-50%,-50%);
-    height: 30%;
-    width: 60%;
-    border: 1px solid rgb(0, 97, 97);
-    border-radius: 3px;
-    cursor: pointer;
-    transition: all 400ms linear;
-    box-shadow: 2px 2px 2px #444;
-}
-.navbar-logout-2 span
-{
-    position: absolute;
-    padding: 0;
-    letter-spacing: 1px;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%,-50%) !important;
-    text-transform: uppercase;
-    font-weight: 400;
-    margin: 0;
-}
 .navbar-login
 {
-    position: absolute;
-    right: 10%;
-    height: 2.5rem;
-    width: 6rem;
-    background-color: rgb(0, 202, 202);
-    top: 50%;
-    transform: translateY(-50%);
-    border: 1px solid none;
-    border-radius: 20px;
+    background-color: #00bfff;
+    padding: 5px 10px;
+    border: 1px solid transparent;
+    border-radius: 5px;
     cursor: pointer;
+    box-sizing: border-box;
+
+    font-weight: 400;
+    color: #fff;
 }
 .navbar-login:hover,.navbar-login:focus
 {
     background-color: rgb(0, 163, 163);
 }
-.navbar-login span
+.navbar-small-window
 {
     position: absolute;
-    padding: 0;
-    width: moz-fit-content;
-    letter-spacing: 1px;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%,-50%);
-    text-transform: uppercase;
-    font-weight: 400;
-    margin: 0;
+    display: flex;
+    flex-direction: column;
+    top: 100%;
+    align-items: center;
+    padding: 5px 10px;
 }
-@media only screen and (max-width: 1200px) {
-    .navbar-logout
-    {
-        display: none;
-    }
-    .circle-image span
-    {
-        display: none;
-    }
-    .circle-image
-    {
-        width: 20%;
-    }
-    .circle-image img
-    {
-        right: 20%;
-        left: auto;
-        cursor: pointer;
-    }
-    .navbar-info-div
-    {
-        display: none;
-    }
+.navbar-small-window span
+{
+    margin: 0;
+    color: #fff;
 }
 @import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@300;400;500;600&display=swap');
 .navbar-brandname
@@ -258,7 +179,7 @@
     width: 100%;
     position: absolute;
     background-color: aqua;
-    z-index: -1;
+    z-index: -999;
     display: none;
     height: 40%;
     transition: all 400ms ease-in-out;
@@ -276,13 +197,15 @@
 {
     text-shadow: 2px 2px 3px rgb(99, 99, 99);
 }
+
 @media only screen and (max-width: 900px) {
     .navbar-svg
     {
         width: 4rem;
     }
-    .navbar-links{
-        left: 20%;
+    .circle-image
+    {
+        margin: 0;
     }
     .navbar-links span
     {
@@ -293,6 +216,7 @@
     {
         width: 3rem;
         height: 2rem;
+        margin-left:1rem;
     }
     .navbar-login
     {
