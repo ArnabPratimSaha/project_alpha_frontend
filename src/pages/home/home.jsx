@@ -58,7 +58,7 @@ export default function Home() {
         }
     }
     useEffect(() => {
-        axios.get('http://localhost:5000/info?c=5').then((res) => {
+        axios.get(`${process.env.REACT_APP_BACKENDAPI}info?c=5`).then((res) => {
             setServerInfo(res.data);
         }).catch((error) => { })
     }, [])

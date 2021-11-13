@@ -95,7 +95,7 @@ function Log(props) {
         updateMode();
     };
     const fetchHistoryData=()=>{
-        axios.get(`http://localhost:5000/log/searchinfo?did=${did}&type=${toggleIndex[selectedFilterIndex]}&limit=${limit}&page=${allPageNumber.current}&fav=${false}&query=${query.trim()}`).then((res)=>{
+        axios.get(`${process.env.REACT_APP_BACKENDAPI}log/searchinfo?did=${did}&type=${toggleIndex[selectedFilterIndex]}&limit=${limit}&page=${allPageNumber.current}&fav=${false}&query=${query.trim()}`).then((res)=>{
             if(res.data.length<limit)
             {
                 setHasMoreHistoryData(false);
@@ -107,11 +107,10 @@ function Log(props) {
             setHistoryData((s)=>[...s,...res.data])
             allPageNumber.current+=1;//increase the page number
         }).catch((err)=>{
-            console.log(err);
         })
     }
     const fetchFavouriteDate=()=>{
-        axios.get(`http://localhost:5000/log/searchinfo?did=${did}&type=${toggleIndex[selectedFilterIndex]}&limit=${limit}&page=${favouritePageNumber.current}&fav=${true}&query=${query.trim()}`).then((res) => {
+        axios.get(`${process.env.REACT_APP_BACKENDAPI}log/searchinfo?did=${did}&type=${toggleIndex[selectedFilterIndex]}&limit=${limit}&page=${favouritePageNumber.current}&fav=${true}&query=${query.trim()}`).then((res) => {
             if (res.data.length < limit) {
                 setHasMoreFavouriteData(false);
             }
@@ -121,13 +120,12 @@ function Log(props) {
             setFavouriteData((s) => [...s, ...res.data])
             favouritePageNumber.current += 1;//increase the page number
         }).catch((err) => {
-            console.log(err);
         })
     }
     // making a api call for the favourite page for just one time
     useEffect(() => {
         allPageNumber.current=1;
-        axios.get(`http://localhost:5000/log/searchinfo?did=${did}&type=${toggleIndex[selectedFilterIndex]}&limit=${limit}&page=${allPageNumber.current}&fav=${false}&query=${query.trim()}`).then((res) => {
+        axios.get(`${process.env.REACT_APP_BACKENDAPI}log/searchinfo?did=${did}&type=${toggleIndex[selectedFilterIndex]}&limit=${limit}&page=${allPageNumber.current}&fav=${false}&query=${query.trim()}`).then((res) => {
             if (res.data.length < limit) {
                 setHasMoreHistoryData(false);
             }
@@ -137,10 +135,9 @@ function Log(props) {
             setHistoryData(res.data)
             allPageNumber.current += 1;//increase the page number
         }).catch((err) => {
-            console.log(err);
         })
         favouritePageNumber.current=1;
-        axios.get(`http://localhost:5000/log/searchinfo?did=${did}&type=${toggleIndex[selectedFilterIndex]}&limit=${limit}&page=${favouritePageNumber.current}&fav=${true}&query=${query.trim()}`).then((res) => {
+        axios.get(`${process.env.REACT_APP_BACKENDAPI}log/searchinfo?did=${did}&type=${toggleIndex[selectedFilterIndex]}&limit=${limit}&page=${favouritePageNumber.current}&fav=${true}&query=${query.trim()}`).then((res) => {
             if (res.data.length < limit) {
                 setHasMoreFavouriteData(false);
             }
@@ -150,7 +147,6 @@ function Log(props) {
             setFavouriteData(res.data)
             favouritePageNumber.current += 1;//increase the page number
         }).catch((err) => {
-            console.log(err);
         })
     }, [query])
     useEffect(() => {
@@ -163,7 +159,7 @@ function Log(props) {
         {
             if (selectedFilterIndex != allPageSelectedIndex.current) {
                 allPageNumber.current=1;
-                axios.get(`http://localhost:5000/log/searchinfo?did=${did}&type=${toggleIndex[selectedFilterIndex]}&limit=${limit}&page=${allPageNumber.current}&fav=${false}&query=${query.trim()}`).then((res) => {
+                axios.get(`${process.env.REACT_APP_BACKENDAPI}log/searchinfo?did=${did}&type=${toggleIndex[selectedFilterIndex]}&limit=${limit}&page=${allPageNumber.current}&fav=${false}&query=${query.trim()}`).then((res) => {
                     if (res.data.length < limit) {
                         setHasMoreHistoryData(false);
                     }
@@ -183,7 +179,7 @@ function Log(props) {
             {
                 console.log(favouritePageSelectedIndex.current);
                 favouritePageNumber.current=1;
-                axios.get(`http://localhost:5000/log/searchinfo?did=${did}&type=${toggleIndex[selectedFilterIndex]}&limit=${limit}&page=${favouritePageNumber.current}&fav=${true}&query=${query.trim()}`).then((res) => {
+                axios.get(`${process.env.REACT_APP_BACKENDAPI}log/searchinfo?did=${did}&type=${toggleIndex[selectedFilterIndex]}&limit=${limit}&page=${favouritePageNumber.current}&fav=${true}&query=${query.trim()}`).then((res) => {
                     if (res.data.length < limit) {
                         setHasMoreFavouriteData(false);
                     }
@@ -194,7 +190,6 @@ function Log(props) {
                     favouritePageNumber.current += 1;//increase the page number
                     favouritePageSelectedIndex.current = selectedFilterIndex;
                 }).catch((err) => {
-                    console.log(err);
                 })
             }
         }
@@ -207,7 +202,7 @@ function Log(props) {
         }
         if (activePage === page.ALL) {
             allPageNumber.current=1;//resetting the page number
-            axios.get(`http://localhost:5000/log/searchinfo?did=${did}&type=${toggleIndex[selectedFilterIndex]}&limit=${limit}&page=${allPageNumber.current}&fav=${false}&query=${query.trim()}`).then((res) => {
+            axios.get(`${process.env.REACT_APP_BACKENDAPI}log/searchinfo?did=${did}&type=${toggleIndex[selectedFilterIndex]}&limit=${limit}&page=${allPageNumber.current}&fav=${false}&query=${query.trim()}`).then((res) => {
                 if (res.data.length < limit) {
                     setHasMoreHistoryData(false);
                 }
@@ -218,13 +213,12 @@ function Log(props) {
                 allPageNumber.current += 1;//increase the page number
                 allPageSelectedIndex.current=selectedFilterIndex;
             }).catch((err) => {
-                console.log(err);
             })
         }
         else
         {
             favouritePageNumber.current=1;//resetting the page number
-            axios.get(`http://localhost:5000/log/searchinfo?did=${did}&type=${toggleIndex[selectedFilterIndex]}&limit=${limit}&page=${favouritePageNumber.current}&fav=${true}&query=${query.trim()}`).then((res) => {
+            axios.get(`${process.env.REACT_APP_BACKENDAPI}log/searchinfo?did=${did}&type=${toggleIndex[selectedFilterIndex]}&limit=${limit}&page=${favouritePageNumber.current}&fav=${true}&query=${query.trim()}`).then((res) => {
                 if (res.data.length < limit) {
                     setHasMoreFavouriteData(false);
                 }
@@ -235,7 +229,6 @@ function Log(props) {
                 favouritePageNumber.current += 1;//increase the page number
                 favouritePageSelectedIndex.current=selectedFilterIndex;
             }).catch((err) => {
-                console.log(err);
             })
         }
 

@@ -175,7 +175,7 @@ const rightReducer = (state, action) => {
 }
 const fetchData = async (id) => {
   try {
-    const res = await axios.post('http://localhost:5000/auth/discord/verify', { userId: id })
+    const res = await axios.post(`${process.env.REACT_APP_BACKENDAPI}auth/discord/verify`, { userId: id })
     if (res.status === 200) {
       return res;
     }
@@ -339,7 +339,7 @@ function Dashboard(props) {
   }, []);
   useEffect(() => {
     if (status) {
-      axios.get(`http://localhost:5000/discord/permission?discordId=${did}`).then((res) => {
+      axios.get(`${process.env.REACT_APP_BACKENDAPI}discord/permission?discordId=${did}`).then((res) => {
         setDiscordData(res.data.guilds)
       }).catch((err) => {
         // window.location=`/error/${err.response.status}`
@@ -356,7 +356,7 @@ function Dashboard(props) {
       cancelChannelReq();
     }
     if (activeGuild && status && discordData) {
-      axios.get(`http://localhost:5000/discord/channel?did=${did}&gid=${activeGuild.guildId}&q=${searchChannel}`, {
+      axios.get(`${process.env.REACT_APP_BACKENDAPI}discord/channel?did=${did}&gid=${activeGuild.guildId}&q=${searchChannel}`, {
         cancelToken: new axios.CancelToken(c => {
           cancelChannelReq = c;
         })
@@ -374,7 +374,7 @@ function Dashboard(props) {
       cancelRoleReq();
     }
     if (activeGuild && status && discordData) {
-      axios.get(`http://localhost:5000/discord/role?did=${did}&gid=${activeGuild.guildId}&q=${searchedRole}`, {
+      axios.get(`${process.env.REACT_APP_BACKENDAPI}discord/role?did=${did}&gid=${activeGuild.guildId}&q=${searchedRole}`, {
         cancelToken: new axios.CancelToken(c => {
           cancelRoleReq = c;
         })
@@ -393,7 +393,7 @@ function Dashboard(props) {
       cancelMemberReq();
     }
     if (activeGuild && status && discordData) {
-      axios.get(`http://localhost:5000/discord/member?did=${did}&gid=${activeGuild.guildId}&q=${searchedMember}`, {
+      axios.get(`${process.env.REACT_APP_BACKENDAPI}discord/member?did=${did}&gid=${activeGuild.guildId}&q=${searchedMember}`, {
         cancelToken: new axios.CancelToken(c => {
           cancelMemberReq = c;
         })
@@ -524,7 +524,7 @@ function Dashboard(props) {
       const id=toast.loading('please wait...');
       axios
         .post(
-          `http://localhost:5000/discord/post?did=${did}&gid=${activeGuild.guildId}`,
+          `${process.env.REACT_APP_BACKENDAPI}discord/post?did=${did}&gid=${activeGuild.guildId}`,
           {
             title: title,
             message: message,
