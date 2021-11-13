@@ -5,9 +5,9 @@ body::-webkit-scrollbar
 .log-body
 {
     padding-top: 8rem;
-    height: 80vh;
+    height: 100vh;
     width: 100vw;
-    padding-bottom: 2rem;
+    box-sizing: border-box;
 }
 .log-history
 {
@@ -29,7 +29,6 @@ body::-webkit-scrollbar
 .log-history-setting-sort-div
 {
     display: flex;
-    
     margin-left: 10px;
     align-items: center;
 }
@@ -48,12 +47,9 @@ body::-webkit-scrollbar
     display: flex;
     flex-direction: column;
     align-items: center;
-    height: 90%;
-    padding: 10px 0;
+    height: 100%;
     overflow-y: scroll;
-    border-bottom: 1px solid #555 ;
     border-top: 1px solid #555 ;
-    box-shadow: inset 4px 0px 10px #666,inset -4px 0px 10px #666;
 }
 .infinite-scroll-component__outerdiv
 {

@@ -10,6 +10,9 @@ import Dropdown from "../../component/dropdown/dropdown";
 import SearchBar from "../../component/search-bar/searchBar";
 import PageToggler from "../../component/pageToggeler/pageToggler";
 import ScrollComponent from "../../component/infiniteScrollComponent/scrollComponent";
+import RobotDown from "../../component/robotdown/robotDown";
+import Modal from "../../component/modal/modal";
+import Toast from "../../component/toast/toast";
 var newDate = new Date();
 var numberOfDaysToAdd = 1;
 const page={
@@ -22,11 +25,16 @@ const status={
     CANCELLED:'CANCELLED',
     SENT:'SENT',
 }
+const toast={
+    DEFAULT:'DEFAULT',
+    WARNING:'WARNING',
+    ERROR:'ERROR'
+  }
 newDate.setDate(newDate.getDate() + numberOfDaysToAdd);
-const limit=10;
+const limit=15;//limit of requesting logs per request
 let cancelSearchReq;
 function Log(props) {
-    let { uid, sid, did } = useParams();
+    let { uid, did } = useParams();
     const firstTimePageChange = useRef(true)
     const firstTimeFilterChange = useRef(true)
 
@@ -44,33 +52,50 @@ function Log(props) {
     const [historyData, setHistoryData] = useState([]);
     const [favouriteData, setFavouriteData] = useState([]);
     const [query, setQuery] = useState('')
+    const [status, setStatus] = useState(
+        Cookies.get('temp_id') || Cookies.get('id') ? true : false
+    ); //logged in
     const [imageSource, setImageSource] = useState(
-        sid === "null" && Cookies.get("avatar") ? Cookies.get("avatar") : null
+        Cookies.get('temp_id') ? Cookies.get("temp_avatar") : Cookies.get('id') ? Cookies.get("avatar") : null
     );
     const [userName, setUserName] = useState(
-        sid === "null" && Cookies.get("userName") ? Cookies.get("userName") : false
+        Cookies.get('temp_id') ? Cookies.get("temp_userName") : Cookies.get('id') ? Cookies.get("userName") : null
     );
     const [userTag, setUserTag] = useState(
-        sid === "null" && Cookies.get("userTag") ? Cookies.get("userTag") : false
+        Cookies.get('temp_id') ? Cookies.get("temp_userTag") : Cookies.get('id') ? Cookies.get("userTag") : null
     );
-    const [status, setStatus] = useState(
-        sid === "null" && Cookies.get("id") ? true : false
-    ); //logged in
-    const [isTemp, setIsTemp] = useState(
-        sid === "null" && Cookies.get("id") ? false : true
-    ); //logged in
+    useEffect(() => {
+        if (!Cookies.get('temp_id') && !Cookies.get('id')) window.location = './home';
+        axios.get(`${process.env.REACT_APP_BACKENDAPI}user/info?uid=${uid}&did=${did}`).then(res => {
+
+        }).catch(e => {
+            window.location='/home'//work
+        })
+    }, []);
     const handleLogout = () => {
-        setStatus((status) => !status);
-        Cookies.remove("id");
-        Cookies.remove("userName");
-        Cookies.remove("userTag");
-        Cookies.remove("avatar");
+        if(!Cookies.get('temp_id')) setStatus((status) => !status);
+        if (Cookies.get('temp_id')) {
+            Cookies.remove("temp_id");
+            Cookies.remove("temp_discordId");
+            Cookies.remove("temp_userName");
+            Cookies.remove("temp_userTag");
+            Cookies.remove("temp_avatar");
+        }
+        else {
+            Cookies.remove("id");
+            Cookies.remove("discordId");
+            Cookies.remove("userName");
+            Cookies.remove("userTag");
+            Cookies.remove("avatar");
+
+        }
+        window.location = '/home';
     };
     const handleOnModeUpdate = () => {
         updateMode();
     };
     const fetchHistoryData=()=>{
-        axios.get(`http://localhost:5000/log/searchinfo?did=${did}&type=${toggleIndex[selectedFilterIndex]}&limit=${limit}&page=${allPageNumber.current}&fav=${false}&query=${query.trim()}`).then((res)=>{
+        axios.get(`${process.env.REACT_APP_BACKENDAPI}log/searchinfo?did=${did}&type=${toggleIndex[selectedFilterIndex]}&limit=${limit}&page=${allPageNumber.current}&fav=${false}&query=${query.trim()}`).then((res)=>{
             if(res.data.length<limit)
             {
                 setHasMoreHistoryData(false);
@@ -82,11 +107,10 @@ function Log(props) {
             setHistoryData((s)=>[...s,...res.data])
             allPageNumber.current+=1;//increase the page number
         }).catch((err)=>{
-            console.log(err);
         })
     }
     const fetchFavouriteDate=()=>{
-        axios.get(`http://localhost:5000/log/searchinfo?did=${did}&type=${toggleIndex[selectedFilterIndex]}&limit=${limit}&page=${favouritePageNumber.current}&fav=${true}&query=${query.trim()}`).then((res) => {
+        axios.get(`${process.env.REACT_APP_BACKENDAPI}log/searchinfo?did=${did}&type=${toggleIndex[selectedFilterIndex]}&limit=${limit}&page=${favouritePageNumber.current}&fav=${true}&query=${query.trim()}`).then((res) => {
             if (res.data.length < limit) {
                 setHasMoreFavouriteData(false);
             }
@@ -96,13 +120,12 @@ function Log(props) {
             setFavouriteData((s) => [...s, ...res.data])
             favouritePageNumber.current += 1;//increase the page number
         }).catch((err) => {
-            console.log(err);
         })
     }
     // making a api call for the favourite page for just one time
     useEffect(() => {
         allPageNumber.current=1;
-        axios.get(`http://localhost:5000/log/searchinfo?did=${did}&type=${toggleIndex[selectedFilterIndex]}&limit=${limit}&page=${allPageNumber.current}&fav=${false}&query=${query.trim()}`).then((res) => {
+        axios.get(`${process.env.REACT_APP_BACKENDAPI}log/searchinfo?did=${did}&type=${toggleIndex[selectedFilterIndex]}&limit=${limit}&page=${allPageNumber.current}&fav=${false}&query=${query.trim()}`).then((res) => {
             if (res.data.length < limit) {
                 setHasMoreHistoryData(false);
             }
@@ -112,10 +135,9 @@ function Log(props) {
             setHistoryData(res.data)
             allPageNumber.current += 1;//increase the page number
         }).catch((err) => {
-            console.log(err);
         })
         favouritePageNumber.current=1;
-        axios.get(`http://localhost:5000/log/searchinfo?did=${did}&type=${toggleIndex[selectedFilterIndex]}&limit=${limit}&page=${favouritePageNumber.current}&fav=${true}&query=${query.trim()}`).then((res) => {
+        axios.get(`${process.env.REACT_APP_BACKENDAPI}log/searchinfo?did=${did}&type=${toggleIndex[selectedFilterIndex]}&limit=${limit}&page=${favouritePageNumber.current}&fav=${true}&query=${query.trim()}`).then((res) => {
             if (res.data.length < limit) {
                 setHasMoreFavouriteData(false);
             }
@@ -125,7 +147,6 @@ function Log(props) {
             setFavouriteData(res.data)
             favouritePageNumber.current += 1;//increase the page number
         }).catch((err) => {
-            console.log(err);
         })
     }, [query])
     useEffect(() => {
@@ -138,7 +159,7 @@ function Log(props) {
         {
             if (selectedFilterIndex != allPageSelectedIndex.current) {
                 allPageNumber.current=1;
-                axios.get(`http://localhost:5000/log/searchinfo?did=${did}&type=${toggleIndex[selectedFilterIndex]}&limit=${limit}&page=${allPageNumber.current}&fav=${false}&query=${query.trim()}`).then((res) => {
+                axios.get(`${process.env.REACT_APP_BACKENDAPI}log/searchinfo?did=${did}&type=${toggleIndex[selectedFilterIndex]}&limit=${limit}&page=${allPageNumber.current}&fav=${false}&query=${query.trim()}`).then((res) => {
                     if (res.data.length < limit) {
                         setHasMoreHistoryData(false);
                     }
@@ -158,7 +179,7 @@ function Log(props) {
             {
                 console.log(favouritePageSelectedIndex.current);
                 favouritePageNumber.current=1;
-                axios.get(`http://localhost:5000/log/searchinfo?did=${did}&type=${toggleIndex[selectedFilterIndex]}&limit=${limit}&page=${favouritePageNumber.current}&fav=${true}&query=${query.trim()}`).then((res) => {
+                axios.get(`${process.env.REACT_APP_BACKENDAPI}log/searchinfo?did=${did}&type=${toggleIndex[selectedFilterIndex]}&limit=${limit}&page=${favouritePageNumber.current}&fav=${true}&query=${query.trim()}`).then((res) => {
                     if (res.data.length < limit) {
                         setHasMoreFavouriteData(false);
                     }
@@ -169,7 +190,6 @@ function Log(props) {
                     favouritePageNumber.current += 1;//increase the page number
                     favouritePageSelectedIndex.current = selectedFilterIndex;
                 }).catch((err) => {
-                    console.log(err);
                 })
             }
         }
@@ -182,7 +202,7 @@ function Log(props) {
         }
         if (activePage === page.ALL) {
             allPageNumber.current=1;//resetting the page number
-            axios.get(`http://localhost:5000/log/searchinfo?did=${did}&type=${toggleIndex[selectedFilterIndex]}&limit=${limit}&page=${allPageNumber.current}&fav=${false}&query=${query.trim()}`).then((res) => {
+            axios.get(`${process.env.REACT_APP_BACKENDAPI}log/searchinfo?did=${did}&type=${toggleIndex[selectedFilterIndex]}&limit=${limit}&page=${allPageNumber.current}&fav=${false}&query=${query.trim()}`).then((res) => {
                 if (res.data.length < limit) {
                     setHasMoreHistoryData(false);
                 }
@@ -193,13 +213,12 @@ function Log(props) {
                 allPageNumber.current += 1;//increase the page number
                 allPageSelectedIndex.current=selectedFilterIndex;
             }).catch((err) => {
-                console.log(err);
             })
         }
         else
         {
             favouritePageNumber.current=1;//resetting the page number
-            axios.get(`http://localhost:5000/log/searchinfo?did=${did}&type=${toggleIndex[selectedFilterIndex]}&limit=${limit}&page=${favouritePageNumber.current}&fav=${true}&query=${query.trim()}`).then((res) => {
+            axios.get(`${process.env.REACT_APP_BACKENDAPI}log/searchinfo?did=${did}&type=${toggleIndex[selectedFilterIndex]}&limit=${limit}&page=${favouritePageNumber.current}&fav=${true}&query=${query.trim()}`).then((res) => {
                 if (res.data.length < limit) {
                     setHasMoreFavouriteData(false);
                 }
@@ -210,7 +229,6 @@ function Log(props) {
                 favouritePageNumber.current += 1;//increase the page number
                 favouritePageSelectedIndex.current=selectedFilterIndex;
             }).catch((err) => {
-                console.log(err);
             })
         }
 
@@ -231,10 +249,12 @@ function Log(props) {
                 imageSource={imageSource}
                 status={status}
                 handleLogout={handleLogout}
-                isTemp={isTemp}
+                isTemp={false}
                 loadingPercentage={loadingPercentage}
+                page={'log'}
+                key={'log'}
             />
-            <div className='log-body' style={{backgroundColor: mode === MODETYPE.DARK ? "#444" : "#EEEEEE",}}>
+            <div className='log-body' style={{backgroundColor: mode === MODETYPE.DARK ? "#333" : "#cacaca",}}>
                 <div className='log-history' >
                     <div className='log-history-setting' style={{borderColor: mode === MODETYPE.DARK ? "#cacaca" : "#333",}}>
                         <div className='log-history-setting-sort-div' style={{color: mode === MODETYPE.DARK ? "#fff" : "#444",}}>
@@ -248,14 +268,20 @@ function Log(props) {
                     </div>
                     <div className='log-history-output' style={{ backgroundColor: mode === MODETYPE.DARK ? "#444" : "#EEEEEE", }}>
                         <div className='log-history-output-history' style={{ zIndex: activePage === page.ALL ? '2' : '1', backgroundColor: mode === MODETYPE.DARK ? "#444" : "#EEEEEE" }}>
-                            <ScrollComponent className='log-history-output-history-content' onIntersect={fetchHistoryData} hasMore={hasMoreHistoryData}>
+                            {historyData&&<ScrollComponent className='log-history-output-history-content' onIntersect={fetchHistoryData} hasMore={hasMoreHistoryData}>
                                 {historyData.map((e, i) => <Bar mode={mode} key={i} MODETYPE={MODETYPE} status={e.status} time={e.time} title={e.title} mid={e.messageId} guildName={e.guildName} icon={e.guildAvatar} fav={e.favourite} onStarClick={handleStartClick} uid={uid} did={did}/>)}
-                            </ScrollComponent>
+                            </ScrollComponent>}
+                            {favouriteData.length===0&&<div className='log-empty-result-div'>
+                                <h1>NO DATA FOUND</h1>
+                            </div>}
                         </div>
                         <div className='log-history-output-favourite' style={{zIndex:activePage===page.FAVOURITE?'2':'1',backgroundColor: mode === MODETYPE.DARK ? "#444" : "#EEEEEE"}}>
-                            <ScrollComponent className='log-history-output-history-content' onIntersect={fetchFavouriteDate} hasMore={hasMoreFavouriteData}>
+                            {favouriteData&&<ScrollComponent className='log-history-output-history-content' onIntersect={fetchFavouriteDate} hasMore={hasMoreFavouriteData}>
                                 {favouriteData.map((e, i) => <Bar mode={mode} key={i} MODETYPE={MODETYPE} status={e.status} time={e.time} title={e.title} guildName={e.guildName} mid={e.messageId} icon={e.guildAvatar} fav={e.favourite} onStarClick={handleStartClick} uid={uid} did={did}/>)}
-                            </ScrollComponent>
+                            </ScrollComponent>}
+                            {favouriteData.length===0&&<div className='log-empty-result-div'>
+                                <h1>NO DATA FOUND</h1>
+                            </div>}
                         </div>
                     </div>
                 </div>

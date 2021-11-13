@@ -1,0 +1,83 @@
+.modal-fulldiv
+{
+    position: fixed;
+    z-index: 2222;
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: transform ease-in-out 100ms;
+}
+.modal-outline
+{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 10rem;
+    width: 30rem;
+    box-sizing: border-box;
+    border: 1px solid transparent;
+    border-radius: 10px;
+}
+.modal-inner-div
+{
+    width: 90%;
+    height: 70%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid transparent;
+    border-radius: 10px;
+    text-align: left;
+}
+.modal-inner-input-div
+{
+    width: 70%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.modal-inner-text-div
+{
+    width: 70%;
+}
+.modal-inner-text-div h1
+{
+    padding: 0;
+    margin: 0;
+    font-size: .6rem;
+}
+.modal-inner-input-div input
+{
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 5px;
+    padding: 5px 10px;
+}
+.modal-inner-input-div button
+{
+    background: transparent;
+    border: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+}
+.modal-inner-input-div button:hover,.modal-inner-input-div button:focus,.modal-inner-input-div input:hover,.modal-inner-input-div input:focus
+{
+    outline: none;
+}
+@media only screen and (max-width: 900px) {
+    .modal-outline
+    {
+        width: 95%;
+    }
+    .modal-inner-div
+    {
+        width: 95%;
+    }
+    .modal-inner-input-div
+    {
+        width: 80%;
+    }
+}

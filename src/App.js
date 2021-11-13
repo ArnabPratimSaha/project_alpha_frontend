@@ -11,6 +11,7 @@ import Authentication from './pages/authentication/authentication';
 import Error from './pages/error/error';
 import Log from './pages/log/log';
 import PostPage from './pages/fullPostPage/postPage';
+import Validation from './pages/discordValidation/validation';
 function App() {
   return (
     <div className="App">
@@ -19,17 +20,20 @@ function App() {
           <Route path='/home' exact>
               <Home/>
           </Route>
-          <Route path='/dashboard/:uid/:sid/:did'>
+          <Route path='/dashboard/:uid/:did'>
               <Dashboard/>
           </Route>
-          <Route path='/log/:uid/:sid/:did'>
+          <Route path='/log/:uid/:did'>
               <Log/>
           </Route>
           <Route path='/post/:uid/:sid/:did/:pid'>
             <PostPage/>
           </Route>
-          <Route path='/auth/:uid'>
+          <Route path='/auth/:did/:uid'>
               <Authentication/>
+          </Route>
+          <Route path='/val/:did/:sid/:page'>
+              <Validation/>
           </Route>
           <Route path='/error/:code'>
               <Error/>

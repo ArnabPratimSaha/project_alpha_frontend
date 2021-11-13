@@ -94,6 +94,70 @@
 {
     height: 40rem;
 }
+.bot-server-used-div
+{
+    padding:3rem 5rem 3rem ;
+    margin-top: 5rem;
+}
+.bot-server-used-div h1
+{
+    font-family: 'Oswald', sans-serif;
+    font-weight: 400;
+}
+.bot-server-used
+{
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+.bot-info-div
+{
+    padding:0 10%;
+    margin-top: 10rem;
+    position: relative;
+    padding-bottom: 10rem;
+}
+
+.bot-info-send-channel-info,.bot-info-send-dm-info,.bot-info-log
+{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: flex-start;
+    align-content: center;
+}
+.bot-info-send-dm-info
+{
+    flex-wrap: wrap-reverse;
+    align-items: flex-end;
+    margin-top: 10rem
+}
+.bot-info-log
+{
+    margin-top: 10rem;
+}
+.send-channel-info__image,.send-dm-info__image,.bot-info-log__image
+{
+    width: 25rem;
+    height: 15rem;
+}
+.send-channel-info__image img,.send-dm-info__image img,.bot-info-log__image img
+{
+    width: 100%;
+    height: 100%;
+}
+.send-channel-info__text,.send-dm-info__text,.bot-info-log__text
+{
+    width: 40%;
+    text-align: left;
+}
+@import url('https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;500;600;700&display=swap');
+.send-channel-info__text h1,.send-dm-info__text h1,.bot-info-log__text h1
+{
+    font-size:1.5rem;
+    font-family: 'Comfortaa', cursive;
+    font-weight: 700;
+}
 @media only screen and (max-width: 900px) {
     .bot-div
     {
@@ -117,5 +181,25 @@
         margin: 0 .5rem;
         padding: .5rem 1rem;
         font-size: 1rem;
+    }
+    .bot-server-used-div
+    {
+        padding:2rem 1rem;
+        margin-top: 2rem;
+    }
+    .bot-server-used-div h1
+    {
+        font-size: 1rem;
+        font-weight: 400;
+        letter-spacing: 1px;
+    }
+    .bot-info-div
+    {
+
+    }
+    .send-channel-info__text,.send-dm-info__text,.bot-info-log__text
+    {
+        text-align: center;
+        width: 100%;
     }
 }

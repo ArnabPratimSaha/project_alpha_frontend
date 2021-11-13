@@ -20,10 +20,10 @@
 }
 .bar-bardiv:hover
 {
-    border-bottom-width: 4px;
+    border-bottom-width: 2px;
     border-top-width: .1px;
     border-left-width:0.1px ;
-    border-right-width: 4px ;
+    border-right-width: 2px ;
 }
 .discord-div
 {
@@ -96,11 +96,11 @@
     display: flex;
     justify-content: space-evenly;
     align-items: center;
-    border: 1px solid transparent;
-    border-radius: 10px;
     text-align: left;
     position: relative;
     z-index: 1;
+    border: 1px solid transparent;
+    border-radius: 10px;
 }
 .cancel-div,.done-div,.ongoing-div
 {

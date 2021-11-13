@@ -27,6 +27,7 @@ function NewBar(props) {
     const [star, setStar] = useState(false)
     const [remainingTime, setRemainingTime] = useState(new Date(Date.parse(props.time))-new Date())
     const [remainingTimeString, setRemainingTimeString] = useState('')
+    const [hover, setHover] = useState(false);
 
     const [ticking, setTicking] = useState(0)
     const timer = useRef(null)
@@ -73,24 +74,24 @@ function NewBar(props) {
             props.onStarClick(props.mid,!star)
     }
     return (
-        <div className='bar-fulldiv' onClick={()=>{window.location=`/post/${props.uid}/null/${props.did}/${props.mid}`}}>
-            <div className='bar-bardiv' onClick={()=>{setSize((s)=>!s)}} style={{backgroundColor:props.mode===props.MODETYPE.DARK?'#555':'#cacaca',borderColor:props.mode===props.MODETYPE.DARK?'#cacaca':'#444'}}>
-                <div className='discord-div'style={{...discordDivStyle(props.status)}} >
+        <div className='bar-fulldiv' onMouseEnter={()=>{setHover(true)}} onMouseLeave={()=>{setHover(false)}}>
+            <div className='bar-bardiv' onClick={()=>{setSize((s)=>!s)}} style={{backgroundColor:props.mode===props.MODETYPE.DARK?'#222':'#cacaca',borderColor:props.mode===props.MODETYPE.DARK?'#555':'#666'}}>
+                <div className='discord-div'style={{backgroundColor:props.mode===props.MODETYPE.DARK?'#333':'#666'}} >
                     <div className='discord-div-pic'>
                         {!props.icon && <div>{makeGuildIcon(props.guildName)}</div> }
                         {props.icon && <img src={props.icon}/>}
                     </div>
                     <p>{props.guildName}</p>
                 </div>
-                <div className='message-div' style={{color:props.mode===props.MODETYPE.DARK?'#fff':'#000'}}>
+                <div className='message-div' onClick={()=>{window.location=`/post/${props.uid}/null/${props.did}/${props.mid}`}} style={{color:props.mode===props.MODETYPE.DARK?'#fff':'#000'}}>
                     <p>{props.title}</p>
                 </div>
-                <div className='status-div' style={{...discordDivStyle(props.status)}}>
+                <div className='status-div'  style={{...discordDivStyle(props.status)}}>
                    {props.status===status.CANCELLED && <div className='cancel-div'  >
                        <AiFillWarning className='status-icon'/>
                        <p>cancelled</p>
                    </div> }
-                   {props.status===status.SENT && <div className='done-div'>
+                   {props.status===status.SENT && <div className='done-div' >
                        <AiFillCheckCircle className='status-icon'/>
                        <p>sent</p>
                    </div> }
