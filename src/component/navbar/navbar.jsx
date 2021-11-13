@@ -109,16 +109,16 @@ export default function Navbar(props) {
                 </div>
                 <h1 className='navbar-brandname' style={{backgroundColor:mode===MODETYPE.DARK?'#222':'#a8a8a8',color:mode===MODETYPE.DARK?'#fff':'#222'}}>Vivo</h1>
                 <div className='navlinks-mobile' style={{top:shrink?'0':'100%',backgroundColor:mode===MODETYPE.DARK?'#555':'#ffff',color:mode===MODETYPE.DARK?'#fff':'#222',}}>
-                    <a style={{color:mode===MODETYPE.DARK?'#fff':'#222',}} href='/home' className='navbar-links__link'>
+                    <a style={{color:props.page==='home'?'#007ca5':mode===MODETYPE.DARK?status?'#fff':'#666':status?'#222':'#555'}} href={props.page!='home'?'/home':'#'} className='navbar-links__link'>
                         Home
                     </a>
-                    <a style={{color:mode===MODETYPE.DARK?'#fff':'#222',}} className='navbar-links__link' href={`/dashboard/${Cookies.get('id')}/null/${Cookies.get('discordId')}`}>
+                    <a style={{color:props.page==='dashboard'?'#007ca5':mode===MODETYPE.DARK?status?'#fff':'#666':status?'#222':'#555'}} className='navbar-links__link' href={props.page!='dashboard'?status?`/dashboard/${Cookies.get('temp_id')?Cookies.get('temp_id'):Cookies.get('id')}/${Cookies.get('temp_discordId')?Cookies.get('temp_discordId'):Cookies.get('discordId')}`:'#':'#'}>
                         Dashboard
                     </a>
-                    <a style={{color:mode===MODETYPE.DARK?'#fff':'#222',}} href={`/log/${Cookies.get('id')}/null/${Cookies.get('discordId')}`} className='navbar-links__link'>
+                    <a style={{color:props.page==='log'?'#007ca5':mode===MODETYPE.DARK?status?'#fff':'#666':status?'#222':'#555'}} href={props.page!='log'?status?`/log/${Cookies.get('temp_id')?Cookies.get('temp_id'):Cookies.get('id')}/${Cookies.get('temp_discordId')?Cookies.get('temp_discordId'):Cookies.get('discordId')}`:'#':'#'} className='navbar-links__link'>
                         Log
                     </a>
-                    <a style={{color:mode===MODETYPE.DARK?'#fff':'#222',}} className='navbar-links__link'>
+                    <a style={{color:props.page==='learn'?'#007ca5':mode===MODETYPE.DARK?'#fff':'#222'}} className='navbar-links__link'>
                         Learn About
                     </a>
                 </div>

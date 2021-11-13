@@ -122,7 +122,7 @@ function PostPage(props) {
                         <div className='details-message-info-div'>
                             {details.status===messageStatus.SENT&&<Timecard data={'Message Sent On'} time={`${new Date(details.time).toDateString()} ${new Date(details.time).toLocaleTimeString()}`}/>}
                             {details.status===messageStatus.CANCELLED&&<Timecard data={'cancelled'}/>}
-                            {details.status===messageStatus.PROCESSING&&<Timecard data={'Will Be Deliver By'} time={remainingTimeString}/>}
+                            {details.status===messageStatus.PROCESSING&&<Timecard data={'Will Be Delivered By'} time={remainingTimeString}/>}
                         </div>
                     </div>}
                 </div>

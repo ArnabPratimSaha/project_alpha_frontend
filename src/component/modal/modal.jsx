@@ -13,8 +13,7 @@ function Modal(props) {
     const handleSubmit=()=>{
         if(props.onClick)
         {
-            props.onClick(input)
-            setIsOpen(false);
+            props.onClick(input);
             setInput('');
         }
     }

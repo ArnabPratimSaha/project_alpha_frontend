@@ -3,11 +3,11 @@ import { useParams } from "react-router";
 import Navbar from "../../component/navbar/navbar";
 import useMode from "../../customhooks/useMode";
 import "./dashboard.css";
-import { FaDiscord,FaArrowAltCircleLeft } from "react-icons/fa";
+import { FaDiscord, FaArrowAltCircleLeft } from "react-icons/fa";
 import { BsFillChatDotsFill } from "react-icons/bs";
 import { IoIosMan } from "react-icons/io";
-import { GiOfficeChair,GiWifiRouter } from "react-icons/gi";
-import { AiFillSetting,AiFillWarning } from "react-icons/ai";
+import { GiOfficeChair, GiWifiRouter } from "react-icons/gi";
+import { AiFillSetting, AiFillWarning } from "react-icons/ai";
 import Wrapper from "../../component/inputComponents/MultilineInputComponent";
 import CustomButton from './components/customButtom/customButton';
 import Card from '../../component/rightDrawerCardDiv/cardDiv';
@@ -20,18 +20,19 @@ import MemberButton from "./components/memberButton/memberButton";
 import Cookies, { set } from "js-cookie";
 import Switch from "../../component/switch/switch";
 import Toast from "../../component/toast/toast";
-import Modal from "../../component/modal/modal";
 import Footer from "../../component/footer/footer";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
-const type={
-  channel:'CHANNEL',
-  dm:'DM'
+const type = {
+  channel: 'CHANNEL',
+  dm: 'DM'
 }
 var newDate = new Date();
 var numberOfDaysToAdd = 14;
 newDate.setDate(newDate.getDate() + numberOfDaysToAdd);
-const calcTimeString=(date)=>{
-  return(
+const calcTimeString = (date) => {
+  return (
     date.getFullYear() + "-" +
     `${date.getMonth() + 1 < 10 ? `0${date.getMonth() + 1}` : `${date.getMonth() + 1}`}` + '-' +
     `${date.getDate() < 10 ? `0${date.getDate()}` : `${date.getDate()}`}` + "T" +
@@ -39,48 +40,44 @@ const calcTimeString=(date)=>{
     `${date.getMinutes() < 10 ? `0${date.getMinutes()}` : `${date.getMinutes()}`}`
   )
 }
-const extractTimeFromString=(string)=>{
-  return(
-    new Date(`${string.split("T")[0]} ${string.split("T")[1]}:00`.replace(/-/g,"/"))
+const extractTimeFromString = (string) => {
+  return (
+    new Date(`${string.split("T")[0]} ${string.split("T")[1]}:00`.replace(/-/g, "/"))
   )
 }
-const getContentHeight=(state,drawerNumber)=>{
-  if(drawerNumber===1)
-  {
-    if(state.isSecondDrawerOpen && state.isThirdDrawerOpen)
+const getContentHeight = (state, drawerNumber) => {
+  if (drawerNumber === 1) {
+    if (state.isSecondDrawerOpen && state.isThirdDrawerOpen)
       return '28%';
-    if(state.isSecondDrawerOpen && !state.isThirdDrawerOpen)
+    if (state.isSecondDrawerOpen && !state.isThirdDrawerOpen)
       return '28%';
-    if(!state.isSecondDrawerOpen && state.isThirdDrawerOpen)
+    if (!state.isSecondDrawerOpen && state.isThirdDrawerOpen)
       return '28%';
-    else 
+    else
       return '85%';
   }
-  else if(drawerNumber===2)
-  {
-    if(state.isFirstDrawerOpen && state.isThirdDrawerOpen)
+  else if (drawerNumber === 2) {
+    if (state.isFirstDrawerOpen && state.isThirdDrawerOpen)
       return '28%';
-    if(!state.isFirstDrawerOpen && state.isThirdDrawerOpen)
+    if (!state.isFirstDrawerOpen && state.isThirdDrawerOpen)
       return '28%';
-    else if(state.isFirstDrawerOpen && !state.isThirdDrawerOpen)
+    else if (state.isFirstDrawerOpen && !state.isThirdDrawerOpen)
       return '55%';
     else
       return '85%'
   }
-  else
-  {
-    if(state.isFirstDrawerOpen && state.isSecondDrawerOpen)
+  else {
+    if (state.isFirstDrawerOpen && state.isSecondDrawerOpen)
       return '28%';
-    if(!state.isFirstDrawerOpen && !state.isSecondDrawerOpen)
+    if (!state.isFirstDrawerOpen && !state.isSecondDrawerOpen)
       return '85%';
-    else 
-      return '61%' 
+    else
+      return '61%'
   }
-  
+
 }
-const getValue=(term,div)=>{
-  if(div===2)
-  {
+const getValue = (term, div) => {
+  if (div === 2) {
     switch (term) {
       case 'equal':
         return '33%'
@@ -98,8 +95,7 @@ const getValue=(term,div)=>{
         return '5%'
     }
   }
-  else
-  {
+  else {
     switch (term) {
       case 'equal':
         return '66%'
@@ -112,54 +108,48 @@ const getValue=(term,div)=>{
     }
   }
 }
-const calculateTop=(state,div)=>{
-  if(div===2)
-  {
-    if(state.isSecondDrawerOpen)
-    {
-      if(state.isFirstDrawerOpen && state.isThirdDrawerOpen)
+const calculateTop = (state, div) => {
+  if (div === 2) {
+    if (state.isSecondDrawerOpen) {
+      if (state.isFirstDrawerOpen && state.isThirdDrawerOpen)
         return 'equal';
-      else if(!state.isFirstDrawerOpen && state.isThirdDrawerOpen)
+      else if (!state.isFirstDrawerOpen && state.isThirdDrawerOpen)
         return 'open-above'
-      else if(state.isFirstDrawerOpen && !state.isThirdDrawerOpen)
+      else if (state.isFirstDrawerOpen && !state.isThirdDrawerOpen)
         return 'open-below'
-      else 
+      else
         return 'open-full'
     }
-    else
-    {
-      if(state.isFirstDrawerOpen && !state.isThirdDrawerOpen)
+    else {
+      if (state.isFirstDrawerOpen && !state.isThirdDrawerOpen)
         return 'close-below';
-      if(!state.isFirstDrawerOpen && state.isThirdDrawerOpen)
-       return 'close-above'
-      else 
-       return 'close' 
+      if (!state.isFirstDrawerOpen && state.isThirdDrawerOpen)
+        return 'close-above'
+      else
+        return 'close'
     }
   }
-  else if(div===3)
-  {
-    if(state.isThirdDrawerOpen)
-    {
-      if(state.isFirstDrawerOpen && state.isSecondDrawerOpen)
+  else if (div === 3) {
+    if (state.isThirdDrawerOpen) {
+      if (state.isFirstDrawerOpen && state.isSecondDrawerOpen)
         return 'equal';
-      else if(!state.isFirstDrawerOpen && state.isSecondDrawerOpen)
+      else if (!state.isFirstDrawerOpen && state.isSecondDrawerOpen)
         return 'open-above'
-      if(state.isFirstDrawerOpen && !state.isSecondDrawerOpen)
+      if (state.isFirstDrawerOpen && !state.isSecondDrawerOpen)
         return 'open-above'
       return 'open-full'
     }
-    else
-    {
-      if(!state.isFirstDrawerOpen && !state.isSecondDrawerOpen)
+    else {
+      if (!state.isFirstDrawerOpen && !state.isSecondDrawerOpen)
         return 'open-full'
-      if(!state.isFirstDrawerOpen && state.isSecondDrawerOpen)
+      if (!state.isFirstDrawerOpen && state.isSecondDrawerOpen)
         return 'close-full'
       else
         return 'close-full';
     }
   }
 }
-const rightReducer=(state,action)=>{
+const rightReducer = (state, action) => {
   switch (action.rightDrawer) {
     case 1:
       return {
@@ -167,13 +157,13 @@ const rightReducer=(state,action)=>{
         isSecondDrawerOpen: state.isSecondDrawerOpen,
         isThirdDrawerOpen: state.isThirdDrawerOpen,
       };
-      case 2:
-        return {
-          isFirstDrawerOpen: state.isFirstDrawerOpen,
-          isSecondDrawerOpen: !state.isSecondDrawerOpen,
-          isThirdDrawerOpen: state.isThirdDrawerOpen,
-        };
-      case 3:
+    case 2:
+      return {
+        isFirstDrawerOpen: state.isFirstDrawerOpen,
+        isSecondDrawerOpen: !state.isSecondDrawerOpen,
+        isThirdDrawerOpen: state.isThirdDrawerOpen,
+      };
+    case 3:
       return {
         isFirstDrawerOpen: state.isFirstDrawerOpen,
         isSecondDrawerOpen: state.isSecondDrawerOpen,
@@ -183,27 +173,25 @@ const rightReducer=(state,action)=>{
       break;
   }
 }
-const fetchData=async(id)=>{
+const fetchData = async (id) => {
   try {
-      const res=await axios.post('http://localhost:5000/auth/discord/verify',{userId:id})
-      if(res.status===200)
-      {
-          return res;
-      }
-      return null;
+    const res = await axios.post('http://localhost:5000/auth/discord/verify', { userId: id })
+    if (res.status === 200) {
+      return res;
+    }
+    return null;
   } catch (error) {
-      const res=error.response;
-      if(res)
-      {
-          return res;
-      }
+    const res = error.response;
+    if (res) {
+      return res;
+    }
   }
 }
-const foundRole=(userRoles,roles)=>{
+const foundRole = (userRoles, roles) => {
   for (let i = 0; i < roles.length; i++) {
     const e = roles[i];
     for (let j = 0; j < userRoles.length; j++) {
-      if(userRoles[j]===e.roleId)
+      if (userRoles[j] === e.roleId)
         return e;
     }
   }
@@ -213,11 +201,6 @@ let cancelChannelReq;
 let cancelRoleReq;
 let cancelMemberReq;
 
-const toast={
-  DEFAULT:'DEFAULT',
-  WARNING:'WARNING',
-  ERROR:'ERROR'
-}
 
 function Dashboard(props) {
   const timer = useRef(null)
@@ -234,7 +217,7 @@ function Dashboard(props) {
   const [leftDivWidthFull, setLeftDivWidthFull] = useState(
     window.innerWidth > 900 ? false : true
   );
-  const [bottomBarWidth, setBottomBarWidth] = useState(window.innerWidth<900?'14.28571':'16.667')
+  const [bottomBarWidth, setBottomBarWidth] = useState(window.innerWidth < 900 ? '14.28571' : '16.667')
   const [activeButton, setActiveButton] = useState(1)
   const [isRightDivSliderButtonClicked, changeIsRightDivSliderButtonClicked] =
     useState(false);
@@ -247,24 +230,24 @@ function Dashboard(props) {
     isThirdDrawerOpen: true,
   });
   const [status, setStatus] = useState(
-    Cookies.get('temp_id')||Cookies.get('id') ? true : false
+    Cookies.get('temp_id') || Cookies.get('id') ? true : false
   ); //logged in
   const [imageSource, setImageSource] = useState(
-    Cookies.get('temp_id')? Cookies.get("temp_avatar") : Cookies.get('id')?Cookies.get("avatar"):null
+    Cookies.get('temp_id') ? Cookies.get("temp_avatar") : Cookies.get('id') ? Cookies.get("avatar") : null
   );
   const [userName, setUserName] = useState(
-    Cookies.get('temp_id')? Cookies.get("temp_userName") : Cookies.get('id')?Cookies.get("userName"):null
+    Cookies.get('temp_id') ? Cookies.get("temp_userName") : Cookies.get('id') ? Cookies.get("userName") : null
   );
   const [userTag, setUserTag] = useState(
-    Cookies.get('temp_id')? Cookies.get("temp_userTag") : Cookies.get('id')?Cookies.get("userTag"):null
+    Cookies.get('temp_id') ? Cookies.get("temp_userTag") : Cookies.get('id') ? Cookies.get("userTag") : null
   );
   const [loadingPercentage, setLoadingPercentage] = useState(0);
-  const [discordData,setDiscordData]=useState(null);
+  const [discordData, setDiscordData] = useState(null);
 
   const [channels, setChannels] = useState(null)
   const [searchChannel, setSearchChannel] = useState('')
   const [selectedChannels, setSelectedChannels] = useState([])
-  
+
   const [roles, setRoles] = useState(null)
   const [searchedRole, setSearchedRole] = useState('')
   const [selectedRoles, setSelectedRoles] = useState([])
@@ -272,26 +255,26 @@ function Dashboard(props) {
   const [members, setMembers] = useState([])
   const [searchedMember, setSearchedMember] = useState('')
   const [selectedMembers, setSelectedMembers] = useState([])
-  
+
   const [title, setTitle] = useState('');
-  const [message,setMessage]=useState('');
+  const [message, setMessage] = useState('');
 
   const [checked, setChecked] = useState(true)//getting the dm
   const [isReady, setIsReady] = useState(false)//ready to be sent
-  
+
   const [showToast, setShowToast] = useState(false)//showing the toast
   const [toastMessage, setToastMessage] = useState('')//showing the toast message
   const [toastType, setToastType] = useState(toast.DEFAULT)//toast type
   const [toastDuration, setToastDuration] = useState(4)//toast Duration
-  const showToastMessage=(message,type,duration)=>{
+  const showToastMessage = (message, type, duration) => {
     setShowToast(true);
     setToastMessage(message)
     setToastType(type)
     setToastDuration(duration)
   }
   useEffect(() => {
-    timer.current=setInterval(() => {
-      setCounter((state)=>state+1)
+    timer.current = setInterval(() => {
+      setCounter((state) => state + 1)
     }, 1000);
     return () => {
       clearInterval(timer.current)
@@ -307,61 +290,58 @@ function Dashboard(props) {
   }, [counter])
   //temp user
   useEffect(() => {
-    if(uid==='undefined' || did==='undefined')window.location=`${process.env.REACT_APP_BACKENDAPI}auth/discord`;
-    axios.get(`${process.env.REACT_APP_BACKENDAPI}user/info?uid=${uid}&did=${did}`).then(res=>{
+    if (uid === 'undefined' || did === 'undefined') window.location = `${process.env.REACT_APP_BACKENDAPI}auth/discord`;
+    axios.get(`${process.env.REACT_APP_BACKENDAPI}user/info?uid=${uid}&did=${did}`).then(res => {
 
-    }).catch(e=>{
+    }).catch(e => {
 
     })
   }, []);
-    const handleLogout = () => {
-      if(!Cookies.get('temp_id')) setStatus((status) => !status);
-      if(Cookies.get('temp_id'))
-      {
-        Cookies.remove("temp_id");
-        Cookies.remove("temp_discordId");
-        Cookies.remove("temp_userName");
-        Cookies.remove("temp_userTag");
-        Cookies.remove("temp_avatar");
-      }
-      else
-      {
-        Cookies.remove("id");
-        Cookies.remove("discordId");
-        Cookies.remove("userName");
-        Cookies.remove("userTag");
-        Cookies.remove("avatar");
+  const handleLogout = () => {
+    if (!Cookies.get('temp_id')) setStatus((status) => !status);
+    if (Cookies.get('temp_id')) {
+      Cookies.remove("temp_id");
+      Cookies.remove("temp_discordId");
+      Cookies.remove("temp_userName");
+      Cookies.remove("temp_userTag");
+      Cookies.remove("temp_avatar");
+    }
+    else {
+      Cookies.remove("id");
+      Cookies.remove("discordId");
+      Cookies.remove("userName");
+      Cookies.remove("userTag");
+      Cookies.remove("avatar");
 
-      }
-      window.location='/home';
-    };
-const handleOnModeUpdate = () => {
-      updateMode();
-    };
-    //managing the right div size
-    useEffect(() => {
+    }
+    window.location = '/home';
+  };
+  const handleOnModeUpdate = () => {
+    updateMode();
+  };
+  //managing the right div size
+  useEffect(() => {
     window.addEventListener("resize", () => {
-      window.innerWidth>900?setBottomBarWidth(16.667):setBottomBarWidth(14.28571)
+      window.innerWidth > 900 ? setBottomBarWidth(16.667) : setBottomBarWidth(14.28571)
       window.innerWidth > 900
-      ? setRightDivVisible(true)
-      : setRightDivVisible(false);
-      
+        ? setRightDivVisible(true)
+        : setRightDivVisible(false);
+
     });
     window.addEventListener("resize", () => {
       window.innerWidth > 900
-      ? setLeftDivWidthFull(false)
-      : setLeftDivWidthFull(true)
+        ? setLeftDivWidthFull(false)
+        : setLeftDivWidthFull(true)
     });
-    return ()=>{
+    return () => {
       // window.removeEventListener('resize');
     }
   }, []);
   useEffect(() => {
-    if(status)
-    {
-      axios.get(`http://localhost:5000/discord/permission?discordId=${did}`).then((res)=>{
+    if (status) {
+      axios.get(`http://localhost:5000/discord/permission?discordId=${did}`).then((res) => {
         setDiscordData(res.data.guilds)
-      }).catch((err)=>{
+      }).catch((err) => {
         // window.location=`/error/${err.response.status}`
       })
     }
@@ -372,116 +352,115 @@ const handleOnModeUpdate = () => {
     setSelectedChannels([])
   }, [activeGuild])
   useEffect(() => {
-    if(cancelChannelReq)
-    {
+    if (cancelChannelReq) {
       cancelChannelReq();
     }
-    if(activeGuild && status && discordData)
-    {
-      axios.get(`http://localhost:5000/discord/channel?did=${did}&gid=${activeGuild.guildId}&q=${searchChannel}`,{cancelToken:new axios.CancelToken(c=>{
-        cancelChannelReq=c;
-      })}).then((res)=>{
+    if (activeGuild && status && discordData) {
+      axios.get(`http://localhost:5000/discord/channel?did=${did}&gid=${activeGuild.guildId}&q=${searchChannel}`, {
+        cancelToken: new axios.CancelToken(c => {
+          cancelChannelReq = c;
+        })
+      }).then((res) => {
         setChannels(res.data.channels);
-      }).catch((err)=>{
-        if(!axios.isCancel(err) && err.response)
-        {
-          window.location=`/error/${err.response.status}`;
+      }).catch((err) => {
+        if (!axios.isCancel(err) && err.response) {
+          window.location = `/error/${err.response.status}`;
         }
       })
     }
-  }, [searchChannel,activeGuild])
+  }, [searchChannel, activeGuild])
   useEffect(() => {
-    if(cancelRoleReq)
-    {
+    if (cancelRoleReq) {
       cancelRoleReq();
     }
-    if(activeGuild && status && discordData)
-    {
-      axios.get(`http://localhost:5000/discord/role?did=${did}&gid=${activeGuild.guildId}&q=${searchedRole}`,{cancelToken:new axios.CancelToken(c=>{
-        cancelRoleReq=c;
-      })}).then((res)=>{
+    if (activeGuild && status && discordData) {
+      axios.get(`http://localhost:5000/discord/role?did=${did}&gid=${activeGuild.guildId}&q=${searchedRole}`, {
+        cancelToken: new axios.CancelToken(c => {
+          cancelRoleReq = c;
+        })
+      }).then((res) => {
         setRoles(res.data.roles);
-      }).catch((err)=>{
-        if(!axios.isCancel(err)&& err.response )
-        {
-          window.location=`/error/${err.response.status}`;
+      }).catch((err) => {
+        if (!axios.isCancel(err) && err.response) {
+          window.location = `/error/${err.response.status}`;
         }
       })
     }
-  }, [searchedRole,activeGuild])
+  }, [searchedRole, activeGuild])
 
   useEffect(() => {
-    if(cancelMemberReq)
-    {
+    if (cancelMemberReq) {
       cancelMemberReq();
     }
-    if(activeGuild && status && discordData)
-    {
-      axios.get(`http://localhost:5000/discord/member?did=${did}&gid=${activeGuild.guildId}&q=${searchedMember}`,{cancelToken:new axios.CancelToken(c=>{
-        cancelMemberReq=c;
-      })}).then((res)=>{
+    if (activeGuild && status && discordData) {
+      axios.get(`http://localhost:5000/discord/member?did=${did}&gid=${activeGuild.guildId}&q=${searchedMember}`, {
+        cancelToken: new axios.CancelToken(c => {
+          cancelMemberReq = c;
+        })
+      }).then((res) => {
         setMembers(res.data.members);
         console.log(res);
-      }).catch((err)=>{
-        if(!axios.isCancel(err) && err.response)
-        {
-          window.location=`/error/${err.response.status}`;
+      }).catch((err) => {
+        if (!axios.isCancel(err) && err.response) {
+          window.location = `/error/${err.response.status}`;
         }
       })
     }
-  }, [searchedMember,activeGuild])
+  }, [searchedMember, activeGuild])
   useEffect(() => {
-    if(selectedMembers.length===0 && selectedChannels.length===0 && selectedRoles.length===0 )
-    {
+    if (selectedMembers.length === 0 && selectedChannels.length === 0 && selectedRoles.length === 0) {
       setIsReady(false);
     }
-  }, [selectedChannels,selectedMembers,selectedRoles])
+  }, [selectedChannels, selectedMembers, selectedRoles])
   const firstTimeToast = useRef(true)
   useEffect(() => {
     setSelectedChannels([])
     setSelectedRoles([])
-    if(firstTimeToast.current)
-    {
-      firstTimeToast.current=false;
+    if (firstTimeToast.current) {
+      firstTimeToast.current = false;
       return;
     }
-    showToastMessage(`switch to ${messageType} mode`,toast.DEFAULT,1)
+    toast.info(`Switching to ${messageType.toUpperCase()} type`, {
+      position: "bottom-right",
+      autoClose: 2000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      });
   }, [messageType])
   const handleTextareaChange = (event) => {
     setMessage(event.target.value)
   };
-  const handleClick=(id)=>{
-      setActiveButton(id)
+  const handleClick = (id) => {
+    setActiveButton(id)
   }
-  const handleSwitchChange=(side)=>{
-    if(side==='LEFT')
+  const handleSwitchChange = (side) => {
+    if (side === 'LEFT')
       setMessageType(type.channel)
     else
       setMessageType(type.dm)
   }
-  const handleToggleRightDiv=()=>{
+  const handleToggleRightDiv = () => {
     changeIsRightDivSliderButtonClicked(!isRightDivSliderButtonClicked)
   }
-  const handleGuildButtonClick=(id)=>{
-    setActiveGuild(discordData.find((e)=>e.guildId===id))
+  const handleGuildButtonClick = (id) => {
+    setActiveGuild(discordData.find((e) => e.guildId === id))
   }
-  const handleChannelButtonClick=(id)=>{
-    if(messageType===type.channel)
-    {
-      const channel=selectedChannels.find((e)=>e.channelId===id);
-      if(!channel)
-      {
-        setSelectedChannels([...selectedChannels,channels.find(e=>e.channelId===id)])
+  const handleChannelButtonClick = (id) => {
+    if (messageType === type.channel) {
+      const channel = selectedChannels.find((e) => e.channelId === id);
+      if (!channel) {
+        setSelectedChannels([...selectedChannels, channels.find(e => e.channelId === id)])
       }
     }
   }
-  const handleRoleButtonClick=(id)=>{
-    if(messageType===type.channel)
-    {
-      const role=selectedRoles.find((e)=>e.roleId===id);
-      if(!role)
-      {
-        setSelectedRoles([...selectedRoles,roles.find(e=>e.roleId===id)])
+  const handleRoleButtonClick = (id) => {
+    if (messageType === type.channel) {
+      const role = selectedRoles.find((e) => e.roleId === id);
+      if (!role) {
+        setSelectedRoles([...selectedRoles, roles.find(e => e.roleId === id)])
       }
     }
   }
@@ -502,45 +481,73 @@ const handleOnModeUpdate = () => {
         return;
       }
     }
-    if(messageType===type.dm)
-    {
+    if (messageType === type.dm) {
       if (selectedMembers.length === 0) {
-        showToastMessage('please select atleast a member', toast.ERROR, 6)
+        showToastMessage('please select atleast a member', toast.ERROR, 6);
+        toast.error('please select atleast a member', {
+          position: "bottom-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          });
         return;
       }
     }
-    console.log(title.trim().length);
     if (title.trim().length <= 3) {
-      showToastMessage('please add a title', toast.WARNING, 6)
+      toast.warn('please add a title', {
+        position: "bottom-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        });
       return;
     }
     if (message.trim().length <= 3) {
-      showToastMessage('message field cannot be left empty', toast.ERROR, 6)
+      toast.error('message field cannot be left empty', {
+        position: "bottom-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        });
       return;
     }
-    if(activeGuild && (selectedChannels || selectedMembers || selectedRoles))
-    {
+    if (activeGuild && (selectedChannels || selectedMembers || selectedRoles)) {
+      const id=toast.loading('please wait...');
       axios
         .post(
           `http://localhost:5000/discord/post?did=${did}&gid=${activeGuild.guildId}`,
           {
-            title:title,
+            title: title,
             message: message,
             selectedRoles: selectedRoles,
             selectedChannels: selectedChannels,
             selectedMembers: selectedMembers,
             selectedTime: extractTimeFromString(selectedTime),
             preview: checked,
-            type:messageType
+            type: messageType
           }
         )
         .then((res) => {
-          showToastMessage('message sent',toast.DEFAULT,5)
+          if(res.status===200)
+          {
+            toast.update(id, { render: "message timmed", type: "success", isLoading: false });
+          }
         })
-        .catch((err) => {});
+        .catch((err) => { 
+          toast.update(id, { render: "unknow error-try again", type: "error", isLoading: false,autoClose:3000 });
+        });
     }
   }
-  const handleTimeChange=(e)=>{
+  const handleTimeChange = (e) => {
     setSelectedTime(e.target.value)
   }
   return (
@@ -548,7 +555,7 @@ const handleOnModeUpdate = () => {
       <Navbar
         key='dashboard'
         onUpdateMode={handleOnModeUpdate}
-        userName={userName}w
+        userName={userName} w
         userTag={userTag}
         imageSource={imageSource}
         status={status}
@@ -557,40 +564,52 @@ const handleOnModeUpdate = () => {
         loadingPercentage={loadingPercentage}
         page={'dashboard'}
       />
-      <Toast isOpen={showToast} message={toastMessage} toastType={toastType} onClose={() => { setShowToast(false) }} toastDuration={toastDuration} />
+      <ToastContainer
+        position="bottom-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme={mode===MODETYPE.DARK?'dark':'light'}
+        style={{ fontSize: ".9rem" }}
+      />
       <div
-        className="dashboard-full-div" style={{backgroundColor: mode === MODETYPE.DARK ? "#444" : "#cacacaca",}}>
+        className="dashboard-full-div" style={{ backgroundColor: mode === MODETYPE.DARK ? "#444" : "#cacacaca", }}>
         <div className="dashboard-content-div">
           <div className='dashboard-button-div'
             style={{
               backgroundColor: "#CDD0CB",
               width: leftDivWidthFull ? "100%" : "60%",
             }}
-            >
-            <CustomButton  className='dashboard-button-div__button' id={1} onClick={handleClick} style={{backgroundColor:activeButton===1?'#cacaca':'#555',color:activeButton===1?'#00afff':'#fff'}}>
-              <FaDiscord className='dashboard-button-div__button__icon'/>
+          >
+            <CustomButton className='dashboard-button-div__button' id={1} onClick={handleClick} style={{ backgroundColor: activeButton === 1 ? '#cacaca' : '#555', color: activeButton === 1 ? '#00afff' : '#fff' }}>
+              <FaDiscord className='dashboard-button-div__button__icon' />
             </CustomButton>
-            <CustomButton error={activeGuild?messageType===type.channel?false:true:true} count={channels&&channels.length!=0?channels.length:null} className='dashboard-button-div__button' id={2}  onClick={handleClick}  style={{backgroundColor:activeButton===2?'#cacaca':'#555',color:activeButton===2?'#00afff':'#fff'}}>
-              <GiWifiRouter className='dashboard-button-div__button__icon'/>
+            <CustomButton error={activeGuild ? messageType === type.channel ? false : true : true} count={channels && channels.length != 0 ? channels.length : null} className='dashboard-button-div__button' id={2} onClick={handleClick} style={{ backgroundColor: activeButton === 2 ? '#cacaca' : '#555', color: activeButton === 2 ? '#00afff' : '#fff' }}>
+              <GiWifiRouter className='dashboard-button-div__button__icon' />
             </CustomButton>
-            <CustomButton error={activeGuild?messageType===type.channel?false:true:true} count={roles&&roles.length!=0?roles.length:null} className='dashboard-button-div__button' id={3} onClick={handleClick}  style={{backgroundColor:activeButton===3?'#cacaca':'#555',color:activeButton===3?'#00afff':'#fff'}}>
-              <GiOfficeChair className='dashboard-button-div__button__icon'/>
+            <CustomButton error={activeGuild ? messageType === type.channel ? false : true : true} count={roles && roles.length != 0 ? roles.length : null} className='dashboard-button-div__button' id={3} onClick={handleClick} style={{ backgroundColor: activeButton === 3 ? '#cacaca' : '#555', color: activeButton === 3 ? '#00afff' : '#fff' }}>
+              <GiOfficeChair className='dashboard-button-div__button__icon' />
             </CustomButton>
-            <CustomButton error={activeGuild?false:true} className='dashboard-button-div__button' id={4} onClick={handleClick} style={{backgroundColor:activeButton===4?'#cacaca':'#555',color:activeButton===4?'#00afff':'#fff'}}>
-              <IoIosMan className='dashboard-button-div__button__icon'/>
+            <CustomButton error={activeGuild ? false : true} className='dashboard-button-div__button' id={4} onClick={handleClick} style={{ backgroundColor: activeButton === 4 ? '#cacaca' : '#555', color: activeButton === 4 ? '#00afff' : '#fff' }}>
+              <IoIosMan className='dashboard-button-div__button__icon' />
             </CustomButton>
-            <CustomButton error={activeGuild?false:true} className='dashboard-button-div__button' id={5} onClick={handleClick} style={{backgroundColor:activeButton===5?'#cacaca':'#555',color:activeButton===5?'#00afff':'#fff'}}>
-              <BsFillChatDotsFill className='dashboard-button-div__button__icon'/>
+            <CustomButton error={activeGuild ? false : true} className='dashboard-button-div__button' id={5} onClick={handleClick} style={{ backgroundColor: activeButton === 5 ? '#cacaca' : '#555', color: activeButton === 5 ? '#00afff' : '#fff' }}>
+              <BsFillChatDotsFill className='dashboard-button-div__button__icon' />
             </CustomButton>
-            <CustomButton error={activeGuild?false:true} className='dashboard-button-div__button' id={6} onClick={handleClick} style={{backgroundColor:activeButton===6?'#cacaca':'#555',color:activeButton===6?'#00afff':'#fff'}}>
-              <AiFillSetting  className='dashboard-button-div__button__icon'/>
+            <CustomButton error={activeGuild ? false : true} className='dashboard-button-div__button' id={6} onClick={handleClick} style={{ backgroundColor: activeButton === 6 ? '#cacaca' : '#555', color: activeButton === 6 ? '#00afff' : '#fff' }}>
+              <AiFillSetting className='dashboard-button-div__button__icon' />
             </CustomButton>
             {leftDivWidthFull && <CustomButton className='dashboard-button-div__button' id={7} onClick={handleToggleRightDiv}>
-              <FaArrowAltCircleLeft  className='dashboard-button-div__button__icon'/>
+              <FaArrowAltCircleLeft className='dashboard-button-div__button__icon' />
             </CustomButton>}
             <span className='dashboard-button-div_underline'
-              style={{left:`${bottomBarWidth*(activeButton-1)}%`,width:`${bottomBarWidth}%`}}
-              ></span>
+              style={{ left: `${bottomBarWidth * (activeButton - 1)}%`, width: `${bottomBarWidth}%` }}
+            ></span>
           </div>
           <div className="dashboard-leftright-wrapper-div">
             <div
@@ -612,81 +631,81 @@ const handleOnModeUpdate = () => {
               </div>
               <div className='dashboard-left-div__guild-div' style={{ zIndex: activeButton === 1 ? '1' : '0' }}>
                 <div className='dashboard-left-div__channel-div__info' style={{ color: mode === MODETYPE.DARK ? '#fff' : 'black' }}>
-                  <p>select <GiWifiRouter /> to send a message a channel and <IoIosMan /> to DM a perticular member from discord.Select <GiOfficeChair/> to tag a role [can only be used while sending a message to a channel]</p>
+                  <p>select <GiWifiRouter /> to send a message a channel and <IoIosMan /> to DM a perticular member from discord.Select <GiOfficeChair /> to tag a role [can only be used while sending a message to a channel]</p>
                 </div>
                 <div className='dashboard-left-div__guild-div__titile'>
                   <div className='dashboard-left-div__guild-div-select-div'>
                     <span>Selected server :</span>
-                    {activeGuild?<GuildButton mode={mode} MODETYPE={MODETYPE} backgroundColor={activeGuild.guildColor} id={activeGuild.guildId} guildName={activeGuild.guildName} avatar={activeGuild.guildAvatar} onClick={()=>{}}/>:"none"}
+                    {activeGuild ? <GuildButton mode={mode} MODETYPE={MODETYPE} backgroundColor={activeGuild.guildColor} id={activeGuild.guildId} guildName={activeGuild.guildName} avatar={activeGuild.guildAvatar} onClick={() => { }} /> : "none"}
                   </div>
-                  <Switch left='Channel' right='DM' onChange={handleSwitchChange}/>
+                  <Switch left='Channel' right='DM' onChange={handleSwitchChange} />
                 </div>
                 <Wrapper label='discord servers' classFulldiv='dashboard-left-div__guild-div__result'>
                   <div className='dashboard-left-div__guild-div__result_wrapper'>
-                    {discordData && discordData.map((e)=>{
-                      return <GuildButton mode={mode} MODETYPE={MODETYPE} backgroundColor={e.guildColor} id={e.guildId} key={e.guildId} guildName={e.guildName} avatar={e.guildAvatar} onClick={handleGuildButtonClick}/>
+                    {discordData && discordData.map((e) => {
+                      return <GuildButton mode={mode} MODETYPE={MODETYPE} backgroundColor={e.guildColor} id={e.guildId} key={e.guildId} guildName={e.guildName} avatar={e.guildAvatar} onClick={handleGuildButtonClick} />
                     })}
                   </div>
                 </Wrapper>
               </div>
-              <div className='dashboard-left-div__channel-div' style={{zIndex:activeButton===2?'1':'0'}}>
+              <div className='dashboard-left-div__channel-div' style={{ zIndex: activeButton === 2 ? '1' : '0' }}>
                 <div className='dashboard-left-div__channel-div__content'>
-                    <Wrapper isFocused={focusOne} label={focusOne?'search':'Search Channels'} classFulldiv='dashboard-left-div__channel-div__content-search'>
-                      <input onFocus={()=>{setFocusOne(true)}} onBlur={()=>{setFocusOne(false)}} onChange={(e)=>{setSearchChannel(e.target.value)}} value={searchChannel}></input>
-                    </Wrapper>
-                    <Wrapper label='Channels' classFulldiv='dashboard-left-div__channel-div__content-result'>
-                      <div className='dashboard-left-div__guild-div__result_wrapper'>
-                        {channels && channels.map((c)=>{
-                          return <ChannelButton name={c.channelName} id={c.channelId} key={c.channelId} onClick={handleChannelButtonClick} />
-                        })}
-                      </div>
-                    </Wrapper>
+                  <Wrapper isFocused={focusOne} label={focusOne ? 'search' : 'Search Channels'} classFulldiv='dashboard-left-div__channel-div__content-search'>
+                    <input onFocus={() => { setFocusOne(true) }} onBlur={() => { setFocusOne(false) }} onChange={(e) => { setSearchChannel(e.target.value) }} value={searchChannel}></input>
+                  </Wrapper>
+                  <Wrapper label='Channels' classFulldiv='dashboard-left-div__channel-div__content-result'>
+                    <div className='dashboard-left-div__guild-div__result_wrapper'>
+                      {channels && channels.map((c) => {
+                        return <ChannelButton name={c.channelName} id={c.channelId} key={c.channelId} onClick={handleChannelButtonClick} />
+                      })}
+                    </div>
+                  </Wrapper>
                 </div>
               </div>
-              <div className='dashboard-left-div__role-div' style={{zIndex:activeButton===3?'1':'0'}}>
+              <div className='dashboard-left-div__role-div' style={{ zIndex: activeButton === 3 ? '1' : '0' }}>
                 <div className='dashboard-left-div__role-div__content'>
-                      <Wrapper isFocused={focusOne} label={focusOne?'search':'Search Roles'} classFulldiv='dashboard-left-div__channel-div__content-search'>
-                        <input onFocus={()=>{setFocusOne(true)}} onBlur={()=>{setFocusOne(false)}} onChange={(e)=>{setSearchedRole(e.target.value)}} value={searchedRole}></input>
-                      </Wrapper>
-                      <Wrapper label='roles' classFulldiv='dashboard-left-div__channel-div__content-result'>
-                        <div className='dashboard-left-div__guild-div__result_wrapper'>
-                          {roles && roles.map((c)=>{
-                            return <ChannelButton style={{backgroundColor:c.roleColor,color:'#fff'}} name={c.roleName} id={c.roleId} key={c.roleId} onClick={handleRoleButtonClick} />
-                          })}
-                        </div>
-                      </Wrapper>
-                  </div>
-              </div>
-              <div className='dashboard-left-div__member-div' style={{zIndex:activeButton===4?'1':'0'}}>
-                <div className='dashboard-left-div__channel-div__content'>
-                      <Wrapper isFocused={focusOne} label={focusOne?'search':'Search members'} classFulldiv='dashboard-left-div__channel-div__content-search'>
-                        <input onFocus={()=>{setFocusOne(true)}} onBlur={()=>{setFocusOne(false)}} onChange={(e)=>{setSearchedMember(e.target.value)}} value={searchedMember}></input>
-                      </Wrapper>
-                      <Wrapper label='members' classFulldiv='dashboard-left-div__channel-div__content-result'>
-                        <div className='dashboard-left-div__guild-div__result_wrapper'>
-                          {members && members.map((c)=>{
-                            return <MemberButton style={{backgroundColor:'#545454',color:'#fff'}} type='add' nickName={c.memberNickName} img={c.memberAvatar} userName={c.memberUserName} userTag={c.memberUserTag} id={c.memberId} key={c.memberId} onClick={handleMemberButtonClick} />
-                          })}
-                        </div>
-                      </Wrapper>
+                  <Wrapper isFocused={focusOne} label={focusOne ? 'search' : 'Search Roles'} classFulldiv='dashboard-left-div__channel-div__content-search'>
+                    <input onFocus={() => { setFocusOne(true) }} onBlur={() => { setFocusOne(false) }} onChange={(e) => { setSearchedRole(e.target.value) }} value={searchedRole}></input>
+                  </Wrapper>
+                  <Wrapper label='roles' classFulldiv='dashboard-left-div__channel-div__content-result'>
+                    <div className='dashboard-left-div__guild-div__result_wrapper'>
+                      {roles && roles.map((c) => {
+                        return <ChannelButton style={{ backgroundColor: c.roleColor, color: '#fff' }} name={c.roleName} id={c.roleId} key={c.roleId} onClick={handleRoleButtonClick} />
+                      })}
+                    </div>
+                  </Wrapper>
                 </div>
               </div>
-              <div className='dashboard-left-div__final-div' style={{zIndex:activeButton===6?'1':'0'}}>
+              <div className='dashboard-left-div__member-div' style={{ zIndex: activeButton === 4 ? '1' : '0' }}>
+                <div className='dashboard-left-div__channel-div__content'>
+                  <Wrapper isFocused={focusOne} label={focusOne ? 'search' : 'Search members'} classFulldiv='dashboard-left-div__channel-div__content-search'>
+                    <input onFocus={() => { setFocusOne(true) }} onBlur={() => { setFocusOne(false) }} onChange={(e) => { setSearchedMember(e.target.value) }} value={searchedMember}></input>
+                  </Wrapper>
+                  <Wrapper label='members' classFulldiv='dashboard-left-div__channel-div__content-result'>
+                    <div className='dashboard-left-div__guild-div__result_wrapper'>
+                      {members && members.map((c) => {
+                        return <MemberButton style={{ backgroundColor: '#545454', color: '#fff' }} type='add' nickName={c.memberNickName} img={c.memberAvatar} userName={c.memberUserName} userTag={c.memberUserTag} id={c.memberId} key={c.memberId} onClick={handleMemberButtonClick} />
+                      })}
+                    </div>
+                  </Wrapper>
+                </div>
+              </div>
+              <div className='dashboard-left-div__final-div' style={{ zIndex: activeButton === 6 ? '1' : '0' }}>
                 <Wrapper label='date and time' classFulldiv='dashboard-left-div__final-div-datetime'>
                   <div className='dashboard-left-div__final-div-submit-datepicker'>
                     Pick a Date and Time
                   </div>
-                    <div className='dashboard-left-div__final-div-submit-datepicker'>
-                      <input
-                        type="datetime-local"
-                        value={selectedTime}
-                        min={calcTimeString(today.current)}
-                        max={calcTimeString(maxDate.current)}
-                        onChange={handleTimeChange}
-                        className='input-time-date'
-                        style={{backgroundColor:mode===MODETYPE.DARK?'#cacaca':'#ECECEC'}}
-                      />
-                    </div>
+                  <div className='dashboard-left-div__final-div-submit-datepicker'>
+                    <input
+                      type="datetime-local"
+                      value={selectedTime}
+                      min={calcTimeString(today.current)}
+                      max={calcTimeString(maxDate.current)}
+                      onChange={handleTimeChange}
+                      className='input-time-date'
+                      style={{ backgroundColor: mode === MODETYPE.DARK ? '#cacaca' : '#ECECEC' }}
+                    />
+                  </div>
                 </Wrapper>
                 <Wrapper label='submit' classFulldiv='dashboard-left-div__final-div-submit'>
                   <div className='dashboard-left-div__final-div-submit-preview'>
@@ -713,14 +732,14 @@ const handleOnModeUpdate = () => {
               className="dashboard-right-div"
               style={{
                 backgroundColor: mode === MODETYPE.DARK ? "#777" : "#cacaca",
-                left:leftDivWidthFull?isRightDivSliderButtonClicked?'20%':'100%':'60%',
+                left: leftDivWidthFull ? isRightDivSliderButtonClicked ? '20%' : '100%' : '60%',
               }}
-              >
+            >
               <Card
                 contentHeight={getContentHeight(rightDrawerState, 1)}
-                textColor={mode===MODETYPE.DARK?'#fff':'#000'}
-                headerBackgroundColor={mode===MODETYPE.DARK?'#333':'#666'}
-                backgroundColor={mode===MODETYPE.DARK?'#555':'#cacaca'}
+                textColor={mode === MODETYPE.DARK ? '#fff' : '#000'}
+                headerBackgroundColor={mode === MODETYPE.DARK ? '#333' : '#666'}
+                backgroundColor={mode === MODETYPE.DARK ? '#555' : '#cacaca'}
                 isOpen={rightDrawerState.isFirstDrawerOpen}
                 top="0"
                 headerTitle="members"
@@ -732,8 +751,8 @@ const handleOnModeUpdate = () => {
                     return;
                   rightDrawerDispatch({ rightDrawer: 1 });
                 }}
-                >
-                {selectedMembers && selectedMembers.map((c)=>{
+              >
+                {selectedMembers && selectedMembers.map((c) => {
                   return (
                     <MemberButton
                       classNameChildrenDiv='card-memberbutton'
@@ -751,8 +770,8 @@ const handleOnModeUpdate = () => {
                         );
                       }}
                     >
-                      {c.isAdmin && <AdminIcon style={{padding:"0 5px",fontWeight:700}} />}
-                      {foundRole(c.memberRoles,selectedRoles) && <AiFillWarning style={{color:'yellow',fontSize:"1rem"}} />}
+                      {c.isAdmin && <AdminIcon style={{ padding: "0 5px", fontWeight: 700 }} />}
+                      {foundRole(c.memberRoles, selectedRoles) && <AiFillWarning style={{ color: 'yellow', fontSize: "1rem" }} />}
 
                     </MemberButton>
                   );
@@ -760,9 +779,9 @@ const handleOnModeUpdate = () => {
               </Card>
               <Card
                 contentHeight={getContentHeight(rightDrawerState, 2)}
-                textColor={mode===MODETYPE.DARK?'#fff':'#000'}
-                headerBackgroundColor={mode===MODETYPE.DARK?'#333':'#666'}
-                backgroundColor={mode===MODETYPE.DARK?'#555':'#cacaca'}
+                textColor={mode === MODETYPE.DARK ? '#fff' : '#000'}
+                headerBackgroundColor={mode === MODETYPE.DARK ? '#333' : '#666'}
+                backgroundColor={mode === MODETYPE.DARK ? '#555' : '#cacaca'}
                 isOpen={rightDrawerState.isSecondDrawerOpen}
                 top={getValue(calculateTop(rightDrawerState, 2), 2)}
                 headerTitle="roles"
@@ -775,18 +794,18 @@ const handleOnModeUpdate = () => {
                   rightDrawerDispatch({ rightDrawer: 2 });
                 }}
               >
-                {selectedRoles && selectedRoles.map(e=>{
-                  return <TouchableCard id={e.roleId} title={<>{e.roleName}{e.isAdmin &&<AdminIcon />}</>} key={e.roleId} onClick={id=>{
-                    setSelectedRoles(selectedRoles.filter(e=>e.roleId!=id))
-                  }}/>
+                {selectedRoles && selectedRoles.map(e => {
+                  return <TouchableCard id={e.roleId} title={<>{e.roleName}{e.isAdmin && <AdminIcon />}</>} key={e.roleId} onClick={id => {
+                    setSelectedRoles(selectedRoles.filter(e => e.roleId != id))
+                  }} />
                 })}
               </Card>
               <Card
                 contentHeight={getContentHeight(rightDrawerState, 3)}
-                textColor={mode===MODETYPE.DARK?'#fff':'#000'}
-                headerBackgroundColor={mode===MODETYPE.DARK?'#333':'#666'}
-                color={mode===MODETYPE.DARK?'#cacaca':'#222'}
-                backgroundColor={mode===MODETYPE.DARK?'#555':'#cacaca'}
+                textColor={mode === MODETYPE.DARK ? '#fff' : '#000'}
+                headerBackgroundColor={mode === MODETYPE.DARK ? '#333' : '#666'}
+                color={mode === MODETYPE.DARK ? '#cacaca' : '#222'}
+                backgroundColor={mode === MODETYPE.DARK ? '#555' : '#cacaca'}
                 isOpen={rightDrawerState.isThirdDrawerOpen}
                 top={getValue(calculateTop(rightDrawerState, 3), 3)}
                 headerTitle="channels"
@@ -799,17 +818,17 @@ const handleOnModeUpdate = () => {
                   rightDrawerDispatch({ rightDrawer: 3 });
                 }}
               >
-                {selectedChannels && selectedChannels.map(e=>{
-                  return <TouchableCard id={e.channelId} title={e.channelName} key={e.channelId} onClick={id=>{
-                    setSelectedChannels(selectedChannels.filter(e=>e.channelId!=id))
-                  }}/>
+                {selectedChannels && selectedChannels.map(e => {
+                  return <TouchableCard id={e.channelId} title={e.channelName} key={e.channelId} onClick={id => {
+                    setSelectedChannels(selectedChannels.filter(e => e.channelId != id))
+                  }} />
                 })}
               </Card>
             </div>
           </div>
         </div>
       </div>
-      <Footer mode={mode} MODETYPE={MODETYPE}/>
+      <Footer mode={mode} MODETYPE={MODETYPE} />
     </>
   );
 }

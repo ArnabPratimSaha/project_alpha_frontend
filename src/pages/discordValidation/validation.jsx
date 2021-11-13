@@ -8,7 +8,7 @@ import Cookie from 'js-cookie';
 import 'react-toastify/dist/ReactToastify.css';
 import './validation.css';
 
-const Validation=(props)=> {
+const Validation = (props) => {
     const { did, sid, page } = useParams();
     const [mode, changeMode, MODETYPE, updateMode] = useMode();
     const [isModalOn, setIsModalOn] = useState(false);
@@ -22,16 +22,25 @@ const Validation=(props)=> {
                     setIsModalOn(true);
                     setModalText('OTP is sent on your discord');
                 }).catch(err => {
-                    
+                    toast.error('‼Sorry-Something Went Wrong', {
+                        position: "bottom-right",
+                        autoClose: 5000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                    });
                 })
             }
         }).catch(e => {
-            window.location='/error/405';
+            window.location = '/error/405';
         })
     }, [])
     const handleModalClick = (v) => {
         axios.get(`${process.env.REACT_APP_BACKENDAPI}link/validate?id=${did}&en=${sid}&c=${v}`).then((res) => {
             if (res.status === 200) {
+                setIsModalOn(false);
                 Cookie.set('temp_id', data.current.userId);
                 Cookie.set('temp_discordId', data.current.discordId);
                 Cookie.set('temp_userName', data.current.userName);
@@ -40,11 +49,33 @@ const Validation=(props)=> {
                 if (page === 'dashboard') window.location = `/dashboard/${data.current.userId}/${did}`;
                 if (page === 'log') window.location = `log/${data.current.userId}/${did}`;
             }
-        }).catch((e)=>{
-            
+        }).catch((e) => {
+            if(!axios.isAxiosError(e))return;
+            if (e.response.status === 400 || e.response.status === 404) {
+                toast.error('!! OOPs Validation Falied-Try Again', {
+                    position: "bottom-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                });
+            }
+            else {
+                toast.error('Something went wrong', {
+                    position: "bottom-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                });
+            }
         })
     }
-        return(
+    return (
         <div>
             <ToastContainer
                 position="bottom-right"
@@ -56,9 +87,9 @@ const Validation=(props)=> {
                 pauseOnFocusLoss
                 draggable
                 pauseOnHover
-                theme='dark'
+                theme={mode === MODETYPE.DARK ? 'dark' : 'light'}
                 style={{ fontSize: ".7rem" }}
-                />
+            />
             <div className='validation-fulldiv' style={{ backgroundColor: mode === MODETYPE.DARK ? "#444" : "#cacacaca", }}>
                 <Modal isOpen={isModalOn} onClick={handleModalClick} text={modalText} mode={mode} MODETYPE={MODETYPE} />
             </div>
