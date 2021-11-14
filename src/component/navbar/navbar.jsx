@@ -7,6 +7,7 @@ import { LightONE, DarkONE, colorPalettes } from '../../stylesandthemes/themes';
 import Cookies from 'js-cookie';
 import RobotHead from '../robotHead/robotHead';
 import { FaDiscord } from "react-icons/fa";
+import BotStatus from '../botStatus/botStaus';
 
 export default function Navbar(props) {
     const [mode, changeMode, MODETYPE, updateMode] = useMode();
@@ -15,7 +16,9 @@ export default function Navbar(props) {
     const [loadingPercentage, setLoadingPercentage] = useState(0);
     const [mobileSize, setMobileSize] = useState(window.innerWidth<900?true:false);
     const [status, setStatus] = useState(props.status==='true'?true:false);
-    useEffect(() => {
+
+    const [botStatus, setBotStatus] = useState(Cookies.get('bot-status')?false:true)
+;    useEffect(() => {
         if(props.status)setStatus(true);
         else setStatus(false);
     }, [props.status])
@@ -62,13 +65,20 @@ export default function Navbar(props) {
     const handleLogin=()=>{
         window.location=`${process.env.REACT_APP_BACKENDAPI}auth/discord`
     }
+    useEffect(() => {
+        if (!Cookies.get('bot-status')) {
+            Cookies.set('bot-status', 'done');
+            setBotStatus(true);
+        }
+    }, [])
     return (
-        <div>
+        <div className='navbar-fulldiv'>
             <div className='main-body' style={{height:shrink?'3.5rem':'5rem',backgroundColor:mode===MODETYPE.DARK?'#222':'#a8a8a8'}}>
                 <div className='navbar-overlay' style={{backgroundColor:mode===MODETYPE.DARK?'#222':'#a8a8a8'}}></div>
                 <div className='navbar-svg' style={{backgroundColor:mode===MODETYPE.DARK?'#222':'#a8a8a8'}}>
                     <RobotHead/>
                 </div>
+                {mobileSize&&<h1 className='navbar-brandname' style={{backgroundColor:mode===MODETYPE.DARK?'#222':'#a8a8a8',color:mode===MODETYPE.DARK?'#fff':'#222'}}>Vivo</h1>}
                 <div className='navbar-loading-div' style={{backgroundColor:mode===MODETYPE.DARK?'#222':'#a8a8a8'}}>
                     <div className='navbar-loading-bar' style={{transform:`scaleX(${loadingPercentage})`}}>
                     </div>
@@ -107,22 +117,22 @@ export default function Navbar(props) {
                         <Owl onChange={handleChange}/>
                     </div>
                 </div>
-                <h1 className='navbar-brandname' style={{backgroundColor:mode===MODETYPE.DARK?'#222':'#a8a8a8',color:mode===MODETYPE.DARK?'#fff':'#222'}}>Vivo</h1>
-                <div className='navlinks-mobile' style={{top:shrink?'0':'100%',backgroundColor:mode===MODETYPE.DARK?'#555':'#ffff',color:mode===MODETYPE.DARK?'#fff':'#222',}}>
-                    <a style={{color:props.page==='home'?'#007ca5':mode===MODETYPE.DARK?status?'#fff':'#666':status?'#222':'#555'}} href={props.page!='home'?'/home':'#'} className='navbar-links__link'>
-                        Home
-                    </a>
-                    <a style={{color:props.page==='dashboard'?'#007ca5':mode===MODETYPE.DARK?status?'#fff':'#666':status?'#222':'#555'}} className='navbar-links__link' href={props.page!='dashboard'?status?`/dashboard/${Cookies.get('temp_id')?Cookies.get('temp_id'):Cookies.get('id')}/${Cookies.get('temp_discordId')?Cookies.get('temp_discordId'):Cookies.get('discordId')}`:'#':'#'}>
-                        Dashboard
-                    </a>
-                    <a style={{color:props.page==='log'?'#007ca5':mode===MODETYPE.DARK?status?'#fff':'#666':status?'#222':'#555'}} href={props.page!='log'?status?`/log/${Cookies.get('temp_id')?Cookies.get('temp_id'):Cookies.get('id')}/${Cookies.get('temp_discordId')?Cookies.get('temp_discordId'):Cookies.get('discordId')}`:'#':'#'} className='navbar-links__link'>
-                        Log
-                    </a>
-                    <a style={{color:props.page==='learn'?'#007ca5':mode===MODETYPE.DARK?'#fff':'#222'}} className='navbar-links__link'>
-                        Learn About
-                    </a>
-                </div>
             </div>
+            <div className='navlinks-mobile' style={{ height: shrink ? '0' : '2rem', backgroundColor: mode === MODETYPE.DARK ? '#555' : '#ffff', color: mode === MODETYPE.DARK ? '#fff' : '#222', }}>
+                <a style={{ color: props.page === 'home' ? '#007ca5' : mode === MODETYPE.DARK ? status ? '#fff' : '#666' : status ? '#222' : '#555' }} href={props.page != 'home' ? '/home' : '#'} className='navbar-links__link'>
+                    Home
+                </a>
+                <a style={{ color: props.page === 'dashboard' ? '#007ca5' : mode === MODETYPE.DARK ? status ? '#fff' : '#666' : status ? '#222' : '#555' }} className='navbar-links__link' href={props.page != 'dashboard' ? status ? `/dashboard/${Cookies.get('temp_id') ? Cookies.get('temp_id') : Cookies.get('id')}/${Cookies.get('temp_discordId') ? Cookies.get('temp_discordId') : Cookies.get('discordId')}` : '#' : '#'}>
+                    Dashboard
+                </a>
+                <a style={{ color: props.page === 'log' ? '#007ca5' : mode === MODETYPE.DARK ? status ? '#fff' : '#666' : status ? '#222' : '#555' }} href={props.page != 'log' ? status ? `/log/${Cookies.get('temp_id') ? Cookies.get('temp_id') : Cookies.get('id')}/${Cookies.get('temp_discordId') ? Cookies.get('temp_discordId') : Cookies.get('discordId')}` : '#' : '#'} className='navbar-links__link'>
+                    Log
+                </a>
+                <a style={{ color: props.page === 'learn' ? '#007ca5' : mode === MODETYPE.DARK ? '#fff' : '#222' }} className='navbar-links__link'>
+                    Learn About
+                </a>
+            </div>
+            {botStatus&&<BotStatus mode={mode} MODETYPE={MODETYPE}/>}
         </div>
     )
 }
