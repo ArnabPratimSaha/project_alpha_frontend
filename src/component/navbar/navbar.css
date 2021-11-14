@@ -1,11 +1,15 @@
-.main-body{
-    background-color: aqua;
-    width: 100%;
-    position: fixed;
-    transition: height 300ms ease-in-out;
+.navbar-fulldiv
+{
+    position: fixed; 
+    width: 100vw;
     z-index: 1000;
     top: 0;
+}
+.main-body{
+    width: 100%;
+    transition: height 300ms ease-in-out;
     display: flex;
+    position: relative;
     justify-content: space-between;
     align-items: center;
 }
@@ -114,7 +118,7 @@
 }
 .navbar-loggedin-div button,.navbar-small-window button
 {
-    background-color: #00bfff;
+    background-color: #ff5d2c;
     padding: 5px 10px;
     border: 1px solid transparent;
     border-radius: 5px;
@@ -126,12 +130,12 @@
 }
 .navbar-loggedin-div button:hover,.navbar-small-window button:hover
 {
-    background-color: #56d2fc;
+    background-color: #ff3c00;
 }
 
 .navbar-login
 {
-    background-color: #00bfff;
+    background-color: #ff5d2c;
     padding: 5px 10px;
     border: 1px solid transparent;
     border-radius: 5px;
@@ -143,7 +147,7 @@
 }
 .navbar-login:hover,.navbar-login:focus
 {
-    background-color: rgb(0, 163, 163);
+    background-color: #ff3c00;
 }
 .navbar-small-window
 {
@@ -162,12 +166,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@300;400;500;600&display=swap');
 .navbar-brandname
 {
-    position: absolute;
-    margin: 0;
-    padding: 0;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%,-50%);
     font-family: 'Barlow Condensed', sans-serif;
     letter-spacing: 2px;
     z-index: 2;
@@ -177,12 +175,12 @@
 .navlinks-mobile
 {
     width: 100%;
-    position: absolute;
     background-color: aqua;
     z-index: -999;
     display: none;
-    height: 40%;
+    height: 2rem;
     transition: all 400ms ease-in-out;
+    overflow: hidden;
 }
 .navlinks-mobile a
 {

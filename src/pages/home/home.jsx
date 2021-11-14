@@ -95,7 +95,7 @@ export default function Home() {
                         <div className='send-channel-info__text'>
                             <h1 style={{ color: mode === MODETYPE.DARK ? '#fff' : '#222' }}>Send schedule message to your discord channel at any time.</h1>
                             <p style={{ color: mode === MODETYPE.DARK ? '#cacaca' : '#000' }}>Lorem ipsum dolor sit amet consectetur adipisicing elit. Explicabo animi beatae modi, cum quo a sapiente autem dolor facilis, quas libero! Suscipit ex, cupiditate repellendus modi esse porro nesciunt eaque?</p>
-                            <Button onClick={() => { }} name='Invite VIVI' />
+                            <Button style={{backgroundColor:'#ff5d2c',color:'#fff'}} onClick={() => { }} name='Invite VIVI' />
                         </div>
                     </div>
                 </Brightup>

@@ -1,0 +1,36 @@
+.botstatus-fulldiv
+{
+    height: 2rem;
+    width: 100vw;
+    overflow: hidden;
+    transition: all ease-in-out 200ms;
+    display: flex;
+    text-align: left;
+    align-items: center;
+    padding: 0 2%;
+    padding-right: 4%;
+    position: relative;
+    box-sizing: border-box;
+    background-color: #ff5d2c;
+}
+.botstatus-fulldiv p
+{
+    font-size: .9rem;
+    flex: 1;
+    color: #fff;
+}
+.botstatus-icon
+{
+    cursor: pointer;
+    color: #fff;
+}
+.botstatus-icon:focus
+{
+    font-weight: 600;
+}
+@media only screen and (max-width: 900px) {
+    .botstatus-fulldiv p
+    {
+        font-size: .6rem;
+    }
+}
