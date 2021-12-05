@@ -21,7 +21,7 @@ function BotStatus(props) {
     return (
         <div style={{ height: state ? '3rem' : '0'}} className='botstatus-fulldiv'>
             <p>{message}</p>
-            <AiOutlineClose className='botstatus-icon' onClick={()=>{setState(false)}}/>
+            <AiOutlineClose className='botstatus-icon' onClick={()=>{setState(false);if(props.onClose)props.onClose()}}/>
         </div>
     )
 }

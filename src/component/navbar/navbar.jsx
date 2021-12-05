@@ -65,12 +65,9 @@ export default function Navbar(props) {
     const handleLogin=()=>{
         window.location=`${process.env.REACT_APP_BACKENDAPI}auth/discord`
     }
-    useEffect(() => {
-        if (!Cookies.get('bot-status')) {
-            Cookies.set('bot-status', 'done');
-            setBotStatus(true);
-        }
-    }, [])
+    const handleClose=()=>{
+        Cookies.set('bot-status', 'done');
+    }
     return (
         <div className='navbar-fulldiv'>
             <div className='main-body' style={{height:shrink?'3.5rem':'5rem',backgroundColor:mode===MODETYPE.DARK?'#222':'#a8a8a8'}}>
@@ -132,7 +129,7 @@ export default function Navbar(props) {
                     Learn About
                 </a>
             </div>
-            {botStatus&&<BotStatus mode={mode} MODETYPE={MODETYPE}/>}
+            {botStatus&&<BotStatus mode={mode} MODETYPE={MODETYPE} onClose={handleClose}/>}
         </div>
     )
 }
