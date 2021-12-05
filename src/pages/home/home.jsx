@@ -39,7 +39,7 @@ export default function Home() {
         });
     }, [])
     const handleLogout = () => {
-        if(!Cookies.get('temp_id'))
+        if (!Cookies.get('temp_id'))
             setStatus((status) => !status)
         if (Cookies.get('temp_id')) {
             Cookies.remove("temp_id");
@@ -64,7 +64,7 @@ export default function Home() {
     }, [])
     return (
         <div className='home-full-div' style={{ backgroundColor: mode === MODETYPE.DARK ? '#444' : '#cacacaca' }}>
-            <Navbar key='home' onUpdateMode={handleOnModeUpdate} userName={userName} userTag={userTag} imageSource={imageSource} status={status} handleLogout={handleLogout} page={'home'}/>
+            <Navbar key='home' onUpdateMode={handleOnModeUpdate} userName={userName} userTag={userTag} imageSource={imageSource} status={status} handleLogout={handleLogout} page={'home'} />
             <div className='home-intro' >
                 <div className='home-intro__title' style={{ color: mode === MODETYPE.DARK ? '#fff' : '#233' }}>
                     <h1>Let Vivi handle your anouncement's</h1>
@@ -74,7 +74,7 @@ export default function Home() {
                 </div>
                 <div className='home-intro__add-div' style={{ color: mode === MODETYPE.DARK ? '#fff' : '#222' }}>
                     <h1>add vivi to your discord server today</h1>
-                    <span style={{ borderColor: mode === MODETYPE.DARK ? '#fff' : '#000', color: mode === MODETYPE.DARK ? '#fff' : '#222' }}>add vivi</span>
+                    <span style={{ borderColor: mode === MODETYPE.DARK ? '#fff' : '#000', color: mode === MODETYPE.DARK ? '#fff' : '#222' }} onClick={() => { window.open(`${process.env.REACT_APP_BOTLINK}`) }}>add vivi</span>
                     <span style={{ borderColor: mode === MODETYPE.DARK ? '#fff' : '#000', color: mode === MODETYPE.DARK ? '#fff' : '#222' }}>learn more</span>
                 </div>
             </div>
@@ -95,7 +95,7 @@ export default function Home() {
                         <div className='send-channel-info__text'>
                             <h1 style={{ color: mode === MODETYPE.DARK ? '#fff' : '#222' }}>Send schedule message to your discord channel at any time.</h1>
                             <p style={{ color: mode === MODETYPE.DARK ? '#cacaca' : '#000' }}>Lorem ipsum dolor sit amet consectetur adipisicing elit. Explicabo animi beatae modi, cum quo a sapiente autem dolor facilis, quas libero! Suscipit ex, cupiditate repellendus modi esse porro nesciunt eaque?</p>
-                            <Button style={{backgroundColor:'#ff5d2c',color:'#fff'}} onClick={() => { }} name='Invite VIVI' />
+                            <Button style={{ backgroundColor: '#ff5d2c', color: '#fff' }} onClick={() => { window.open(`${process.env.REACT_APP_BOTLINK}`) }} name='Invite VIVI' />
                         </div>
                     </div>
                 </Brightup>
