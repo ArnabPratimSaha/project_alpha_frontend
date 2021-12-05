@@ -15,7 +15,8 @@ div{
     animation: App-logo-spin infinite 20s linear;
   }
 }
-
+@import url('https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Pacifico&display=swap');
 .App-header {
   background-color: #282c34;
   min-height: 100vh;
