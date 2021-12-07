@@ -67,7 +67,7 @@ export default function Home() {
             <Navbar key='home' onUpdateMode={handleOnModeUpdate} userName={userName} userTag={userTag} imageSource={imageSource} status={status} handleLogout={handleLogout} page={'home'} />
             <div className='home-intro' >
                 <div className='home-intro__title' style={{ color: mode === MODETYPE.DARK ? '#fff' : '#233' }}>
-                    <h1>Let Vivi handle your anouncement's</h1>
+                    <h1>Let Vivi handle your announcement's</h1>
                     <h2>forget about forgetting</h2>
                 </div>
                 <div className='bot-div' ref={current}>

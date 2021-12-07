@@ -165,6 +165,18 @@
     align-content: flex-start;
     overflow-y: scroll;
 }
+.dashboard-left-div__guild-div__result_wrapper::-webkit-scrollbar
+{
+    width: 5px;
+}
+.dashboard-left-div__guild-div__result_wrapper::-webkit-scrollbar-track {
+    background: transparent;
+}
+.dashboard-left-div__guild-div__result_wrapper::-webkit-scrollbar-thumb {
+    background: rgb(202,202,202);
+    background: linear-gradient(114deg, rgba(202,202,202,0) 0%, rgba(68,68,68,1) 100%);
+    border-radius: 5px;
+ }
 .dashboard-left-div__role-div
 {
     background-color: inherit;

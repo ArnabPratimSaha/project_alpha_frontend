@@ -31,15 +31,15 @@
     margin: 0;
     padding: 0;
     font-size: .9rem;
-    font-weight: 600;
+    font-weight: 500;
     font-family: 'Open Sans', sans-serif;
 }
 .memberbutton-infoDiv p
 {
     margin: 0;
     padding: 0;
-    font-size: .5rem;
-    font-weight: 600;
+    font-size: .55rem;
+    font-weight: 400;
 }
 .memberbutton-custom-image-div
 {
@@ -63,5 +63,5 @@
 }
 .memberbutton-icon:hover
 {
-    color: #555;
+    opacity: .8;
 }

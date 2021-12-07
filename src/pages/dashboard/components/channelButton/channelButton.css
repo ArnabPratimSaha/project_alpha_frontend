@@ -6,12 +6,11 @@
     padding: 0 10px;
     justify-content: center;
     margin: 5px;
-    border: 1px solid transparent;
-    border-radius: 2px;
+    border-radius: 5px;
 }
 .channelbutton-fulldiv h2
 {
-    margin: 0 15px;
+    margin: 0 15px 0 0;
     padding: 0;
     font-family: 'Roboto Condensed', sans-serif;
     font-size: 1rem;

@@ -19,10 +19,10 @@ import AdminIcon from "./components/adminIcon/adminIcon";
 import MemberButton from "./components/memberButton/memberButton";
 import Cookies, { set } from "js-cookie";
 import Switch from "../../component/switch/switch";
-import Toast from "../../component/toast/toast";
 import Footer from "../../component/footer/footer";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Input from "./components/input/input";
 
 const type = {
   channel: 'CHANNEL',
@@ -173,20 +173,6 @@ const rightReducer = (state, action) => {
       break;
   }
 }
-const fetchData = async (id) => {
-  try {
-    const res = await axios.post(`${process.env.REACT_APP_BACKENDAPI}auth/discord/verify`, { userId: id })
-    if (res.status === 200) {
-      return res;
-    }
-    return null;
-  } catch (error) {
-    const res = error.response;
-    if (res) {
-      return res;
-    }
-  }
-}
 const foundRole = (userRoles, roles) => {
   for (let i = 0; i < roles.length; i++) {
     const e = roles[i];
@@ -197,8 +183,6 @@ const foundRole = (userRoles, roles) => {
   }
   return null;
 }
-let cancelChannelReq;
-let cancelRoleReq;
 let cancelMemberReq;
 
 
@@ -244,10 +228,12 @@ function Dashboard(props) {
   const [loadingPercentage, setLoadingPercentage] = useState(0);
   const [discordData, setDiscordData] = useState(null);
 
-  const [channels, setChannels] = useState(null)
-  const [searchChannel, setSearchChannel] = useState('')
+  const [allChannels, setAllChannels] = useState([]);
+  const [channels, setChannels] = useState(null);
+  const [searchChannel, setSearchChannel] = useState('');
   const [selectedChannels, setSelectedChannels] = useState([])
-
+  
+  const [allRoles, setAllRoles] = useState([]);
   const [roles, setRoles] = useState(null)
   const [searchedRole, setSearchedRole] = useState('')
   const [selectedRoles, setSelectedRoles] = useState([])
@@ -261,17 +247,6 @@ function Dashboard(props) {
 
   const [checked, setChecked] = useState(true)//getting the dm
   const [isReady, setIsReady] = useState(false)//ready to be sent
-
-  const [showToast, setShowToast] = useState(false)//showing the toast
-  const [toastMessage, setToastMessage] = useState('')//showing the toast message
-  const [toastType, setToastType] = useState(toast.DEFAULT)//toast type
-  const [toastDuration, setToastDuration] = useState(4)//toast Duration
-  const showToastMessage = (message, type, duration) => {
-    setShowToast(true);
-    setToastMessage(message)
-    setToastType(type)
-    setToastDuration(duration)
-  }
   useEffect(() => {
     timer.current = setInterval(() => {
       setCounter((state) => state + 1)
@@ -339,11 +314,12 @@ function Dashboard(props) {
   }, []);
   useEffect(() => {
     if (status) {
-      axios.get(`${process.env.REACT_APP_BACKENDAPI}discord/permission?discordId=${did}`).then((res) => {
+      axios.get(`${process.env.REACT_APP_BACKENDAPI}discord/permission?did=${did}`).then((res) => {
         setDiscordData(res.data.guilds)
       }).catch((err) => {
         // window.location=`/error/${err.response.status}`
-      })
+      });
+
     }
   }, [status])
   useEffect(() => {
@@ -352,41 +328,49 @@ function Dashboard(props) {
     setSelectedChannels([])
   }, [activeGuild])
   useEffect(() => {
-    if (cancelChannelReq) {
-      cancelChannelReq();
-    }
     if (activeGuild && status && discordData) {
-      axios.get(`${process.env.REACT_APP_BACKENDAPI}discord/channel?did=${did}&gid=${activeGuild.guildId}&q=${searchChannel}`, {
-        cancelToken: new axios.CancelToken(c => {
-          cancelChannelReq = c;
-        })
-      }).then((res) => {
+      axios.get(`${process.env.REACT_APP_BACKENDAPI}discord/channel?did=${did}&gid=${activeGuild.guildId}`).then((res) => {
+        setAllChannels(res.data.channels);
         setChannels(res.data.channels);
       }).catch((err) => {
-        if (!axios.isCancel(err) && err.response) {
-          window.location = `/error/${err.response.status}`;
-        }
+
       })
-    }
-  }, [searchChannel, activeGuild])
-  useEffect(() => {
-    if (cancelRoleReq) {
-      cancelRoleReq();
-    }
-    if (activeGuild && status && discordData) {
-      axios.get(`${process.env.REACT_APP_BACKENDAPI}discord/role?did=${did}&gid=${activeGuild.guildId}&q=${searchedRole}`, {
-        cancelToken: new axios.CancelToken(c => {
-          cancelRoleReq = c;
-        })
-      }).then((res) => {
+      axios.get(`${process.env.REACT_APP_BACKENDAPI}discord/role?did=${did}&gid=${activeGuild.guildId}`).then((res) => {
+        setAllRoles(res.data.roles);
         setRoles(res.data.roles);
       }).catch((err) => {
-        if (!axios.isCancel(err) && err.response) {
-          window.location = `/error/${err.response.status}`;
-        }
+
       })
     }
-  }, [searchedRole, activeGuild])
+  }, [activeGuild]);
+  useEffect(() => {
+    let validChannels = [];
+    if (searchChannel === "") {
+      setChannels(allChannels);
+      return;
+    }
+    allChannels.forEach(i => {
+      const exp = new RegExp(searchChannel, 'gi');
+      if (exp.test(i.channelName)) {
+        validChannels.push(i)
+      }
+    });
+    setChannels(validChannels);
+  }, [searchChannel])
+  useEffect(() => {
+    let validRoles = [];
+    if (searchedRole === "") {
+      setRoles(allRoles);
+      return;
+    }
+    allRoles.forEach(i => {
+      const exp = new RegExp(searchedRole, 'gi');
+      if (exp.test(i.roleName)) {
+        validRoles.push(i)
+      }
+    });
+    setRoles(validRoles);
+  }, [searchedRole])
 
   useEffect(() => {
     if (cancelMemberReq) {
@@ -414,8 +398,8 @@ function Dashboard(props) {
   }, [selectedChannels, selectedMembers, selectedRoles])
   const firstTimeToast = useRef(true)
   useEffect(() => {
-    setSelectedChannels([])
-    setSelectedRoles([])
+    setSelectedChannels([]);
+    setSelectedRoles([]);
     if (firstTimeToast.current) {
       firstTimeToast.current = false;
       return;
@@ -428,7 +412,7 @@ function Dashboard(props) {
       pauseOnHover: true,
       draggable: true,
       progress: undefined,
-      });
+    });
   }, [messageType])
   const handleTextareaChange = (event) => {
     setMessage(event.target.value)
@@ -472,18 +456,24 @@ function Dashboard(props) {
   }
   const handleMessageSend = () => {
     if (!activeGuild) {
-      showToastMessage('please select a server', toast.ERROR, 6)
       return;
     }
     if (messageType === type.channel) {
       if (selectedChannels.length === 0) {
-        showToastMessage('please select a channel', toast.ERROR, 6)
+        toast.error('please select atleast a channel', {
+          position: "bottom-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
         return;
       }
     }
     if (messageType === type.dm) {
       if (selectedMembers.length === 0) {
-        showToastMessage('please select atleast a member', toast.ERROR, 6);
         toast.error('please select atleast a member', {
           position: "bottom-right",
           autoClose: 5000,
@@ -492,7 +482,7 @@ function Dashboard(props) {
           pauseOnHover: true,
           draggable: true,
           progress: undefined,
-          });
+        });
         return;
       }
     }
@@ -505,7 +495,7 @@ function Dashboard(props) {
         pauseOnHover: true,
         draggable: true,
         progress: undefined,
-        });
+      });
       return;
     }
     if (message.trim().length <= 3) {
@@ -517,11 +507,11 @@ function Dashboard(props) {
         pauseOnHover: true,
         draggable: true,
         progress: undefined,
-        });
+      });
       return;
     }
     if (activeGuild && (selectedChannels || selectedMembers || selectedRoles)) {
-      const id=toast.loading('please wait...');
+      const id = toast.loading('please wait...');
       axios
         .post(
           `${process.env.REACT_APP_BACKENDAPI}discord/post?did=${did}&gid=${activeGuild.guildId}`,
@@ -537,13 +527,12 @@ function Dashboard(props) {
           }
         )
         .then((res) => {
-          if(res.status===200)
-          {
-            toast.update(id, { render: "message timmed", type: "success", isLoading: false });
+          if (res.status === 200) {
+            toast.update(id, { render: "message timmed", type: "success", isLoading: false,autoClose: 3000,draggable:true });
           }
         })
-        .catch((err) => { 
-          toast.update(id, { render: "unknow error-try again", type: "error", isLoading: false,autoClose:3000 });
+        .catch((err) => {
+          toast.update(id, { render: "unknow error-try again", type: "error", isLoading: false, autoClose: 3000,draggable:true });
         });
     }
   }
@@ -574,7 +563,7 @@ function Dashboard(props) {
         pauseOnFocusLoss
         draggable
         pauseOnHover
-        theme={mode===MODETYPE.DARK?'dark':'light'}
+        theme={mode === MODETYPE.DARK ? 'dark' : 'light'}
         style={{ fontSize: ".9rem" }}
       />
       <div
@@ -650,13 +639,11 @@ function Dashboard(props) {
               </div>
               <div className='dashboard-left-div__channel-div' style={{ zIndex: activeButton === 2 ? '1' : '0' }}>
                 <div className='dashboard-left-div__channel-div__content'>
-                  <Wrapper isFocused={focusOne} label={focusOne ? 'search' : 'Search Channels'} classFulldiv='dashboard-left-div__channel-div__content-search'>
-                    <input onFocus={() => { setFocusOne(true) }} onBlur={() => { setFocusOne(false) }} onChange={(e) => { setSearchChannel(e.target.value) }} value={searchChannel}></input>
-                  </Wrapper>
+                  <Input mode={mode} MODETYPE={MODETYPE} placeholder={`Search Channels`} onChange={(e) => { setSearchChannel(e.target.value) }} value={searchChannel}></Input>
                   <Wrapper label='Channels' classFulldiv='dashboard-left-div__channel-div__content-result'>
                     <div className='dashboard-left-div__guild-div__result_wrapper'>
                       {channels && channels.map((c) => {
-                        return <ChannelButton name={c.channelName} id={c.channelId} key={c.channelId} onClick={handleChannelButtonClick} />
+                        return <ChannelButton mode={mode} MODETYPE={MODETYPE} name={c.channelName} id={c.channelId} key={c.channelId} onClick={handleChannelButtonClick} />
                       })}
                     </div>
                   </Wrapper>
@@ -664,13 +651,11 @@ function Dashboard(props) {
               </div>
               <div className='dashboard-left-div__role-div' style={{ zIndex: activeButton === 3 ? '1' : '0' }}>
                 <div className='dashboard-left-div__role-div__content'>
-                  <Wrapper isFocused={focusOne} label={focusOne ? 'search' : 'Search Roles'} classFulldiv='dashboard-left-div__channel-div__content-search'>
-                    <input onFocus={() => { setFocusOne(true) }} onBlur={() => { setFocusOne(false) }} onChange={(e) => { setSearchedRole(e.target.value) }} value={searchedRole}></input>
-                  </Wrapper>
+                  <Input mode={mode} MODETYPE={MODETYPE} placeholder={`Search roles`} onChange={(e) => { setSearchedRole(e.target.value) }} value={searchedRole}></Input>
                   <Wrapper label='roles' classFulldiv='dashboard-left-div__channel-div__content-result'>
                     <div className='dashboard-left-div__guild-div__result_wrapper'>
                       {roles && roles.map((c) => {
-                        return <ChannelButton style={{ backgroundColor: c.roleColor, color: '#fff' }} name={c.roleName} id={c.roleId} key={c.roleId} onClick={handleRoleButtonClick} />
+                        return <ChannelButton mode={mode} MODETYPE={MODETYPE} style={{ backgroundColor: c.roleColor, color: '#fff' }} name={c.roleName} id={c.roleId} key={c.roleId} onClick={handleRoleButtonClick} />
                       })}
                     </div>
                   </Wrapper>
@@ -678,13 +663,11 @@ function Dashboard(props) {
               </div>
               <div className='dashboard-left-div__member-div' style={{ zIndex: activeButton === 4 ? '1' : '0' }}>
                 <div className='dashboard-left-div__channel-div__content'>
-                  <Wrapper isFocused={focusOne} label={focusOne ? 'search' : 'Search members'} classFulldiv='dashboard-left-div__channel-div__content-search'>
-                    <input onFocus={() => { setFocusOne(true) }} onBlur={() => { setFocusOne(false) }} onChange={(e) => { setSearchedMember(e.target.value) }} value={searchedMember}></input>
-                  </Wrapper>
+                  <Input mode={mode} MODETYPE={MODETYPE} placeholder={`Search members`} onChange={(e) => { setSearchedMember(e.target.value) }} value={searchedMember}></Input>
                   <Wrapper label='members' classFulldiv='dashboard-left-div__channel-div__content-result'>
                     <div className='dashboard-left-div__guild-div__result_wrapper'>
                       {members && members.map((c) => {
-                        return <MemberButton style={{ backgroundColor: '#545454', color: '#fff' }} type='add' nickName={c.memberNickName} img={c.memberAvatar} userName={c.memberUserName} userTag={c.memberUserTag} id={c.memberId} key={c.memberId} onClick={handleMemberButtonClick} />
+                        return <MemberButton mode={mode} MODETYPE={MODETYPE} style={{ backgroundColor: '#545454', color: '#fff' }} type='add' nickName={c.memberNickName} img={c.memberAvatar} userName={c.memberUserName} userTag={c.memberUserTag} id={c.memberId} key={c.memberId} onClick={handleMemberButtonClick} />
                       })}
                     </div>
                   </Wrapper>
@@ -764,6 +747,7 @@ function Dashboard(props) {
                       userTag={c.memberUserTag}
                       id={c.memberId}
                       key={c.memberId}
+                      mode={mode} MODETYPE={MODETYPE}
                       onClick={(id) => {
                         setSelectedMembers(
                           selectedMembers.filter((e) => e.memberId != id)
