@@ -75,7 +75,7 @@ export default function Navbar(props) {
                 <div className='navbar-svg' style={{backgroundColor:mode===MODETYPE.DARK?'#222':'#a8a8a8'}}>
                     <h1 style={{color:mode===MODETYPE.DARK?'#cacaca':'#333'}}>VIVI</h1>
                 </div>
-                {mobileSize&&<h1 className='navbar-brandname' style={{backgroundColor:mode===MODETYPE.DARK?'#222':'#a8a8a8',color:mode===MODETYPE.DARK?'#fff':'#222'}}>Vivo</h1>}
+                {mobileSize&&<h1 className='navbar-brandname' style={{backgroundColor:mode===MODETYPE.DARK?'#222':'#a8a8a8',color:mode===MODETYPE.DARK?'#fff':'#222'}}>ViVI</h1>}
                 <div className='navbar-loading-div' style={{backgroundColor:mode===MODETYPE.DARK?'#222':'#a8a8a8'}}>
                     <div className='navbar-loading-bar' style={{transform:`scaleX(${loadingPercentage})`}}>
                     </div>

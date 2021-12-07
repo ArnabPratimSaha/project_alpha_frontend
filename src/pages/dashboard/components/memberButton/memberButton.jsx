@@ -7,7 +7,7 @@ let name;
 function MemberButton(props) {
     name=(props.nickName||props.userName).toString().split(/\s+/g);
     return (
-        <div className={`memberbutton-fulldiv ${props.classNameFullDiv}`}>
+        <div className={`memberbutton-fulldiv ${props.classNameFullDiv}`} style={{background:props.mode===props.MODETYPE.DARK?'#444':'#fff',color:props.mode===props.MODETYPE.DARK?'#fff':'#222'}}>
             {props.img && <img src={props.img}></img>}
             {!props.img && <div className='memberbutton-custom-image-div'>{name[0].slice(0,1)}{name.length>1&&name[1].slice(0,1)}</div>}
             <div className={`memberbutton-infoDiv ${props.classNameInfoDiv}`}>
@@ -19,10 +19,10 @@ function MemberButton(props) {
                 {props.children}
             </div>
             {
-                props.type === 'add' && <AiFillPlusSquare className={`memberbutton-icon ${props.classNameIcon}`} onClick={() => { props.onClick(props.id) }} />
+                props.type === 'add' && <AiFillPlusSquare style={{color:props.mode===props.MODETYPE.DARK?'#fff':'#333'}} className={`memberbutton-icon ${props.classNameIcon}`} onClick={() => { props.onClick(props.id) }} />
             }
             {
-                props.type === 'remove' && <FaMinusSquare className={`memberbutton-icon ${props.classNameIcon}`} onClick={() => { props.onClick(props.id) }} />
+                props.type === 'remove' && <FaMinusSquare style={{color:props.mode===props.MODETYPE.DARK?'#fff':'#333'}} className={`memberbutton-icon ${props.classNameIcon}`} onClick={() => { props.onClick(props.id) }} />
             }
         </div>
     )

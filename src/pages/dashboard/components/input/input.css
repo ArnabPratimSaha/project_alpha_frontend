@@ -1,0 +1,37 @@
+.input-component-fulldiv
+{
+    display: flex;
+    width: 100%;
+}
+.input-component-fulldiv input
+{
+    flex: 1;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid black;
+    font-size: 1rem;
+    text-transform: lowercase;
+}
+.input-component-fulldiv input:focus,.input-component-fulldiv input:hover
+{
+    outline: none;
+}
+.input-component-fulldiv input:focus
+{
+    border-bottom-width: 2px;
+}
+.input-component-fulldiv input::placeholder
+{
+    color: inherit;
+    opacity: .5;
+}
+.input-component-icons
+{
+    margin-right: 20px;
+    font-size: 1.5rem;
+    border-radius: 5px;
+    padding: 5px 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

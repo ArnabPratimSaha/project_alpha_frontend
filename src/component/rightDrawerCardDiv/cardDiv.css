@@ -45,6 +45,18 @@
     padding-bottom: 10px;
     transition: height 400ms ease-in-out;
 }
+.card-content::-webkit-scrollbar
+{
+    width: 10px;
+}
+.card-content::-webkit-scrollbar-track {
+    background: #cacaca;
+}
+.card-content::-webkit-scrollbar-thumb {
+    background: rgb(68,68,68);
+    background: linear-gradient(114deg, rgba(68,68,68,1) 0%, rgba(202,202,202,1) 50%, rgba(68,68,68,1) 100%);
+    border-radius: 5px;
+ }
 .card-header-logo
 {
     font-size: 1.5rem;
