@@ -53,7 +53,6 @@
 .navbar-links
 {
 }
-@import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@500&display=swap');
 .navbar-links__link
 {
     margin: 0 20px;
@@ -170,7 +169,7 @@
     margin: 0;
     color: #fff;
 }
-@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@300;400;500;600&display=swap');
+
 .navbar-brandname
 {
     font-family: 'Barlow Condensed', sans-serif;

@@ -5,6 +5,10 @@
     width: 100%;
     height: 40rem;
 }
+.dashboard-full-div::-webkit-scrollbar
+{
+    display: none;
+}
 .dashboard-content-div
 {
     height: 35rem;
