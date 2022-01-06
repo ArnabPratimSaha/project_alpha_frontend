@@ -11,7 +11,6 @@
     "lottie-web": "^5.7.8",
     "randomcolor": "^0.6.2",
     "react": "^17.0.2",
-    "react-bootstrap": "^2.0.0-beta.5",
     "react-calendar": "^3.4.0",
     "react-clock": "^3.0.0",
     "react-datetime-picker": "^3.2.1",
@@ -19,7 +18,7 @@
     "react-icons": "^4.2.0",
     "react-infinite-scroll-component": "^6.1.0",
     "react-loader-spinner": "^4.0.0",
-    "react-router-dom": "^5.2.0",
+    "react-router-dom": "^6.2.1",
     "react-scripts": "4.0.3",
     "react-toastify": "^8.0.3",
     "web-vitals": "^1.1.2"

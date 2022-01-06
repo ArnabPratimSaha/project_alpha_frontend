@@ -1,7 +1,5 @@
 import React, { useEffect, useReducer, useRef, useState } from "react";
-import { useParams } from "react-router";
-import Navbar from "../../component/navbar/navbar";
-import useMode from "../../customhooks/useMode";
+import { useParams } from "react-router-dom";
 import "./dashboard.css";
 import { FaDiscord, FaArrowAltCircleLeft } from "react-icons/fa";
 import { BsFillChatDotsFill } from "react-icons/bs";
@@ -186,13 +184,12 @@ const foundRole = (userRoles, roles) => {
 let cancelMemberReq;
 
 
-function Dashboard(props) {
+function Dashboard({mode,MODETYPE}) {
   const timer = useRef(null)
   const [counter, setCounter] = useState(0)
   const today = useRef(new Date());
   const maxDate = useRef(newDate);
   let { uid, did } = useParams();
-  const [mode, changeMode, MODETYPE, updateMode] = useMode();
   const [messageType, setMessageType] = useState(type.channel);
   const [selectedTime, setSelectedTime] = useState(calcTimeString(today.current));
   const [rightDivVisible, setRightDivVisible] = useState(
@@ -272,28 +269,6 @@ function Dashboard(props) {
 
     })
   }, []);
-  const handleLogout = () => {
-    if (!Cookies.get('temp_id')) setStatus((status) => !status);
-    if (Cookies.get('temp_id')) {
-      Cookies.remove("temp_id");
-      Cookies.remove("temp_discordId");
-      Cookies.remove("temp_userName");
-      Cookies.remove("temp_userTag");
-      Cookies.remove("temp_avatar");
-    }
-    else {
-      Cookies.remove("id");
-      Cookies.remove("discordId");
-      Cookies.remove("userName");
-      Cookies.remove("userTag");
-      Cookies.remove("avatar");
-
-    }
-    window.location = '/home';
-  };
-  const handleOnModeUpdate = () => {
-    updateMode();
-  };
   //managing the right div size
   useEffect(() => {
     window.addEventListener("resize", () => {
@@ -540,19 +515,7 @@ function Dashboard(props) {
     setSelectedTime(e.target.value)
   }
   return (
-    <>
-      <Navbar
-        key='dashboard'
-        onUpdateMode={handleOnModeUpdate}
-        userName={userName} w
-        userTag={userTag}
-        imageSource={imageSource}
-        status={status}
-        handleLogout={handleLogout}
-        isTemp={false}
-        loadingPercentage={loadingPercentage}
-        page={'dashboard'}
-      />
+    <div>
       <ToastContainer
         position="bottom-right"
         autoClose={5000}
@@ -813,7 +776,7 @@ function Dashboard(props) {
         </div>
       </div>
       <Footer mode={mode} MODETYPE={MODETYPE} />
-    </>
+    </div>
   );
 }
 export default Dashboard;

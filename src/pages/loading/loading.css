@@ -1,0 +1,84 @@
+.loading-topdiv {
+  display: flex;
+  width: 100%;
+  height: 100vh;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+.loading-spinner {
+}
+.loading-spinner span {
+  font-size: 3rem;
+  margin: 0 5px;
+  font-family: 'Syne Mono', monospace;
+  font-weight: 800;
+  position: relative;
+  background-color: inherit;
+  
+}
+.loading-spinner span::after
+{
+    content: '';
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    top: 0;
+    left: 0;
+    background-color: inherit;
+    transform-origin: bottom;
+}
+.loading-spinner span:nth-child(1)::after{
+    animation: vivi-anim 3s linear none infinite ;
+}
+.loading-spinner span:nth-child(2)::after{
+    animation: vivi-anim 3s linear 200ms infinite ;
+}
+.loading-spinner span:nth-child(3)::after{
+    animation: vivi-anim 3s linear 400ms infinite ;
+}
+.loading-spinner span:nth-child(4)::after{
+    animation: vivi-anim 3s linear 600ms infinite ;
+}
+@keyframes vivi-anim {
+    0%{
+        transform: scaleY(1);
+    }
+    50%{
+        transform: scaleY(0);
+    }
+    100%{
+        transform: scaleY(1);
+    }
+}
+.loading__loading {
+  display: flex;
+  background-color: inherit;
+}
+.loading__loading p {
+  font-size: 1.3rem;
+  font-family: 'Roboto Condensed', sans-serif;
+}
+.loading-dot {
+  position: relative;
+  background-color: inherit;
+}
+.loading-dot::after {
+  content: "";
+  background-color: inherit;
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  top: 0;
+  left: 0;
+  animation: dot 1s steps(4) none infinite;
+  transform-origin: right;
+}
+@keyframes dot {
+  0% {
+    transform: scaleX(1);
+  }
+  100% {
+    transform: scaleX(0);
+  }
+}

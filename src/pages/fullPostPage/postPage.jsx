@@ -1,8 +1,5 @@
 import React, { useEffect, useReducer, useRef, useState } from "react";
-import { useParams } from "react-router";
-import Navbar from "../../component/navbar/navbar";
-import useMode from "../../customhooks/useMode";
-import Cookies from "js-cookie";
+import { useParams } from "react-router-dom";
 import axios from 'axios'
 import './postPage.css';
 import Timecard from "./timeCard/timeCard";
@@ -17,37 +14,10 @@ const messageType={
     channel:'CHANNEL',
     dm:'DM'
   }
-function PostPage(props) {
+function PostPage({mode,MODETYPE,time}) {
     let { uid,sid, did,pid} = useParams();
-    const [loadingPercentage, setLoadingPercentage] = useState(0);
-    const [mode, changeMode, MODETYPE, updateMode] = useMode();
     const [details, setDetails] = useState()
-    const [imageSource, setImageSource] = useState(
-        sid === "null" && Cookies.get("avatar") ? Cookies.get("avatar") : null
-    );
-    const [userName, setUserName] = useState(
-        sid === "null" && Cookies.get("userName") ? Cookies.get("userName") : false
-    );
-    const [userTag, setUserTag] = useState(
-        sid === "null" && Cookies.get("userTag") ? Cookies.get("userTag") : false
-    );
-    const [status, setStatus] = useState(
-        sid === "null" && Cookies.get("id") ? true : false
-    ); //logged in
-    const [isTemp, setIsTemp] = useState(
-        sid === "null" && Cookies.get("id") ? false : true
-    ); //logged in
-    const handleLogout = () => {
-        setStatus((status) => !status);
-        Cookies.remove("id");
-        Cookies.remove("userName");
-        Cookies.remove("userTag");
-        Cookies.remove("avatar");
-    };
-    const handleOnModeUpdate = () => {
-        updateMode();
-    };
-    const [remainingTime, setRemainingTime] = useState(new Date(Date.parse(props.time))-new Date())
+    const [remainingTime, setRemainingTime] = useState(new Date(Date.parse(time))-new Date())
     const [remainingTimeString, setRemainingTimeString] = useState('')
 
     const [ticking, setTicking] = useState(0)
@@ -93,21 +63,10 @@ function PostPage(props) {
         if(details)
         {
             const date=new Date(details.time)
-            console.log(date.toLocaleTimeString());
         }
     }, [details])
     return (
         <div>
-            <Navbar
-                onUpdateMode={handleOnModeUpdate}
-                userName={userName}
-                userTag={userTag}
-                imageSource={imageSource}
-                status={status}
-                handleLogout={handleLogout}
-                isTemp={isTemp}
-                loadingPercentage={loadingPercentage}
-            />
             <div className='postpage-fulldiv' style={{backgroundColor:mode===MODETYPE.DARK?'#555':'#ffffff'}}>
                 <div className='postpage-heading-div' style={{color:mode===MODETYPE.DARK?'#fff':'#000'}}>
                     {details&&<h1>{details.title}</h1>}

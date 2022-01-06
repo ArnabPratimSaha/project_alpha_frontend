@@ -1,33 +1,16 @@
 import React, { useEffect, useRef, useState } from 'react'
-import Navbar from '../../component/navbar/navbar';
-import useMode from '../../customhooks/useMode'
 import './home.css';
 import lottie from "lottie-web";
-import Cookies from 'js-cookie';
 import channelImage from './images/pic.png'
 import Brightup from '../../component/brightup/brightup';
 import Server from './components/discordserver/server';
 import axios from 'axios'
 import Button from './components/button/button';
 import Footer from '../../component/footer/footer';
-export default function Home() {
-    const [mode, changeMode, MODETYPE, updateMode] = useMode();
+
+export default function Home({mode,MODETYPE}) {
+    
     const [serverInfo, setServerInfo] = useState([])
-    const [status, setStatus] = useState(
-        Cookies.get('temp_id') || Cookies.get('id') ? true : false
-    ); //logged in
-    const [imageSource, setImageSource] = useState(
-        Cookies.get('temp_id') ? Cookies.get("temp_avatar") : Cookies.get('id') ? Cookies.get("avatar") : null
-    );
-    const [userName, setUserName] = useState(
-        Cookies.get('temp_id') ? Cookies.get("temp_userName") : Cookies.get('id') ? Cookies.get("userName") : null
-    );
-    const [userTag, setUserTag] = useState(
-        Cookies.get('temp_id') ? Cookies.get("temp_userTag") : Cookies.get('id') ? Cookies.get("userTag") : null
-    );
-    const handleOnModeUpdate = () => {
-        updateMode();
-    }
     const current = useRef(null);
     useEffect(() => {
         lottie.loadAnimation({
@@ -37,26 +20,8 @@ export default function Home() {
             autoplay: true,
             animationData: require("./main robot.json")
         });
-    }, [])
-    const handleLogout = () => {
-        if (!Cookies.get('temp_id'))
-            setStatus((status) => !status)
-        if (Cookies.get('temp_id')) {
-            Cookies.remove("temp_id");
-            Cookies.remove("temp_discordId");
-            Cookies.remove("temp_userName");
-            Cookies.remove("temp_userTag");
-            Cookies.remove("temp_avatar");
-        }
-        else {
-            Cookies.remove("id");
-            Cookies.remove("discordId");
-            Cookies.remove("userName");
-            Cookies.remove("userTag");
-            Cookies.remove("avatar");
-
-        }
-    }
+    }, []);
+    
     useEffect(() => {
         axios.get(`${process.env.REACT_APP_BACKENDAPI}info?c=5`).then((res) => {
             setServerInfo(res.data);
@@ -64,7 +29,6 @@ export default function Home() {
     }, [])
     return (
         <div className='home-full-div' style={{ backgroundColor: mode === MODETYPE.DARK ? '#444' : '#cacacaca' }}>
-            <Navbar key='home' onUpdateMode={handleOnModeUpdate} userName={userName} userTag={userTag} imageSource={imageSource} status={status} handleLogout={handleLogout} page={'home'} />
             <div className='home-intro' >
                 <div className='home-intro__title' style={{ color: mode === MODETYPE.DARK ? '#fff' : '#233' }}>
                     <h1>Let Vivi handle your announcement's</h1>

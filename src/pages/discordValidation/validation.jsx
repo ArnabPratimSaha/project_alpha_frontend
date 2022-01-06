@@ -1,5 +1,5 @@
 import React, { useEffect, useReducer, useRef, useState } from "react";
-import { useParams } from "react-router";
+import { useParams } from "react-router-dom";
 import Modal from "../../component/modal/modal";
 import useMode from "../../customhooks/useMode";
 import axios from 'axios';

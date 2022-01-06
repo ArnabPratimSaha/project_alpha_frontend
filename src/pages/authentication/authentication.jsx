@@ -1,8 +1,7 @@
 import React, { useEffect,useRef,useState } from 'react'
 import useMode from '../../customhooks/useMode';
-import {useParams} from 'react-router-dom'; 
+import { useNavigate, useParams } from "react-router-dom";
 import './authentication.css';
-import {setInfo,getInfo} from '../../uitilityFunction/manageInfo';
 import axios from 'axios';
 import Cookie from 'js-cookie';
 import Loader from "react-loader-spinner";
@@ -34,7 +33,9 @@ function Authentication() {
     const [imageSource,setImageSource]=useState(null);
     const [userName,setUserName]=useState(null);
     const [userTag,setUserTag]=useState(null);
-    const data = useRef(null)
+    const data = useRef(null);
+    const navigate = useNavigate();
+    
     useEffect(()=>{
         fetchData(did,uid).then((res)=>{
             console.log(res);
@@ -68,7 +69,7 @@ function Authentication() {
             setUserTag(data.current.userTag)
             setMessage('redirecting to home')
             setTimeout(() => {
-                window.location='/home';
+                window.location='/';
             }, 1000);
         }
     },[verified])
