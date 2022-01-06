@@ -64,8 +64,7 @@ const App=() =>{
               <Route path='/log/:uid/:did' element={<Log mode={mode} MODETYPE={MODETYPE} />} />
               <Route path='/post/:uid/:sid/:did/:pid' element={<PostPage mode={mode} MODETYPE={MODETYPE} />} />
             </Route>
-            {/* <Route path={'*'} element={<ExtraRoute/>}/> */}
-            <Route path={'*'} element={<Loading mode={mode} MODETYPE={MODETYPE} updateMode={updateMode} onStatusChange={setIsLoggedin}/>}/>
+            <Route path={'*'} element={<ExtraRoute/>}/>
           </Routes>
         </Suspense>
       </Router>
